@@ -1,0 +1,152 @@
+\usepackage[usenames, dvipsnames]{color}
+\definecolor{darkblue}{rgb}{0,0,0.6}
+\definecolor{maroon}{rgb}{0.6,0,0}
+%\usepackage[hyperfootnotes=false]{hyperref}
+%\hypersetup{colorlinks=true, breaklinks=true, linkcolor=maroon, urlcolor=darkblue,citecolor=maroon}
+
+\parindent 0pt
+
+\newtheorem{defi}{Definition}
+\newtheorem{theo}{Theorem}
+\newtheorem{nota}{Notation}
+\newtheorem{exam}{Example}
+\newtheorem{rema}{Remark}
+\newtheorem{coro}{Corollary}
+\newtheorem{lemm}{Lemma}
+\newtheorem{impl}{Implementation}
+\newtheorem{algo}{Algorithm}
+
+%\newcolumntype{C}[1]{>{\centering}m{#1}}
+
+% Matheoperatoren
+% \DeclareMathOperator*{\mydef}{\mathrel{\mathop:}=}
+% \DeclareMathOperator*{\mydefswitched}{=\mathrel{\mathop:}}
+% \DeclareMathOperator*{\myLongleftrightarrow}{\Longleftrightarrow}
+% \DeclareMathOperator*{\argmax}{argmax}
+% \DeclareMathOperator*{\argmin}{argmin}
+% \DeclareMathOperator{\diag}{diag}
+% \DeclareMathOperator{\GenGamma}{GenGamma}
+% \DeclareMathOperator{\myeq}{=}
+% \DeclareMathOperator{\myprop}{\propto}
+% \DeclareMathOperator{\vvec}{\rightharpoonup}
+% \DeclareMathOperator{\dist}{dist}
+% \DeclareMathOperator{\Exp}{\mathbb{E}}
+% \DeclareMathOperator{\Cov}{\mathbb{C}\text{ov}}
+% \DeclareMathOperator{\Var}{\mathbb{V}\text{ar}}
+% \DeclareMathOperator{\divergence}{\text{div}}
+% \DeclareMathOperator{\Corr}{\mathbb{C}\text{orr}}
+% \DeclareMathOperator{\erfc}{\text{erfc}}
+% \DeclareMathOperator{\erfcx}{\text{erfcx}}
+% \DeclareMathOperator{\erfcinv}{\text{erfcinv}}
+% \DeclareMathOperator{\erfcinvlog}{\text{erfcinvlog}}
+% \DeclareMathOperator{\cdf}{\text{cdf}}
+% \DeclareMathOperator{\invcdf}{\text{invcdf}}
+% \DeclareMathOperator{\grad}{\nabla}
+% \DeclareMathOperator{\card}{\text{card}}
+% \DeclareMathOperator{\trace}{\text{tr}}
+% \DeclareMathOperator{\sign}{\text{sign}}
+% \newcommand{\rmd}{\mathrm{d}}
+% \DeclareMathOperator{\unif}{\text{unif}}
+
+\newcommand{\argmin}{\mathop{\mathrm{arg}\,\mathrm{min}}}
+\newcommand{\argmax}{\mathop{\mathrm{arg}\,\mathrm{max}}}
+\newcommand{\Exp}{\mathbb{E}}
+%\newcommand{\eqref}[1]{\ref{#1}}
+\newcommand{\mydef}{\mathrel{\mathop:}=}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sets
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\bbR{\mathbb{R}}
+\def\bbN{\mathbb{N}}
+
+
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfE}{\mathbf{E}}
+\newcommand{\bfG}{\mathbf{G}}
+\newcommand{\bfM}{\mathbf{M}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfw}{\mathbf{w}}
+\newcommand{\bfW}{\mathbf{W}}
+
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\J}{\mathcal{J}}
+\newcommand{\Radon}{\mathcal{R}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Na}{\mathbb{N}}
+%\newcommand{\C}{\mathcal{C}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\Pro}{\mathbb{P}}
+\newcommand{\like}{p_{like}(\bfM|\bfX)}
+\newcommand{\prior}{p_{prior}(\bfX)}
+\newcommand{\hiprior}{p_{prior}(\bfX|\gamma)}
+\newcommand{\hyper}{p_{hyper}(\gamma)}
+\newcommand{\post}{p_{post}(\bfX|\bfM)}
+\newcommand{\hipost}{p_{post}(\bfX,\gamma|\bfM)}
+\newcommand{\fInf}{f^{\dagger,\infty}}
+\newcommand{\fReal}{f^\dagger}
+\newcommand{\feeg}{f_{\text{\tiny EEG}}}
+\newcommand{\fmeg}{f_{\text{\tiny MEG}}}
+\newcommand{\uInf}{u^{\dagger,\infty}}
+\newcommand{\uReal}{u^\dagger}
+\newcommand{\xMAP}{\hat{\bfX}_{\text{\tiny MAP}}}
+\newcommand{\xCM}{\hat{\bfX}_{\text{\tiny CM}}}
+\newcommand{\gamMAP}{\hat{\gamma}_{\text{\tiny MAP}}}
+\newcommand{\gamCM}{\hat{\gamma}_{\text{\tiny CM}}}
+\newcommand{\pMAP}{\hat{p}_{\text{\tiny MAP}}}
+\newcommand{\pCM}{\hat{p}_{\text{\tiny CM}}}
+\newcommand{\PsiLS}{\Psi_{\text{\tiny LS}}(u,\hat{u})}
+\newcommand{\PsiBrg}{\Psi_{\text{\tiny Brg}}(u,\hat{u})}
+\newcommand{\PsiLSnoarg}{\Psi_{\text{\tiny LS}}}
+\newcommand{\PsiBrgnoarg}{\Psi_{\text{\tiny Brg}}}
+\newcommand{\eqab}[1]{\stackrel{ #1 }{=}}
+\newcommand{\proptoab}[1]{\stackrel{ #1 }{\propto}}
+\newcommand{\NoiSig}{\Sigma_{\varepsilon}^{-1}}
+\newcommand{\NoiChol}{\Sigma_{\varepsilon}^{-1/2}}
+\newcommand{\Indicator}{\mathds{1}}
+\newcommand{\prox}{\textbf{prox}}
+\newcommand{\termabb}[2]{\emph{#1} (\emph{#2})}
+
+
+% \DeclarePairedDelimiter\linorm{\lVert}{\rVert_{\Sigma_\varepsilon^{-1}}^2}%
+% \DeclarePairedDelimiter\sqnorm{\lVert}{\rVert_2^2}%
+%\DeclarePairedDelimiter\fronormsq{}{\rVert_{\rm Fro}^2}%
+% \newcommand{\fronormsq}[1]{\lVert{#1}\rVert_{\rm F}^2}
+% \newcommand{\fronorm}[1]{\lVert{#1}\rVert_{\rm F}}
+\newcommand{\fronormsq}[1]{\|{#1}\|_{\rm F}^2}
+\newcommand{\fronorm}[1]{\|{#1}\|_{\rm F}}
+\newcommand{\norm}[1]{\|{#1}\|}
+
+% %\DeclarePairedDelimiter\fronorm{\lVert}{\rVert_{\rm Fro}}%
+% \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+% \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Latin abbreviations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ie}{{\em i.e.,~}}
+\newcommand{\wlg}{{\em w.l.o.g.,~}}
+\newcommand{\eg}{{\em e.g.,~}}
+\newcommand{\lcf}{{\em cf.~}}
+\newcommand{\resp}{{\em resp.~}}
+% \newcommand{\etal}{{\em et al.~}}
+\newcommand{\wrt}{{\em w.r.t.~}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%      	 COMMENTs	    		      %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[textwidth=2.450cm, textsize=tiny]{todonotes}
+\newcommand{\jo}[1]{\todo[color=green!20]{{\bf Jo:} #1}}
+\newcommand{\jrs}[1]{\textcolor{red}{#1}}
+\newcommand{\yousra}[1]{\todo[color=blue!20]{{\bf Yousra:} #1}}
+\newcommand{\yb}[1]{\textcolor{blue}{#1}}
+\newcommand{\alex}[1]{\textcolor{orange}{#1}}
+\newcommand{\ag}[1]{\todo[color=orange!20]{{\bf Alex:} #1}}
+\newcommand{\flucka}[1]{\textcolor{purple}{#1}}
+\newcommand{\felix}[1]{\todo[color=purple!20]{{\bf Felix:} #1}}
+

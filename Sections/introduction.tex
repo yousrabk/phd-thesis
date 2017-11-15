@@ -1,0 +1,65 @@
+%----------------------------------------------------------------------------------------
+%	Introduction PAGE
+%----------------------------------------------------------------------------------------
+
+\addchaptertocentry{Introduction}
+
+\newpage
+
+{\huge\textbf{Introduction}\par}
+\HRule \\[0.4cm] % Horizontal line
+\section*{Context of the thesis or the Motivation}
+\textbf{Keywords:} Brain Imaging, Neuroscience Neurons, cells, Clinical work, cognitive science\\
+=> Non-invasive techniques/scanning - fMRI, M/EEG (functional)\\
+=> Why it is important to get back to the brain? Ex: Epilepsy for clinical case or more how the brain works for a cognitive task.
+
+The brain is one of the most fascinating organ in a human being. It is able to represent, analyze, process, and transform information of millions of different tasks in a record time. It can go from language, perception, memory, attention, emotion to reasoning and creativity. Understanding how the brain works during these different tasks is important for several reasons. The first reason is on what consists cognitive science. The aim is to study the behavior of the brain and extract information to define a structure of each task. This has been widely used in another field known as  Artificial Intelligence where scientists try to implement aspects they learned from the human brain in computers. The second reason is more clinical, understanding how a pathology is affecting the brain, helps to find a cure or a way to improve patient life. For example, being able to detect autism in early age of childhood, helps the parents to have a specific education and a better future.\\
+
+To make this brain screening possible, several techniques exists depending on the question we are really asking. For the different tasks I mentioned above, one very important aspect is time. They are mostly processed in a fraction of second, for example to recognize an emotion, to perceive a familiar face, etc. In this thesis, to study this high resolution of time, I was interested in two brain imaging techniques.\\
+
+Magnetoencephalography (MEG) and electroencephalography (EEG) are functional neuro-imaging techniques for mapping the brain activity. They respectively record the magnetic and electric fields produced by electrical currents naturally occurring in the brain within the neurons. They use an array of sensors positioned over the scalp that are extremely sensitive to minuscule changes in the magnetic field (measured by MEG) produced by small changes in the electrical activity (measured by EEG) with the brain. It is, therefore, a direct measurement of neural activity. MEG/EEG as a technique for investigating the neural function in the brain is not new but was originally pioneered in the late 1960s. However, it is only since the early 1990s, with the introduction of high density detector grids covering the whole head, that the full potential of MEG has begun to be realized. The biggest advantage of MEG and EEG compared to fMRI which is much more established in the neuroscience research is the time resolution. In fMRI, neural activation is indirectly measured via local changes in the level of blood oxygenation, a long time window is typically compressed in one measured brain volume. \\
+
+Using very sensitive magnetometers/electrodes (sensors), MEG and EEG deliver insight into the brain activity with high temporal and good spatial resolution. They allow the measurements of the ongoing activity which describe the active brain sources' state at each millisecond. This problem of estimating the result of the measurements is called \textit{forward problem}. The bioelectromagnetic forward problem describes the relationship between a given neural activity in the brain and the observable MEG and EEG signals. Its solution models mathematically the neural activity, the volume conductor, and the measurement setup. It allows to link the scalp potentials and external fields given an internal current distribution by a stable and unique solution, which is thus a well-posed problem. Its counterpart, the bioelectromagnetic \textit{inverse problem} consists in using the actual measurements to infer the parameters (locations, amplitude, orientations) giving the distribution of the neural generators. \\
+
+While the bio-electromagnetic forward problem has a unique solution, the inverse problem does not. The inverse problem has an infinite solution not only due to the small number of sensors present in the MEG and EEG. Actually, even if the MEG and EEG were measured simultaneously at infinitely many points over the head, the information will still be insufficient to uniquely compute the brain source distribution that generated the measured brain signals. This is due to the fact that there are different combinations of sources able to cause \textit{exactly} the same potential fields on the head.
+
+Because of this, and in order to obtain a unique solution to the inverse problem, one needs to make explicit assumptions or any available \textit{a priori} knowledge about the brain source distribution.
+
+\section*{Objective and scope}
+\textbf{Keywords:} Not only solve the IP but improve methods for the start to the end of the problem of source localization\\
+=> Sparse solutions (references), what people have been doing and how do we choosed to handle the problem\\
+=> Hyperparameter estimatio, to improve the tuning of the parameters which is important for solving the problem accurately.
+\section*{Contribution of the author}
+\begin{itemize}
+\item multidict - PRNI
+\item hyperparam - EUSIPCO
+\item Uncertainty quantification - PMB
+\item validation on phantom data - 
+\end{itemize}
+
+\section*{Structure of the thesis}
+\begin{itemize}
+\item Chapter 1
+\item Chapter 2
+\item Chapter 3
+\item Chapter 4
+\item Chapter 5
+\end{itemize}
+
+
+In the past, several source reconstruction techniques have been proposed, that can be arranged in different categories such as:
+\begin{itemize}
+	\item The parametric models usually referred to as \textit{dipole fitting} approaches.
+    \item The \textit{beamforming} or \textit{scanning} techniques.
+    \item The \textit{image-based} methods with distributed models.
+    \item The \textit{sparse} source models.
+\end{itemize}
+These models solve the inverse problem with different approaches. The sparse models which are the main interest of this thesis have been proposed in other fields of research and are widely used. In the signal processing literature, various signals can be defined as the linear combination of basis vectors, called \textit{atoms}. This technique is also known as compressed sensing. These atoms are defined in a fix overcomplete dictionary, the underlying motivation is that even though the observed signal is lying in a high-dimensional space, the actual signal is organized in a lower-dimensional space. This was used in the audio domain, specifically in the analysis of speech, sounds, and music, e.g. in order to classify a sound sample. The idea of sparse decomposition is also behind the JPEG2000 compression, which aims to keep only a few atoms best approximating the image. More in the image processing literature, the sparse models were used for denoising and image reconstruction (MRI,...). They are also linked to the dictionary learning literature, where one tries to learn a redundant and overcomplete dictionary, that is able to reconstruct a signal/image using a sparse setting.
+
+In this thesis, we have been investigating the sparse models to reconstruct the source estimate for the MEG and EEG applications. This mid-term report is organized as follows:
+
+The first chapter "BASICS" summarizes the M/EEG inverse problem literature. It also introduces the basic background of the M/EEG regression model and the different priors to penalize the problem. Then some of the optimization techniques for solving the regularized regression problem are defined. At the end, it briefly presents some basics of the Gabor dictionaries, which are used in the time-frequency based solvers.
+
+The second chapter is dedicated to our first contribution, \textit{i.e.} solving the inverse problem in the time-frequency domain using a multi-scale dictionary. 
+Finally, the last chapter shows the experimental results obtained on simulated and on real MEG data. Then we discuss the achievements of this thesis and future work. 
+%http://imaging.mrc-cbu.cam.ac.uk/meg/IntroEEGMEG
