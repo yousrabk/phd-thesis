@@ -1,9 +1,16 @@
 % Chapter 1
 
 \chapter{Background and related work to the M/EEG inverse problem} % Main chapter title
-
 \label{chapter:background} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+\noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
+\noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
 
+\localtableofcontents % local toc
+
+\noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
+\noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
+
+\newpage
 %----------------------------------------------------------------------------------------
 
 % Define some commands to keep the formatting separated from the content 
@@ -16,7 +23,35 @@
 
 %--------- Signal sources of MEEG recording-----------------------------------------------
 \section{Signal sources of MEG and EEG recordings}
-blabla
+Measuring weak MEG/EEG signals in the background of strong environmental noise, having a noise level of several orders of magnitude larger than the MEG/EEG signals, is a challenging task. Despite the apparent simplicity in the structure of the neural cell, the biophysics of neural current flow relies on a complex network of billions of cells, neurons and glial cells~\cite{baillet2001electromagnetic, hodgkin1964conduction}. Neurons are nerve cells that transmit nerve signals to and from the brain, they are about 100 billions neurons in the brain. The neuron consists of a cell body (or soma) with branching dentrites (signal receivers) and a projection called an axon, which conduct the nerve signal.\\
+
+Every neuron maintains a voltage gradient across its membrane, due to metabolically-driven differences in ions of sodium, potassium, chloride and calcium within the cell, each of which has a different charge. If the voltage changes significantly, an electro-chemical pulse called an action potential (or nerve impulse) is generated. This electrical activity can be measured and displayed as a wave form called brain wave or brain rhythm. This pulse travels rapidly along the cell's axon, and is transferred across a specialized connection known as a synapse to a neighbouring neuron, which receives it through its feathery dendrites. Each individual neuron can form thousands of links with other neurons in this way, giving a typical brain well over 100 trillion synapses (up to 1,000 trillion, by some estimates).\\
+
+Roughly, when a neuron is excited by other—and possibly remotely located—neurons via an afferent volley of action potentials, excitatory postsynaptic potentials (EPSPs) are generated at its apical dendritic tree. The apical dendritic membrane becomes transiently depolarized and consequently extracellularly electronegative with respect to the cell soma and the basal dendrites. This potential difference causes a current to flow through the volume conductor from the nonexcited membrane of the soma and basal dendrites to the apical dendritic tree sustaining the EPSPs~\cite{gloor1985neuronal}.
+Some of the current takes the shortest route between the source and the sink by traveling within the dendritic trunk. Conservation of electric charges imposes that the current loop be closed with extracellular currents flowing even through the most distant part of the volume conductor. Intracellular currents are commonly called primary currents, while extracellular currents are known as secondary, return, or volume currents.\\
+
+Both primary and secondary currents contribute to magnetic fields outside the head and to electric scalp potentials, but spatially structured arrangements of cells are of crucial importance to the superposition of neural currents such that they produce measurable fields. Tens of thousands of synchronously activated large pyramidal cortical neurons are thus believed to be the main MEG and EEG generators because of the coherent distribution of their large dendritic trunks locally oriented in parallel, and pointing perpendicularly to the cortical surface~\cite{nunez2000relationship}. The currents associated with the EPSPs generated among their dendrites are believed to be at the source of most of the signals detected in MEG and EEG because they typically last longer than the rapidly firing action potentials traveling along the axons of excited neurons~\cite{nunez2006electric}. Indeed, calculations such as those shown in~\cite{hamalainen1993magnetoencephalography} suggest each synapse along a dendrite may
+contribute as little as a 20 fA-m current source, probably too small to measure in MEG/EEG. Empirical observations instead suggest we are seeing sources on the order of 10 nA-m, and hence the cumulative summation of millions of synaptic junctions in a relatively small region. Nominal calculations of neuronal density and cortical thickness suggest that the cortex has a macro-cellular current density on the order of 100 nA/mm2 [10].\\
+
+\begin{figure}
+	\includegraphics[trim={1cm 10cm 2cm 10cm},width=0.95\textwidth]{background/meg_eeg_principle}
+    \caption{Simplified model of the measuring principle of MEG and EEG. The EEG measures the difference of the electric potential between the EEG electrode and a reference due to volume currents generated by primary currents in the brain. The
+MEG captures the magnetic field generated by both primary and volume currents.
+    }
+    \label{fig:meg_eeg_principle}
+\end{figure}
+
+MEG and EEG are non-invasive functional imaging techniques for analyzing neural activity on a macroscopic scale. In contrast to indirect neuroimaging modalities, MEG and EEG are direct correlates of neural activity in the brain, which measure magnetic fields and electric potentials generated by neural activity. The measurement principle of MEG and EEG is illustrated in Figure~\ref{fig:meg_eeg_principle}.\\
+
+The neuronal activity captured by MEG is not, as perhaps expected, generated by the (too brief) axonal action potentials of pyramidal cells, but rather by the net contributions of excitatory and inhibitory dendritic postsynaptic potentials. This current flow through the apical dendrites (represented as a ‘dipole’) generates a magnetic field that projects radially; thus, MEG excels at detecting dipoles arranged in a tangential orientation to the skull. Fortunately, the extensively folded sulci of the human cortex promote that orientation for the majority of cortical microcolumns. However, MEG is less sensitive to deeper (including subcortical) sources, as magnetic field change decreases rapidly with distance.\\
+
+In 1969, the journey to understand the electrical potentials of the brain took an interesting and fruitful detour when David Cohen, a physicist working at MIT, became the first to confidently measure the incredibly tiny magnetic fields produced by the heart's electrical signals (see here for a talk by David Cohen on the origins of MEG). To do this, he constructed a shielded room, blocking interference from the overwhelming magnetic fields generated by earth itself and by other electrical devices in the vicinity, effectively closing the door on a cacophony of voices to carefully listen to a slight whisper. His shielding technique became central to the advent of magnetoencephalography (MEG), which measures the yet even quieter magnetic fields generated by the brain's electrical activity.\\
+
+This approach to record the brain's magnetic fields, rather than the electrical potentials themselves, was advanced even further by James Zimmerman and others working at the Ford Motor Company, where they developed the SQUID, a superconducting quantum interference device. A SQUID is an extremely sensitive magnetometer, operating on the principles of quantum physics, which is able to detect precisely those very tiny magnetic fields produced by the brain. To appreciate the contributions of magnetic shielding and SQUIDs to magnetoencephalography, consider that the earth's magnetic field, the one acting on your compass needle, is at least 200 million times the strength of the fields generated by your brain trying to read that very same compass.\\
+
+The EEG measures the electric potential difference between the EEG electrode and a reference on the scalp associated with primary currents in the brain. These electric potential differences, which are in the range of a few microvolts, are recorded using amplifiers with high open-loop gain, common-mode rejection ratio, and input impedance. The first human EEG recording was done by Hans Berger in 1924.\\
+
+
 %--------- Forward model -------------------------------------------------------------------
 \section{The forward model}
 blabla
@@ -103,7 +138,7 @@ where $\tilde{\mathbf{\Phi}}$ is the Gabor dictionary formed with the dual windo
 
 \begin{figure}
 \centering
-	\includegraphics[width=0.8\textwidth]{stft}
+	\includegraphics[width=\textwidth]{stft}
     \caption{a) Short-time Fourier transform (STFT) of a single channel MEG signal sampled at 1000Hz showing the sparse nature of the transformation (window size 64 time points and time shift $k_0=16$ samples). b)STFT restricted to the 50 largest coefficients. c) Data and the reconstructed data using only the 50 largest coefficients.}
 	\label{fig:stft}
 \end{figure}
@@ -177,7 +212,7 @@ Due to the above undesired properties, we need to consider a convex relaxation t
 The convex approximation of the $\ell_0$-norm is convenient, as the method always converges to the optimal solution. But for more sparsity, one needs to go beyond the convexity aspect of the regularization. Fig. \ref{fig:norms} shows the $\ell_0, \ell_1$ and $\ell_2$-norms. In general, we note the $\ell_p$-norm as: $\|\mathbf{X}\|_p=(\sum_{i}\sum_j|X[i,j]|^p)^{1/p}$. For $0<p<1$, the pseudo-norm is not convex anymore, even though the $\ell_0$-norm is better approximated (\textit{cf. Fig. \ref{fig:norms}}).
 \begin{figure}
 \centering
-	\includegraphics[width=0.5\textwidth]{norms}
+	\includegraphics[width=0.6\textwidth]{norms}
     \caption{Geometric interpretation of the different norms in 1D space.}
 	\label{fig:norms}
 \end{figure}
