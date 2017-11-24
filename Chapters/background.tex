@@ -23,15 +23,28 @@
 
 %--------- Signal sources of MEEG recording-----------------------------------------------
 \section{Signal sources of MEG and EEG recordings}
-Measuring weak MEG/EEG signals in the background of strong environmental noise, having a noise level of several orders of magnitude larger than the MEG/EEG signals, is a challenging task. Despite the apparent simplicity in the structure of the neural cell, the biophysics of neural current flow relies on a complex network of billions of cells, neurons and glial cells~\cite{baillet2001electromagnetic, hodgkin1964conduction}. Neurons are nerve cells that transmit nerve signals to and from the brain, they are about 100 billions neurons in the brain. The neuron consists of a cell body (or soma) with branching dentrites (signal receivers) and a projection called an axon, which conduct the nerve signal.\\
+%Measuring weak MEG/EEG signals in the background of strong environmental noise, having a noise level of several orders of magnitude larger than the MEG/EEG signals, is a challenging task. 
+At the cellular level of the brain, its nervous system is defined by the presence of special type of neural cells. Despite the apparent simplicity in the structure of the neural cell, the biophysics of neural current flow relies on a complex network of billions of cells, neurons and glial cells~\cite{baillet2001electromagnetic, hodgkin1964conduction}. Neurons are nerve cells that transmit nerve signals to and from the brain, they are about 100 billions neurons. The neuron consists of a cell body (or soma) with branching dentrites (signal receivers). They send these signals in the form of electrochemical waves traveling along thin fibers called axons, which cause chemicals called neurotransmitters to be released at junctions called synapses. A cell that receives a synaptic signal from a neuron may be excited, inhibited, or otherwise modulated. At a synapse, the cell that sends signals is called presynaptic, and the cell that receives signals is called postsynaptic.\\
 
-Every neuron maintains a voltage gradient across its membrane, due to metabolically-driven differences in ions of sodium, potassium, chloride and calcium within the cell, each of which has a different charge. If the voltage changes significantly, an electro-chemical pulse called an action potential (or nerve impulse) is generated. This electrical activity can be measured and displayed as a wave form called brain wave or brain rhythm. This pulse travels rapidly along the cell's axon, and is transferred across a specialized connection known as a synapse to a neighbouring neuron, which receives it through its feathery dendrites. Each individual neuron can form thousands of links with other neurons in this way, giving a typical brain well over 100 trillion synapses (up to 1,000 trillion, by some estimates).\\
+Every neuron maintains a voltage gradient across its membrane, due to metabolically-driven differences in ions of sodium, potassium, chloride and calcium within the cell, each of which has a different charge. If the voltage changes significantly, an electro-chemical pulse called an action potential (or nerve impulse) is generated. This electrical activity can be measured and displayed as a wave form called brain wave or brain rhythm. This pulse travels rapidly along the cell's axon, and is transferred across a synapse to a neighbouring neuron, which receives it through its feathery dendrites. Each individual neuron can form thousands of links with other neurons in this way, giving a typical brain well over 100 trillion synapses (up to 1,000 trillion, by some estimates).\\
 
 Roughly, when a neuron is excited by other—and possibly remotely located—neurons via an afferent volley of action potentials, excitatory postsynaptic potentials (EPSPs) are generated at its apical dendritic tree. The apical dendritic membrane becomes transiently depolarized and consequently extracellularly electronegative with respect to the cell soma and the basal dendrites. This potential difference causes a current to flow through the volume conductor from the nonexcited membrane of the soma and basal dendrites to the apical dendritic tree sustaining the EPSPs~\cite{gloor1985neuronal}.
 Some of the current takes the shortest route between the source and the sink by traveling within the dendritic trunk. Conservation of electric charges imposes that the current loop be closed with extracellular currents flowing even through the most distant part of the volume conductor. Intracellular currents are commonly called primary currents, while extracellular currents are known as secondary, return, or volume currents.\\
 
-Both primary and secondary currents contribute to magnetic fields outside the head and to electric scalp potentials, but spatially structured arrangements of cells are of crucial importance to the superposition of neural currents such that they produce measurable fields. Tens of thousands of synchronously activated large pyramidal cortical neurons are thus believed to be the main MEG and EEG generators because of the coherent distribution of their large dendritic trunks locally oriented in parallel, and pointing perpendicularly to the cortical surface~\cite{nunez2000relationship}. The currents associated with the EPSPs generated among their dendrites are believed to be at the source of most of the signals detected in MEG and EEG because they typically last longer than the rapidly firing action potentials traveling along the axons of excited neurons~\cite{nunez2006electric}. Indeed, calculations such as those shown in~\cite{hamalainen1993magnetoencephalography} suggest each synapse along a dendrite may
-contribute as little as a 20 fA-m current source, probably too small to measure in MEG/EEG. Empirical observations instead suggest we are seeing sources on the order of 10 nA-m, and hence the cumulative summation of millions of synaptic junctions in a relatively small region. Nominal calculations of neuronal density and cortical thickness suggest that the cortex has a macro-cellular current density on the order of 100 nA/mm2 [10].\\
+Both primary and secondary currents contribute to magnetic fields outside the head and to electric scalp potentials, but spatially structured arrangements of cells are of crucial importance to the superposition of neural currents such that they produce measurable fields. Tens of thousands of synchronously activated large pyramidal cortical neurons are thus believed to be the main MEG and EEG generators because of the coherent distribution of their large dendritic trunks locally oriented in parallel, and pointing perpendicularly to the cortical surface~\cite{nunez2000relationship}. The currents associated with the EPSPs generated among their dendrites are believed to be at the source of most of the signals detected in MEG and EEG because they typically last longer than the rapidly firing action potentials traveling along the axons of excited neurons~\cite{nunez2006electric}. %Indeed, calculations such as those shown in~\cite{hamalainen1993magnetoencephalography} suggest each synapse along a dendrite may contribute as little as a 20 fA-m current source, probably too small to measure in MEG/EEG. Empirical observations instead suggest we are seeing sources on the order of 10 nA-m, and hence the cumulative summation of millions of synaptic junctions in a relatively small region. Nominal calculations of neuronal density and cortical thickness suggest that the cortex has a macro-cellular current density on the order of 100 nA/mm2.\\
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\textwidth]{background/network_cortical_neural_cells}
+    \caption{Networks of cortical neural cell assemblies are the main generators of MEG/EEG signals. Left: Excitatory postsynaptic potentials (EPSPs) are generated at the apical dendritic tree of a cortical pyramidal cell and trigger the generation of a current that flows through the volume conductor from the non-excited membrane of the soma and basal dendrites to the apical dendritic tree sustaining the EPSPs. Center:  Large cortical pyramidal nerve cells are organized in macro-assemblies with their dendrites normally oriented to the local cortical surface. This spatial arrangement
+and the simultaneous activation of a large population of these cells contribute to the spatio-temporal superposition of the elemental activity of every cell, resulting in a current flow that generates detectable EEG and MEG signals. Right: Functional networks made of these cortical cell assemblies and distributed at possibly mutliple brain locations are thus the putative main generators of MEG and EEG signals. Origin of this image is~\cite{baillet2001electromagnetic}
+    }
+    \label{fig:network_cortical_neural_cells}
+\end{figure}
+
+MEG and EEG are non-invasive functional imaging techniques for analyzing neural activity on a macroscopic scale. In contrast to indirect neuroimaging modalities, MEG and EEG signals derive from the net effect of ionic currents flowing in the dendrites of neurons during synaptic transmission. In accordance with Maxwell's equations, any electrical current will produce a magnetic field, and it is this field that is measured. The measurement principle of MEG and EEG is illustrated in Figure~\ref{fig:meg_eeg_principle}.\\
+
+The neuronal activity captured by MEG is not, as perhaps expected, generated by the (too brief) axonal action potentials of pyramidal cells, but rather by the net contributions of excitatory and inhibitory dendritic postsynaptic potentials. This current flow through the apical dendrites (represented as a ‘dipole’) generates a magnetic field that projects radially; thus, MEG excels at detecting dipoles arranged in a tangential orientation to the skull. Fortunately, the extensively folded sulci of the human cortex promote that orientation for the majority of cortical microcolumns. However, MEG is less sensitive to deeper (including subcortical) sources, as magnetic field change decreases rapidly with distance.\\
 
 \begin{figure}
 	\includegraphics[trim={1cm 10cm 2cm 10cm},width=0.95\textwidth]{background/meg_eeg_principle}
@@ -41,20 +54,36 @@ MEG captures the magnetic field generated by both primary and volume currents.
     \label{fig:meg_eeg_principle}
 \end{figure}
 
-MEG and EEG are non-invasive functional imaging techniques for analyzing neural activity on a macroscopic scale. In contrast to indirect neuroimaging modalities, MEG and EEG are direct correlates of neural activity in the brain, which measure magnetic fields and electric potentials generated by neural activity. The measurement principle of MEG and EEG is illustrated in Figure~\ref{fig:meg_eeg_principle}.\\
-
-The neuronal activity captured by MEG is not, as perhaps expected, generated by the (too brief) axonal action potentials of pyramidal cells, but rather by the net contributions of excitatory and inhibitory dendritic postsynaptic potentials. This current flow through the apical dendrites (represented as a ‘dipole’) generates a magnetic field that projects radially; thus, MEG excels at detecting dipoles arranged in a tangential orientation to the skull. Fortunately, the extensively folded sulci of the human cortex promote that orientation for the majority of cortical microcolumns. However, MEG is less sensitive to deeper (including subcortical) sources, as magnetic field change decreases rapidly with distance.\\
-
-In 1969, the journey to understand the electrical potentials of the brain took an interesting and fruitful detour when David Cohen, a physicist working at MIT, became the first to confidently measure the incredibly tiny magnetic fields produced by the heart's electrical signals (see here for a talk by David Cohen on the origins of MEG). To do this, he constructed a shielded room, blocking interference from the overwhelming magnetic fields generated by earth itself and by other electrical devices in the vicinity, effectively closing the door on a cacophony of voices to carefully listen to a slight whisper. His shielding technique became central to the advent of magnetoencephalography (MEG), which measures the yet even quieter magnetic fields generated by the brain's electrical activity.\\
+In 1969, the journey to understand the electrical potentials of the brain took an interesting and fruitful detour when David Cohen, a physicist working at MIT, became the first to confidently measure the incredibly tiny magnetic fields produced by the heart's electrical signals. To do this, he constructed a shielded room, blocking interference from the overwhelming magnetic fields generated by earth itself and by other electrical devices in the vicinity, effectively closing the door on a cacophony of voices to carefully listen to a slight whisper. His shielding technique became central to the advent of magnetoencephalography (MEG), which measures the yet even quieter magnetic fields generated by the brain's electrical activity.\\
 
 This approach to record the brain's magnetic fields, rather than the electrical potentials themselves, was advanced even further by James Zimmerman and others working at the Ford Motor Company, where they developed the SQUID, a superconducting quantum interference device. A SQUID is an extremely sensitive magnetometer, operating on the principles of quantum physics, which is able to detect precisely those very tiny magnetic fields produced by the brain. To appreciate the contributions of magnetic shielding and SQUIDs to magnetoencephalography, consider that the earth's magnetic field, the one acting on your compass needle, is at least 200 million times the strength of the fields generated by your brain trying to read that very same compass.\\
 
-The EEG measures the electric potential difference between the EEG electrode and a reference on the scalp associated with primary currents in the brain. These electric potential differences, which are in the range of a few microvolts, are recorded using amplifiers with high open-loop gain, common-mode rejection ratio, and input impedance. The first human EEG recording was done by Hans Berger in 1924.\\
+In the other hand, the EEG measures the electric potential difference between the EEG electrode and a reference on the scalp associated with primary currents in the brain. These electric potential differences, which are in the range of a few microvolts, are recorded using amplifiers with high open-loop gain, common-mode rejection ratio, and input impedance. The first human EEG recording was done by Hans Berger in 1924.\\
 
+MEG and EEG can be recorded simultaneously and reveal complementary properties of the electrical fields. Although the signals of EEG and MEG are generated by the same sources (electrical currents in the brain), they are both sensitive to different aspects of these sources. This could be compared to viewing the shadows of the same object from two different angles, combining the two recordings usually yields to better source estimation~\cite{malmivuo2012comparison,sharon2007advantage,aydin2015combined}.
 
 %--------- Forward model -------------------------------------------------------------------
 \section{The forward model}
-blabla
+The bioelectromagnetic forward problem describes the relationship between a given neural activity in the brain and the observable MEG and EEG signals. Its solution models mathematically the neural activity, the volume conductor, and the measurement setup. It allows to link the scalp potentials and external fields given an internal current distribution by a stable and unique solution, which is thus a well-posed problem.
+
+\subsection*{Maxwell's equations}
+Maxwell's equations are a set of partial differential equations forming the foundation of classical electromagnetism. We denote by $\mathbf{E}$ by the electric field, $\mathbf{B}$ the magnetic field, $\mathbf{J}$ the current density, and $\rho$ the charge density.
+
+\begin{center}
+$\left\{
+\begin{array}{l}
+  \nabla . \mathbf{E} = \frac{\rho}{\epsilon} \\
+  \nabla \times \mathbf{E} = \frac{-\partial \mathbf{B}}{\partial t} \\
+  \nabla \cdot \mathbf{B} = 0 \\
+  \nabla \times \mathbf{B} = \mu_0 (\mathbf{J} + \epsilon\frac{\partial \mathbf{E}}{\partial t})
+\end{array}
+\right.$
+\end{center}
+
+Considering a head as a finite three dimensional volume conductor, and non magnetic ($\mu = \mu_0$...
+
+%http://leonidzhukov.net/content/eeg_meg_physics/node1.html
+
 %--------- MEEG inverse problem ------------------------------------------------------------
 \section{M/EEG Inverse problem}
 \emph{\textbf{Notation}}
@@ -116,7 +145,25 @@ We have kept at the end the distributed solvers which are the main interest of t
 %-----------------Time-Frequency------------------------------------------------------------
 \section{Time-Frequency representation}
 \label{section:TF}
-\subsection{MDCT}
+% http://www.dafx.ca/slides/keynote1.pdf
+In signal processing, time-frequency analysis comprises those techniques that study a signal in both time and frequency domains simultaneously, using various time-frequency representations (TFR). During the last decades, signal processing community has provided many new techniques for expanding signals into "elementary" waveforms, such as wavelet bases, modified discrete cosine transform (MDCT), short time Fourier transform (STFT), Gabor wavelets (frames), etc. More often, the key issue is to obtain a sparse representation of the signal, when it is better defined in the frequency domain than the time domain. For example, a sine wave is sparsely represented in the Fourier domain, not in the time domain.\\
+
+A signal representation is sparse when most information is concentrated in a small amount of data or coefficients. Several applications make use of the sparse TFR as denoising because the noise is not sparse, source separation, signal modeling, etc. To decompose a signal into a linear combination of "elementary" waveforms $\psi_{\lambda}$, often generated using simple rules:
+\begin{equation}\label{eq_signal_decomp}
+x(t) = \sum_i\alpha_i\psi_i(t)
+\end{equation}
+with $\alpha_i$ the coefficients, and $\psi_i$ the waveforms. See \cite{mallat2008wavelet,hlawatsch1992linear,wickerhauser1994adapted} for detailed examples of signal representations.\\
+
+\subsection{Modified Discrete Cosine Transform: MDCT}
+The mathematically simplest situation for signal decomposition is orthonormal bases. The waveform system $\mathcal{W}=\{\psi_i, i \in\Lambda\}$ is an orthonormal basis of the signal space (inner product space, or Hilbert space) $\mathcal{H}$ is:
+\begin{itemize}
+\item The atoms are mutually orthogonal and normalized: $\langle\psi_i,\psi_j\rangle = 0$ and $\|\psi_i\|=1$
+\item They form a complete set of $\mathcal{H}$: if the signal $x\in\mathcal{H}$ is such that $\langle x,\psi_i\rangle=0$ for all $i\in\Lambda$, then $x=0$.
+\end{itemize}
+Then, any signal can be written in a unique way as in Equation~\ref{eq_signal_decomp} with $\alpha_i=\langle x,\psi_i\rangle$.\\
+
+MDCT basis vectors are shift variant, it does not conserve the energy \& MDCT coefficients are real valued. They cannot be easily interpreted in terms of magnitude and phase, all these reasons say that MDCT is purely appropriate for spectral analysis and signal manipulation in the TF domain.
+
 \subsection{Gabor dictionaries}
 Given a signal observed over a time interval, its conventional Fourier transform computes the frequency content but loses the time information. To analyze the evolution of the spectrum with time and hence the non-stationarity of the signal, Gabor introduced windowed Fourier atoms which correspond to a short-time Fourier transform (STFT) with a Gaussian window. In practice, for numerical computation, a challenge is to properly discretize the continuous STFT. The discrete STFT with a Gaussian window is also known as the discrete Gabor Transform \cite{gabor1946theory}.
 
@@ -134,7 +181,7 @@ The canonical reconstruction of $\mathbf{x}$ from its Gabor coefficients require
 \begin{equation} \label{eq_TF_recons}
 	\mathbf{x}=\sum_{m,f}\langle\mathbf{x}, \mathbf{\phi}_{mf}\rangle\tilde{\mathbf{\phi}}_{mf}=\mathbf{\Phi}^{\mathcal{H}}\mathbf{x\tilde{\Phi}}=\tilde{\mathbf{\Phi}}^{\mathcal{H}}\mathbf{x\Phi},
 \end{equation}
-where $\tilde{\mathbf{\Phi}}$ is the Gabor dictionary formed with the dual windows. If the frame is tight, then we have $\tilde{\mathbf{g}}=\mathbf{g}$, and more particularly we have $\mathbf{\Phi\Phi}^{\mathcal{H}}=\|\mathbf{\Phi\Phi}^{\mathcal{H}}\|\mathbf{I}$. The representation being redundant, for any $\mathbf{x}\in\RR^T$ one can find a set of coefficients $z_{mf}$ such that $\mathbf{x}=\sum_{m,f}z_{mf}\mathbf{\phi}_{mf}$, while the $z_{mf}$ verify some suitable properties dictated by the application. For example, it is particularly interesting for M/EEG to find a sparse representation of the signal. Indeed, a scalogram, sometimes simply called TF transform of the data in the MEG literature, generally exhibits a few peaks localized in the time-frequency domain. In other words, M/EEG signals can be expressed as linear combinations of a few oscillatory atoms. In order to demonstrate this, Fig. \ref{fig:stft} shows the STFT of a single signal from a MEG channel from a somatosensory experiment, the same STFT restricted to the 50 largest coefficients (approximately only 10\% of the coefficients), and the signal reconstructed with only these coefficients compared to the original signal. We observe that the original signal can be very well approximated by only a few coefficients, \textit{i.e.}, a few Gabor atoms.
+where $\tilde{\mathbf{\Phi}}$ is the Gabor dictionary formed with the dual windows. If the frame is tight, then we have $\tilde{\mathbf{g}}=\mathbf{g}$, and more particularly we have $\mathbf{\Phi\Phi}^{\mathcal{H}}=\|\mathbf{\Phi\Phi}^{\mathcal{H}}\|\mathbf{I}$. The representation being redundant, for any $\mathbf{x}\in\RR^T$ one can find a set of coefficients $z_{mf}$ such that $\mathbf{x}=\sum_{m,f}z_{mf}\mathbf{\phi}_{mf}$, while the $z_{mf}$ verify some suitable properties dictated by the application. For example, it is particularly interesting for MEG/EEG to find a sparse representation of the signal. Indeed, a scalogram, sometimes simply called TF transform of the data in the MEG literature, generally exhibits a few peaks localized in the time-frequency domain. In other words, MEG/EEG signals can be expressed as linear combinations of a few oscillatory atoms. In order to demonstrate this, Fig. \ref{fig:stft} shows the STFT of a single signal from a MEG channel from a somatosensory experiment, the same STFT restricted to the 50 largest coefficients (approximately only 10\% of the coefficients), and the signal reconstructed with only these coefficients compared to the original signal. We observe that the original signal can be very well approximated by only a few coefficients, \textit{i.e.}, a few Gabor atoms.
 
 \begin{figure}
 \centering
@@ -143,25 +190,27 @@ where $\tilde{\mathbf{\Phi}}$ is the Gabor dictionary formed with the dual windo
 	\label{fig:stft}
 \end{figure}
 
-In practice, the Gabor coefficients are computed using the Fast Fourier Transform (FFT) and not by a multiplication by a $\mathbf{\Phi}$ matrix as suggested above. Such operations can be efficiently implemented as in the LTFAT toolbox\footnote{http://ltfat.sourceforge.net} \cite{sondergaard2012linear}. Another practical concern to keep in mind is the trade-off between the size of the window $\mathbf{g}$ and the time shift $k_0$. A long window will have a good frequency resolution and a limited time resolution. The time resolution can be improved with a small time shift, leading however to a larger computational cost, both in time and memory. Finally as any computation done with an FFT, the STFT implementations assume circular boundary conditions for the signal. To take this into account and avoid edge artifacts, the signal has to be windowed, \textit{e.g.}, using a Hann window.
+In practice, the Gabor coefficients are computed using the Fast Fourier Transform (FFT) and not by a multiplication by a $\mathbf{\Phi}$ matrix as suggested above. Such operations can be efficiently implemented as in the LTFAT toolbox\footnote{http://ltfat.sourceforge.net} \cite{sondergaard2012linear}. Another practical concern to keep in mind is the trade-off between the size of the window $\mathbf{g}$ and the time shift $k_0$. A long window will have a good frequency resolution and a limited time resolution. The time resolution can be improved with a small time shift, leading however to a larger computational cost, both in time and memory. Finally as any computation done with an FFT, the STFT implementations assume circular boundary conditions for the signal. To take this into account and avoid edge artifacts, the signal has to be windowed, \textit{e.g.}, using a Hann window.\\
+
+For more details about Gabor dictionaries, please refer to \cite{daubechies1992ten}.
 
 \subsection{Conclusion}
 
-This last part briefly introduced some important properties of Gabor dictionaries. It presented the tight Gabor frames concept. In the next chapter, we will model the inverse problem in the time-frequency domain, which is based on the construction of Gabor frames. For more details about Gabor dictionaries, please refer to \cite{daubechies1992ten}.
+This last part briefly introduced some important properties of time-frequency representation. It presented MDCT and Gabor dictionaries. It mainly explained the advantage of using the tight Gabor frames concept. Short Term Fourier Transform (STFT) or Gabor frames are time invariant in contrast of MDCT. Chapter~\ref{chapter:multiscale} will model the inverse problem in the time-frequency domain, which is based on the construction of Gabor frames. 
 
 %-----------------Optimization--------------------------------------------------------------
 \section{Optimization}
-Due to the fact that the M/EEG sensors are linear combinations of the electromagnetic fields produced by all current sources, the linear forward operator, called \textit{gain matrix}, or the \textit{mixing matrix}, predicts the M/EEG measurements. Here we introduce the linear regression on what is based the formulation of the M/EEG inverse problem in this thesis.
+Due to the fact that the MEG/EEG sensors are linear combinations of the electromagnetic fields produced by all current sources, the linear forward operator, called \textit{gain matrix}, or the \textit{mixing matrix}, predicts the MEG/EEG measurements. Here we introduce the linear regression on what is based the formulation of the M/EEG inverse problem in this thesis.
 
 \subsection{Linear model and regression}
-\textbf{XXX: intro to convexity...}
+%\textbf{XXX: intro to convexity...}
 In compressed sensing, linear regression consists of modeling the linear relationship between an observation $y$ and an explanatory variable $\mathbf{s}=[s[1],\dots ,s[m]]^T$, this relationship results from the existence of $\mathbf{x}\in\RR^m$ such that:
 \begin{equation} \label{eq_linreg}
 	\langle\mathbf{s}, \mathbf{x}\rangle = y
 \end{equation}
 This linear model is verified for a set of observations coming from the same event, \textit{i.e.}, the linear combination defined by $\mathbf{x}$ is the same for all (variable, observation) couples originating from the same event: $(\mathbf{s}^i, y[i])\in\RR^m\times\RR$ with $i\in [1,\dots ,n]$. We can note $[y[1], \dots ,y[n]]^T=\mathbf{y}\in\RR^n$ and $[\mathbf{s}^1,\dots ,\mathbf{s}^n]=\mathbf{D}\in\RR^{m\times n}$. If all couples $\{(\mathbf{s}^i,y[i])\}_{i\in [1,\dots ,n]}$ verify exactly a linear model, then there exists a $\mathbf{x}\in\RR^m$ such that $\mathbf{Dx}=y$.
 
-In a M/EEG application, the equivalent of $\mathbf{D}$ is the forward operator $\mathbf{G}$ which describes the linear relationship between the MEG/EEG measurements $\mathbf{M}\in\RR^{N\times T}$ ($N$ number of sensors, $T$ number of time instants) and the source activation $\mathbf{X}\in\RR^{S\times T}$ ($S$ is the number of source locations). The linear model then reads: $\mathbf{M} = \mathbf{GX}$ where $\mathbf{G}\in\RR^{N\times S}$ is the gain or the lead-field matrix (forward operator), a known instantaneous mixing matrix, which links source and sensor signals. 
+In a MEG/EEG application, the equivalent of $\mathbf{D}$ is the forward operator $\mathbf{G}$ which describes the linear relationship between the MEG/EEG measurements $\mathbf{M}\in\RR^{N\times T}$ ($N$ number of sensors, $T$ number of time instants) and the source activation $\mathbf{X}\in\RR^{S\times T}$ ($S$ is the number of source locations). The linear model then reads: $\mathbf{M} = \mathbf{GX}$ where $\mathbf{G}\in\RR^{N\times S}$ is the gain or the lead-field matrix (forward operator), a known instantaneous mixing matrix, which links source and sensor signals. 
 
 In practice, the linear model is never exactly verified due to external noise. The aim of the linear regression is to additionally assume that an unobserved random variable, \textit{i.e.}, error term is added to the linear relationship between the M/EEG measurements $\mathbf{M}$ and the source activation $\mathbf{X}$. The regression model can then be written as:
 \begin{equation} \label{eq_linmeeg}
@@ -176,32 +225,32 @@ Several methods exist to approximate the solution of the regression model, the m
 There exist other types of approaches like the least absolute deviations (LAD), also known as least absolute errors. Instead of minimizing the squares of the errors, LAD tries to minimize the sum of the absolute values of the errors/residuals. Its advantage over LS is that it is more robust to outliers in the data. However the LAD is not stable, \textit{i.e.}, a small modification of the observation $\mathbf{M}$ may result in a huge variation of the estimation of $\mathbf{X}$. Moreover it can have multiple solutions. This explains why the LS approach has been the standard one and also due to the fact that it has a closed-form solution.
 
 \subsection{Regularization}
-\subsubsection*{Dense norms}
-\subsubsection*{Sparse norms: \textit{Convex norms}}
-\subsubsection*{Sparser norms: \textit{Non-Convex norms}}
-\subsubsection*{Structured Norms: \textit{non stationary sources in TF domain}}
 
-Regularization in general can be applied for different reasons. We have seen why the least squares is the standard approach in linear regression. However this approach has some drawbacks: \textit{overfitting} and the fact that the closed-form solution is computed using $\mathbf{G}^T\mathbf{G}$, which might not be invertible, giving rise to an infinitely many solutions. This requires to set regularization. Thikonov regularization \cite{tikhonov1977solutions} is the most commonly used, also known as rigde regression \cite{hoerl1970ridge}. It reads:
-\begin{equation} \label{eq_thikonov}
-	\mathbf{X}^\star = \argmin_{X\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_2^2
-\end{equation}
-The first term of the minimization is called the data fit, and the second term penalizes the solution by keeping the values of $\mathbf{X}$ small. The penalization is controlled by the $\lambda>0$ parameter. The higher it is, the more penalized the regression is. An explicit solution of \ref{eq_thikonov} is given by $\mathbf{X}^\star = (\mathbf{G}^T\mathbf{G}+\lambda\mathbf{I})^{-1}\mathbf{G}^T\mathbf{M}$. 
+Regularization in general can be applied for different reasons. We have seen why the least squares is the standard approach in linear regression. However this approach has some drawbacks: \textit{overfitting} and the fact that the closed-form solution is computed using $\mathbf{G}^T\mathbf{G}$, which might not be invertible, giving rise to an infinitely many solutions. This requires to set regularization.\\
 
 In general, the penalization term will be marked $\mathcal{P}(\mathbf{X})$ as in \ref{eq_reg} and it can take any dense or sparse form.
 \begin{equation} \label{eq_reg}
 	\mathbf{X}^\star = \argmin_{X\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\mathcal{P}(\mathbf{X})
 \end{equation}
-In this thesis, we are interested in sparse regularization, which has more sense in the M/EEG application. Since a few focal regions in the brain are active during a cognitive task rather than the whole brain itself. Using sparse priors can enable us to penalize the solution for this aim.
+We can list the different regularization term $\mathcal{P}(\mathbf{X})$ as the one using: dense norms, convex sparse norms, non-convex sparse norms, and structured norms.
 
-\adjustwidth{1em}{0pt}
-\subsubsection*{Sparsity}
+\subsubsection*{Dense norms}
+Thikonov regularization \cite{tikhonov1977solutions} is the most commonly used, also known as rigde regression \cite{hoerl1970ridge}. It is part of dense norms as the estimated $\mathbf{X}^\star$ is dense, even if most of its values are almost zero. It reads:
+\begin{equation} \label{eq_thikonov}
+	\mathbf{X}^\star = \argmin_{X\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_2^2
+\end{equation}
+
+The first term of the minimization is called the data fit, and the second term penalizes the solution by keeping the values of $\mathbf{X}$ small. The penalization is controlled by the $\lambda>0$ parameter. The higher it is, the more penalized the regression is. An explicit solution of \ref{eq_thikonov} is given by $\mathbf{X}^\star = (\mathbf{G}^T\mathbf{G}+\lambda\mathbf{I})^{-1}\mathbf{G}^T\mathbf{M}$. 
+
+In this thesis, we are interested in sparse regularization, which has more sense in the MEG/EEG application. Since a few focal regions in the brain are active during a cognitive task rather than the whole brain itself. Using sparse priors can enable us to penalize the solution for this aim.
+
+\subsubsection*{Sparse norms: \textit{Convex norms}}
 In general, let $\mathbf{y}\in\RR^n$ be a sparse vector, \textit{i.e.} which belongs to a vector subspace $S$, which has a much smaller dimension $n^\prime\ll n$. 
-The intuitive measure of sparsity of a vector $\mathbf{y}$ is its pseudo-norm $\ell_0$, which is defined as: $\|\mathbf{y}\|_0\triangleq \#\{i=1,\dots ,n  |y[i]\neq 0\}$. It denotes its number of coefficients which are different from 0. The optimization problem is then to find the subspace $S$ where the signal $\mathbf{y}$ lies.\\
-\endadjustwidth
+The intuitive measure of sparsity of a vector $\mathbf{y}$ is its pseudo-norm $\ell_0$, which is defined as: $\|\mathbf{y}\|_0\triangleq \#\{i=1,\dots ,n | y[i]\neq 0\}$. It denotes its number of coefficients which are different from 0. The optimization problem is then to find the subspace $S$ where the signal $\mathbf{y}$ lies.\\
+
 Coming back to our application, we assume that the signals $\mathbf{M}$ obtained with M/EEG are linear combinations of a small number of sources in the brain. This implies that only few sources in $\mathbf{X}$ are active, \textit{i.e.}, $\mathbf{X}$ is sparse. However the minimization of \ref{eq_reg} with $\ell_0$-norm is not computationally tractable. This problem is difficult as we need to select the the number of sources. Furthermore, the $\ell_0$-norm is not convex \cite{natarajan1995sparse}.
 
 Due to the above undesired properties, we need to consider a convex relaxation to the $\ell_0$-norm. The use of the least squares with the $\ell_1$-norm (i.e. $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_1$ in \ref{eq_reg}) is the natural approximation, since it is the closest convex norm to the $\ell_0$-norm. The $\ell_1$-norm is known as \textit{lasso} in statistics \cite{tibshirani1996regression}, and as Basis Pursuit \cite{chen2001atomic} in signal processing literature.
-%However not all sparse priors make sense, as it can be seen on the Fig1, using the l1 norm, also known as lasso in statistics or matching pursuit in signal processing is not taking into account the time dependence. Although this is really important as the brain is not supposed to be active during random milliseconds.
 
 \adjustwidth{1em}{0pt}
 \subsubsection*{Lasso}
@@ -209,7 +258,11 @@ Due to the above undesired properties, we need to consider a convex relaxation t
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_1
 \end{equation}
 \endadjustwidth
-The convex approximation of the $\ell_0$-norm is convenient, as the method always converges to the optimal solution. But for more sparsity, one needs to go beyond the convexity aspect of the regularization. Fig. \ref{fig:norms} shows the $\ell_0, \ell_1$ and $\ell_2$-norms. In general, we note the $\ell_p$-norm as: $\|\mathbf{X}\|_p=(\sum_{i}\sum_j|X[i,j]|^p)^{1/p}$. For $0<p<1$, the pseudo-norm is not convex anymore, even though the $\ell_0$-norm is better approximated (\textit{cf. Fig. \ref{fig:norms}}).
+The convex approximation of the $\ell_0$-norm is convenient, as the method always converges to the optimal solution.
+
+\subsubsection*{Sparser norms: \textit{Non-Convex norms}}
+These convex approaches allow for fast algorithms with guaranteed global convergence. However, the resulting source estimates are biased in amplitude and often suboptimal in terms of support recovery~\cite{candes2008enhancing}, which is impaired by the high spatial correlation of the MEG/EEG forward model. As shown e.g. in the field of compressed sensing, promoting sparsity by applying non-convex penalties, such as logarithmic or $\ell_p$-quasinorm penalties with $0 < p < 1$, improves support reconstruction in terms of feature selection, amplitude bias, and stability~\cite{candes2008enhancing,chartrand2007exact,saab2008stable}. Figure~\ref{fig:norms} shows the geometric interpretation of different norms in the 1-dimensional space. The smaller the $p$, the more you approximate the exact definition of sparsity. 
+
 \begin{figure}
 \centering
 	\includegraphics[width=0.6\textwidth]{norms}
@@ -217,7 +270,15 @@ The convex approximation of the $\ell_0$-norm is convenient, as the method alway
 	\label{fig:norms}
 \end{figure}
 
-In the next chapter \ref{chapter:multiscale}, we investigated the $\ell_{0.5}$-quasinorm as part of the regularization. However, the $\ell_{0.5}$ is non-convex so it cannot be solved in the same way as the $\ell_1$-norm. The algorithms for minimizing Eq. \ref{eq_reg} using the $\ell_{0.5}$ quasi-norm apply an iterative reweighted approach, where each iteration solves the convex problem with an $\ell_1$ regularization.
+We investigated the $\ell_{0.5}$-quasinorm as part of the regularization, written as:
+\adjustwidth{1em}{0pt}
+\subsubsection*{$\ell_{0.5}-quasinorm$}
+\begin{equation} \label{eq_lasso}
+	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_{0.5}
+\end{equation}
+\endadjustwidth
+
+As the $\ell_{0.5}$ is non-convex so it cannot be solved in the same way as the $\ell_1$-norm. The algorithms for minimizing Eq.~\ref{eq_reg} using the $\ell_{0.5}$ quasi-norm apply an iterative reweighted approach, where each iteration solves the convex problem with an $\ell_1$ regularization.
 \adjustwidth{1em}{0pt}
 
 \subsubsection*{Weighted Lasso}
@@ -231,7 +292,8 @@ with
 where $\mathbf{W}$ is the weight applied to the matrix $\mathbf{X}$ aiming to regularize more the low coefficients resulting in a higher sparsity. The update of the weight $\mathbf{W}$ will be seen in chapter \ref{chapter:multiscale}.
 \endadjustwidth
 
-In some applications, like for M/EEG, one is not only interested in sparsity, but where more structural prior knowledge is available. To go beyond the sparsity with the $\ell_p$-norms where $0<p<1$, \cite{yuan2006model} introduced the Group Lasso in order to take grouped structures  in the data into account. It uses a mixed $\ell_2$ and $\ell_1$-norm on $\mathbf{X}$. The idea is to keep a small number of groups active ($\ell_1$) but once a group is active, then the coefficients of that group will be all nonzero ($\ell_2$).
+\subsubsection*{Structured Norms: \textit{non stationary sources in TF domain}}
+In some applications, like for MEG/EEG, one is not only interested in sparsity, but where more structural prior knowledge is available. To go beyond the sparsity with the $\ell_p$-norms where $0<p<1$, \cite{yuan2006model} introduced the Group Lasso in order to take grouped structures  in the data into account. It uses a mixed $\ell_2$ and $\ell_1$-norm on $\mathbf{X}$. The idea is to keep a small number of groups active ($\ell_1$) but once a group is active, then the coefficients of that group will be all nonzero ($\ell_2$).
 \adjustwidth{1em}{0pt}
 \vspace{-10pt}
 \subsubsection*{Group Lasso}
@@ -255,46 +317,46 @@ If $\lambda_1=0$ then it would be equivalent to the lasso penalty, and if $\lamb
 
 %----------Methods for solving sparse inverse problems-------------------------------------
 \subsection{Methods for solving sparse inverse problems}
-\subsubsection*{Gradient Descend}
-\subsubsection*{Proximal operators: ISTA | FISTA}
-\subsubsection*{Stopping criterion}
-\subsubsection*{BCD}
-\subsubsection*{Screening rules | active set}
-\subsubsection*{Comparison of the different solvers}
+We have seen in the previous section the MEG/EEG inverse problem as a penalized regression model. In this section, we present some of the methods to solve this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.
 
-We have seen in the previous section the M/EEG inverse problem as a penalized regression model. In this section, we present some of the methods to solve this inverse problem using sparse priors. The corresponding M/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section \ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section \ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.
-\adjustwidth{1em}{0pt}
-%\vspace{-10pt}
-\subsubsection*{Proximity operator}
-\vspace{-5pt}
+\subsubsection*{Gradient Descend}
+
+%\adjustwidth{1em}{0pt}
+\subsubsection*{Proximal operators: ISTA | FISTA}
 Let $\mathit{f}:\RR^n\rightarrow\RR$ be a convex, non differentiable function. The proximity operator associated with $\mathit{f}$ and $\lambda\in\RR_+$ denoted by
 $\prox_{\lambda\mathit{f}}:\RR^n\rightarrow\RR^n$ is given by:
-\vspace{-10pt}
+
 \begin{equation}
 \prox_{\lambda\mathit{f}}(\mathbf{y})=\argmin_{\mathbf{x}\in\RR^n}\frac{1}{2}\|\mathbf{y}-\mathbf{x}\|_2^2+\lambda\mathit{f}(\mathbf{x})
 \end{equation}
-\endadjustwidth
+%\endadjustwidth
+
 This corresponds to the inverse problem where $\mathbf{G}=\mathbf{I}$. To be able to solve the problem with non-smooth penalties and $\mathbf{G}\neq\mathbf{I}$, one needs to introduce the iterative \textit{forward-backward} algorithm \cite{moreau1965proximite}. Each iteration computes the proximity operator of the penalty as: \\
 $\mathbf{X}^{(k+1)}[:,j]=prox_{\mu\lambda\mathcal{P}}(\mathbf{X}^{(k)}[:,j]+\mu\mathbf{G}^T(\mathbf{M}[:,j]-\mathbf{GX}^{(k)}[:,j])$ for each time instant $j=[1,\dots ,T]$. $\mu$ stands for the Lipschitz constant and has been proved to be $0<\mu<\|\mathbf{G}^T\mathbf{G}\|_2^{-1}$. In practice, it is fixed to $\mu=\|\mathbf{G}^T\mathbf{G}\|_2^{-1}$. For more details refer to \cite{moreau1965proximite,combettes2005signal,daubechies2004iterative}.
 
-If the penalty is set to be the $\ell_1$-norm as in Eq.\ref{eq_lasso}, the solution is obtained by soft thresholding, \textit{a.k.a.} Iterative Soft Thresholding Algorithm (ISTA) or Fast-ISTA (FISTA).
-However as seen before, the $\ell_1$-norm is not very appropriate for M/EEG applications as it does not take the temporal correlation of the data into account. For the spatio-temporal solvers as TF-MxNE or irTF-MxNE presented in Section\ref{section_distributed}, one needs to introduce the proximity operator for these composite penalties.
+If the penalty is set to be the $\ell_1$-norm as in Eq.~\ref{eq_lasso}, the solution is obtained by soft thresholding, \textit{a.k.a.} Iterative Soft Thresholding Algorithm (ISTA) or Fast-ISTA (FISTA).
+However as seen before, the $\ell_1$-norm is not very appropriate for M/EEG applications as it does not take the temporal correlation of the data into account. For the spatio-temporal solvers as TF-MxNE or irTF-MxNE presented in Section~\ref{section_distributed}, one needs to introduce the proximity operator for these composite penalties.
 \adjustwidth{1em}{0pt}
-%\vspace{-10pt}
 \subsubsection*{Proximity operator of $\ell_{2,1}+\ell_1$}
-\vspace{-5pt}
 Let $\mathbf{Y}\in\RR^{S\times T}$; $\mathbf{X}=\prox_{\lambda_1\|\cdot\|_1+\lambda_2\|\cdot\|_{2,1}}(\mathbf{Y})\in\RR^{S\times T}$ is given for each coordinate $(s,t)$ by:
-\vspace{-10pt}
+
 \begin{equation} \label{prox_mixed}
 	X[s,t]=\frac{Y[s,t]}{|Y[s,t]|}(Y[s,t]-\lambda_1)^+\left(1-\frac{\lambda_2}{\sqrt{\sum_t(|Y[s,t]|-\lambda_1)^{2+}}}\right)^+
 \end{equation}
 where for $z\in\RR, (z)+=\max(0,z)$ and by convention $\frac{0}{0}=0$.
 \endadjustwidth
-Other methods for solving the M/EEG inverse problem with non-smooth penalties have proved to converge faster than FISTA for our application. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}, which was used to solve the group lasso in \cite{rakotomamonjy2011surveying,qin2013efficient}. It is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source.
-%\subsection{Gradient Descent}
-%\subsection{Proximal algorithms}
+
+\subsubsection*{Block Coordinate Descent: BCD}
+Other methods for solving the MEG/EEG inverse problem with non-smooth penalties have proved to converge faster than FISTA for our application. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}, which was used to solve the group lasso in \cite{rakotomamonjy2011surveying,qin2013efficient}. It is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source.
+
+
+\subsubsection*{Stopping criterion}
+\subsubsection*{Screening rules | active set}
+\subsubsection*{Comparison of the different solvers}
+
 \subsection{Conclusion}
-This second part demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are the main interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. On the subsequent chapter \ref{chapter:multiscale}, we will go further into details to explain each contribution.
+This second part demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are the main interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
+% On the subsequent chapter \ref{chapter:multiscale}, we will go further into details to explain each contribution.
 
 So far, We have defined all the basics to understand the motivation of the sparsity priors in the M/EEG application, and also the basic tools to solve those optimization problems. Note that several points have not been introduced although very critical, which are:
 \begin{itemize}
