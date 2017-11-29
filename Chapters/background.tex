@@ -64,10 +64,10 @@ MEG and EEG can be recorded simultaneously and reveal complementary properties o
 
 %--------- Forward model -------------------------------------------------------------------
 \section{The forward model}
-The bioelectromagnetic forward problem describes the relationship between a given neural activity in the brain and the observable MEG and EEG signals. Its solution models mathematically the neural activity, the volume conductor, and the measurement setup. It allows to link the scalp potentials and external fields given an internal current distribution by a stable and unique solution, which is thus a well-posed problem.
+The bioelectromagnetic forward problem describes the relationship between a given neural activity in the brain and the observable MEG and EEG signals. We assume the electric current (denoted by $\vec{j}_t(\vec{r})$) at any position (denoted by $\vec{r}$ in the head is known at arbitrary time $t$. The magnetic field or the sclap voltage detected by one sensor can be modeled as an integration or a linearly weighted combination of the currents at all positions, using Maxwell's equations under a reasonable head model that describes the shape, the electrical conductivity and the permeability of various tissues~\cite{hamalainen1993magnetoencephalography,mosher1999eeg}.
 
 \subsection*{Maxwell's equations}
-Maxwell's equations are a set of partial differential equations forming the foundation of classical electromagnetism. We denote by $\mathbf{E}$ by the electric field, $\mathbf{B}$ the magnetic field, $\mathbf{J}$ the current density, and $\rho$ the charge density.
+We consider the head as a finite three dimensional volume conductor, and non magnetic. The quasi-static approximation of Maxwell's equations are a set of partial differential equations forming the foundation of classical electromagnetism. We denote by $\mathbf{E}$ the electric field, $\mathbf{B}$ the magnetic field, $\mathbf{J}$ the current density, and $\rho$ the charge density.
 
 \begin{center}
 $\left\{
@@ -80,9 +80,23 @@ $\left\{
 \right.$
 \end{center}
 
-Considering a head as a finite three dimensional volume conductor, and non magnetic ($\mu = \mu_0$...
+For the biological signals of interest in MEG/EEG, the time-derivatives of the associated electric and magnetic fields are sufficiently small that they can be ignored in Maxwell’s equations. Recent discussions and details of this quasi-static approximation can be found in\cite{hamalainen1993magnetoencephalography,tripp1983physical,heller1992brain}.\\
 
-%http://leonidzhukov.net/content/eeg_meg_physics/node1.html
+\subsection*{Spherical head models}
+A very common approximation in the forward modeling consists in assuming that the head is a set of nested concentric spheres, each corresponding to a layer with homogeneous and isotropic conductivity. Typically, the head is represented by three to five regions, \textit{e.g.}, scalp, skull, cerebrospinal fluid, gray matter, and white matter, and that the conductivity is constant and isotropic within these regions. The gradient of the conductivity is, therefore, zero except at the surfaces between regions. Computable analytic solutions exist for both MEG and EEG forward problem.\\
+
+A very practical formulation of the EEG and MEG field kernels has been presented by Mosher~\cite{mosher1999eeg}, that only requires vectors expressed in their Cartesian form. For MEG, since the magnetic permeability does not change across layers (and does not change much from the vacuum) and no currents exist outside the head (where the sensors are located), the full magnetic field outside a set of concentric spheres can be calculated without explicit consideration of the volume currents. Therefore, the MEG spherical model does not require specifying (or assuming) the number of and the radius ratios between the spherical layers.\\
+
+For EEG, the number and radii of the spherical layers are to be specified. Nonetheless, previous empirical work on closed-form approximations by Berg and Scherg~\cite{berg1994fast} and related theoretical studies by Zhang~\cite{zhang1995fast} have gathered a valid and convenient method for approximating an EEG field kernel from a multi-layer spherical model as the weighted sum of three kernels from a single-layer spherical model applied to a modified source configurations. The optimal values of the "Berg parameters" (Eccentricity and Magnitude) in this approximation depend on the layer radii and conductivities.
+
+\subsection*{Realistic head models}
+A more realistic head model requires that the real geometry and conductivity of the head layers be taken into account as much as possible. For real (non-spherical) geometry and conductivity fields, numerical solutions for the Maxwell equations are to be computed.\\
+Assuming a piecewise constant distribution of the conductivity field, approximate, yet efficient and accurate, numeric solutions can be obtained for a realistically shaped head model using the so called Boundary Element Method (BEM). For BEM solutions, an MRI-based simplified description of the geometry is needed for computing the lead fields, and this can be provided in terms of (strictly) nested and closed surfaces corresponding to the boundaries separating the main tissue compartments (also called layers).
+In practice, BEM solutions will only require to set a few conductivity parameters (one per tissue), and to specify a few triangular meshes, as can be obtained, \textit{e.g.}, with 3D volume segmentation tools from anatomical MRI data (VMR), each representing a separate interface between layers. \\
+\textbf{XXX: See MNE doc}.
+
+% http://leonidzhukov.net/content/eeg_meg_physics/node1.html
+% http://www.brainvoyager.com/bvqx/doc/UsersGuide/EMEGSuite/EEGAndMEGForwardModels.html
 
 %--------- MEEG inverse problem ------------------------------------------------------------
 \section{M/EEG Inverse problem}
@@ -317,11 +331,14 @@ If $\lambda_1=0$ then it would be equivalent to the lasso penalty, and if $\lamb
 
 %----------Methods for solving sparse inverse problems-------------------------------------
 \subsection{Methods for solving sparse inverse problems}
-We have seen in the previous section the MEG/EEG inverse problem as a penalized regression model. In this section, we present some of the methods to solve this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.
+We have seen in the previous section the MEG/EEG inverse problem as a penalized regression model. In this section, we present some of the methods to solve this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
 
-\subsubsection*{Gradient Descend}
+The MEG/EEG inverse problem can be written as:
+\begin{equation}
+\hat{\mathbf{X}} = \argmin_{\mathbf{X}\in\RR^{SO\times T}}f(\mathbf{X}) = \argmin_{\mathbf{X}\in\RR^{SO\times T}}(g(\mathbf{X}) + \lambda\mathcal{P}(\mathbf{X})) with \lambda>0
+\end{equation}
+$g(\mathbf{X}):\CC^{SO\times T}\rightarrow\RR$ is a convex differentiable function with Lipschitz-continuous gradient. The regularization function $\mathcal{P}(\mathbf{X}):\CC^{SO\times T}\rightarrow\RR$ is a non-smooth function, typically a combination of norms or quasi-norms, inducing sparsity in the time or time-frequency domain.
 
-%\adjustwidth{1em}{0pt}
 \subsubsection*{Proximal operators: ISTA | FISTA}
 Let $\mathit{f}:\RR^n\rightarrow\RR$ be a convex, non differentiable function. The proximity operator associated with $\mathit{f}$ and $\lambda\in\RR_+$ denoted by
 $\prox_{\lambda\mathit{f}}:\RR^n\rightarrow\RR^n$ is given by:
@@ -329,7 +346,6 @@ $\prox_{\lambda\mathit{f}}:\RR^n\rightarrow\RR^n$ is given by:
 \begin{equation}
 \prox_{\lambda\mathit{f}}(\mathbf{y})=\argmin_{\mathbf{x}\in\RR^n}\frac{1}{2}\|\mathbf{y}-\mathbf{x}\|_2^2+\lambda\mathit{f}(\mathbf{x})
 \end{equation}
-%\endadjustwidth
 
 This corresponds to the inverse problem where $\mathbf{G}=\mathbf{I}$. To be able to solve the problem with non-smooth penalties and $\mathbf{G}\neq\mathbf{I}$, one needs to introduce the iterative \textit{forward-backward} algorithm \cite{moreau1965proximite}. Each iteration computes the proximity operator of the penalty as: \\
 $\mathbf{X}^{(k+1)}[:,j]=prox_{\mu\lambda\mathcal{P}}(\mathbf{X}^{(k)}[:,j]+\mu\mathbf{G}^T(\mathbf{M}[:,j]-\mathbf{GX}^{(k)}[:,j])$ for each time instant $j=[1,\dots ,T]$. $\mu$ stands for the Lipschitz constant and has been proved to be $0<\mu<\|\mathbf{G}^T\mathbf{G}\|_2^{-1}$. In practice, it is fixed to $\mu=\|\mathbf{G}^T\mathbf{G}\|_2^{-1}$. For more details refer to \cite{moreau1965proximite,combettes2005signal,daubechies2004iterative}.
@@ -346,6 +362,9 @@ Let $\mathbf{Y}\in\RR^{S\times T}$; $\mathbf{X}=\prox_{\lambda_1\|\cdot\|_1+\lam
 where for $z\in\RR, (z)+=\max(0,z)$ and by convention $\frac{0}{0}=0$.
 \endadjustwidth
 
+\subsubsection*{Coordinate Gradient Descent}
+Gradient descent is a first-order iterative optimization algorithm for finding the minimum of a function. To find a local minimum of a function using gradient descent, one takes steps proportional to the negative of the gradient (or of the approximate gradient) of the function at the current point.
+
 \subsubsection*{Block Coordinate Descent: BCD}
 Other methods for solving the MEG/EEG inverse problem with non-smooth penalties have proved to converge faster than FISTA for our application. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}, which was used to solve the group lasso in \cite{rakotomamonjy2011surveying,qin2013efficient}. It is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source.
 
@@ -356,7 +375,6 @@ Other methods for solving the MEG/EEG inverse problem with non-smooth penalties 
 
 \subsection{Conclusion}
 This second part demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are the main interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
-% On the subsequent chapter \ref{chapter:multiscale}, we will go further into details to explain each contribution.
 
 So far, We have defined all the basics to understand the motivation of the sparsity priors in the M/EEG application, and also the basic tools to solve those optimization problems. Note that several points have not been introduced although very critical, which are:
 \begin{itemize}
