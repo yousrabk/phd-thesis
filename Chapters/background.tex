@@ -400,13 +400,29 @@ Other methods for solving the MEG/EEG inverse problem with non-smooth penalties.
 
 BCD was used to solve the group LASSO in~\cite{rakotomamonjy2011surveying,qin2013efficient}, it is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source. Same as CD method, the order in which the different blocks are processed can be cyclic, random which improves its performance~\cite{tseng2001convergence,wei2012doa}. \\
 
-As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block is has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance prox~\ref{prox_mixed} when using $\mathcal{P}(\mathbf{X}) = \ell_{2,1}+\ell_1$.
+As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block is has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance prox~\ref{prox_mixed} when using $\mathcal{P}(\mathbf{X}) = \ell_{2,1}+\ell_1$. Accordingly, the closed form solution for the BCD subproblems solving the group LASSO problem can be derived, which is given in Eq.~\ref{eq_bcd_glasso}.
+\begin{equation*} \label{eq_bcd_glasso}
+\bar{\mathbf{X}}_s^{(k)} = \mathbf{X}_s^{(k-1)}+\mathbf{\mu}_s\mathbf{G}^T_s(\mathbf{M} - \mathbf{GX}^{(k-1)}
+\end{equation*}
+\begin{equation}
+\tilde{\mathbf{X}}_s^{(k)} = \tilde{\mathbf{X}}_s^{(k)}max(1-\frac{\mathbf{\mu[s]\lambda}}{max(\|\bar{\mathbf{X}}_s^{(k)}\|_{Fro}, \mathbf{\mu}[s]\lambda)}, 0)
+\end{equation}
+The step length $\mathbf{\mu}[s]$ for each BCD subproblem is determined by $\mathbf{\mu}[s]=\mathcal{L}_s^{-1}$ with $\mathcal{L}_s=\|\mathbf{G}_s^T\mathbf{G}_s\|$ being the Lipschitz constant of the data-fit restricted to the $s^{th}$ source location. This step length is typically larger than the step length applicable in any proximal gradient methods, which is upper-bounded by the inverse of $\mathcal{L} = \|\mathbf{G}^T\mathbf{G}\|$.
 
 \subsubsection*{Screening rules | active set}
+The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ zero. We can thus reduce the computation time by primarily updating blocks, that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08} can be applied.
 
 \subsubsection*{Stopping criterion}
 
 \subsubsection*{Comparison of the different solvers}
+In Strohmeier et al.~\cite{strohmeier-etal:16}, BCD scheme was used for solving the MEG/EEG inverse problem. For the problem at hand, BCD outperforms FISTA proposed in a former work in~\cite{gramfort2012mixed}. BCD converges faster due to the reasons discussed in the BCD subsection, taking bigger step depending on the current block, makes the algorithm go faster to the optimal solution.
+
+\begin{figure}
+	\centering
+	\includegraphics[trim={1cm 0.5cm 2cm 0.5cm},angle=270,width=0.95\textwidth]{background/comparison_fista_bcd}
+    \caption{Computation time as a function of $\lambda$ for group LASSO on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy.}
+    \label{fig:comparison_fista_bcd}
+\end{figure}
 
 \subsection{Conclusion}
 This second part demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are the main interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
