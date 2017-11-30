@@ -279,7 +279,8 @@ These convex approaches allow for fast algorithms with guaranteed global converg
 
 \begin{figure}
 \centering
-	\includegraphics[width=0.6\textwidth]{norms}
+	\includegraphics[width=0.7\textwidth]{background/norms}
+	%\includegraphics[trim={1cm 8cm 2cm 8cm},width=0.6\textwidth]{background/norms_methods}
     \caption{Geometric interpretation of the different norms in 1D space.}
 	\label{fig:norms}
 \end{figure}
@@ -331,7 +332,7 @@ If $\lambda_1=0$ then it would be equivalent to the lasso penalty, and if $\lamb
 
 %----------Methods for solving sparse inverse problems-------------------------------------
 \subsection{Methods for solving sparse inverse problems}
-We have seen in the previous section the MEG/EEG inverse problem as a penalized regression model. In this section, we present some of the methods to solve this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
+The previous section describes the MEG/EEG inverse problem as a penalized regression model. This section enumerates some methods for solving this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
 
 The MEG/EEG inverse problem can be written as:
 \begin{equation}
@@ -409,10 +410,25 @@ As both BCD and FISTA are based on the same idea of alternating between the grad
 \end{equation}
 The step length $\mathbf{\mu}[s]$ for each BCD subproblem is determined by $\mathbf{\mu}[s]=\mathcal{L}_s^{-1}$ with $\mathcal{L}_s=\|\mathbf{G}_s^T\mathbf{G}_s\|$ being the Lipschitz constant of the data-fit restricted to the $s^{th}$ source location. This step length is typically larger than the step length applicable in any proximal gradient methods, which is upper-bounded by the inverse of $\mathcal{L} = \|\mathbf{G}^T\mathbf{G}\|$.
 
-\subsubsection*{Screening rules | active set}
-The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ zero. We can thus reduce the computation time by primarily updating blocks, that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08} can be applied.
+\subsubsection*{Optimality conditions and stopping criterion}
+\textbf{Stopping criterion:} The standard way is to check if the solution at iteration $k$ has not been improved more than a fixed tolerance threshold $\tau$. This is an acceptable strategy, although not the best one. A more rigorous criteria would be based on the \textit{duality gap} \cite{boyd2004convex}.\\
 
-\subsubsection*{Stopping criterion}
+\textbf{Duality gap:} A way to check the optimality criterion when optimizing a cost function $f$. For a subset of these convex problems, the Slater's conditions apply, therefore the gap at the optimum is exactly zero~\cite{Boyd_Vandenberghe04}. Computing the gap needs to derive first a dual formulation of the original problem, also called as the \textit{primal} problem. The duality gap is defined as the difference between the minimum of the primal cost function $f_p$ and the maximum of the dual cost $f_d$. For a value of of $\mathbf{X}^{(k)}$ of the primal variable at iteration $k$, if one can exhibit a dual variable $\mathbf{Y}^{(k)}$, the duality gap $\eta{(k)}$ is defined as:
+\begin{equation}
+\eta^{(k)}=f_p(\mathbf{X}^{(k)})-f_d(\mathbf{Y}^{(k)}) \geq 0
+\end{equation}
+At the optimum (corresponding to $\hat{\mathbf{X}}$), if the $\mathbf{Y}^{(k)}$ is well chosen, $\eta^{(k)}$ is $0$. By exhibiting a pair $(\mathbf{X}^{(k)}, \mathbf{Y}^{(k)})$, one can guarantee that $\|f_p(\mathbf{X}^{(k)}) - f_p(\hat{\mathbf{X}})\| \leq \|f_p(\mathbf{X}^{(k)})-f_d(\mathbf{Y}^{(k)})\|$. A good stopping criterion is therefore giving on the duality gap by $\eta^{(k)}<\epsilon$. The solution meeting this condition is called $\epsilon$-optimal. The challenge in practice is to find an expression for $f_d$ and to be able to associate a good $\mathbf{Y}$ with a given $\mathbf{X}$. Experimental studies showed that for whitened data a duality gap lower than $10^{-5}$ does not produce distinguishable solutions.\\
+
+%Moreover, the Karush-Kuhn-Tucker (KKT) conditions of the Fenchel-Rockafellar duality theorem give a natural mapping from the primal space to the dual space:
+%\begin{equation}
+%\mathbf{Y}^{(k)}=\mathbf{M}-\mathbf{GX}^{(k)}
+%\end{equation}
+
+\subsubsection*{Screening rules | active set}
+The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ equal to zero. We can thus reduce the computation time by primarily updating blocks, that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08} can be applied.\\
+
+The main idea is to start by estimating an initial active set of sources $\Gamma$ by evaluating the Karush-Kuhn-Tucker (KKT) optimality conditions, which states that $\hat{\mathbf{X}}_s=0$ if $\|\mathbf{G}^T_s(\mathbf{M}-\mathbf{GX})\|_{Fro}\leq\lambda$. We select the $N$ sources that violates this condition the most (\textit{e.g.} $N=10$). Subsequently, we restrict the source space to the sources in $\Gamma$ and estimate $\hat{\mathbf{X}}^{\Gamma}$ with convergence controlled by the duality gap. After convergence of this restricted optimization problem, we check whether $\hat{\mathbf{X}}^{\Gamma}$ is $\epsilon$-optimal solution for the original problem (without restricting the source space to $\Gamma$). if $\hat{\mathbf{X}}^{\Gamma}$ is not $\epsilon$-optimal solution indicated by $\eta \leq \epsilon$, we re-evaluate the KKT optimality conditions and update the active set $\Gamma$ by adding the $N$ sources that violates again these optimality conditions. The same procedure is then repeated with warm start.
+
 
 \subsubsection*{Comparison of the different solvers}
 In Strohmeier et al.~\cite{strohmeier-etal:16}, BCD scheme was used for solving the MEG/EEG inverse problem. For the problem at hand, BCD outperforms FISTA proposed in a former work in~\cite{gramfort2012mixed}. BCD converges faster due to the reasons discussed in the BCD subsection, taking bigger step depending on the current block, makes the algorithm go faster to the optimal solution.
@@ -423,13 +439,10 @@ In Strohmeier et al.~\cite{strohmeier-etal:16}, BCD scheme was used for solving 
     \caption{Computation time as a function of $\lambda$ for group LASSO on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy.}
     \label{fig:comparison_fista_bcd}
 \end{figure}
+%\textbf{XXX: need to say what is $\lambda_{max}$ somewhere in this chapter}
+Combining the BCD and the active set strategy reduces the computation time by a factor of 100 and allows to compute the group LASSO on real MEG/EEG data in a few seconds. All the experimental results shown in the rest of this thesis will be using BCD with active set strategy.
 
 \subsection{Conclusion}
-This second part demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are the main interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
+This chapter gives all the needed background which has been used to develop and demonstrate the upcoming results. It demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are one of the interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
 
-So far, We have defined all the basics to understand the motivation of the sparsity priors in the M/EEG application, and also the basic tools to solve those optimization problems. Note that several points have not been introduced although very critical, which are:
-\begin{itemize}
-	\item The stopping criterion. The standard way is to check if the solution at iteration $k$ has not been improved more than a fixed tolerance threshold. This is an acceptable strategy, although not the best one. A more rigorous criteria would be based on the \textit{duality gap} \cite{boyd2004convex}.
-    \item Screening strategies. The main challenge is not only to solve the inverse problem but also to be the least computationally demanding. Screening strategies are based on finding the most probable support of active sources in order to not do the computation for the sources that are likely to be zero (non active). This implies speeding up the convergence.
-    \item Dipole orientation. As presented in Section \ref{section_dipfit}, a source is defined as a position, amplitude and orientation. Note that the orientation is not presented in the distributed section \ref{section_distributed}.
-\end{itemize}
+This chapter also defined the state of the art of the MEG/EEG inverse problem and how research in this field have been evolving. From penalized regression formulation to hierarchical Bayesian formulation, this thesis will show in the next chapters how it tries to bridge the gap between those two communities. Especially, the aim is to take advantage of each part, the computationally fast solvers developed so far by one community and the ability to quantify uncertainties of the solution in the second community.
