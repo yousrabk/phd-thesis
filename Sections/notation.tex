@@ -2,14 +2,76 @@
 %	SYMBOLS
 %----------------------------------------------------------------------------------------
 
-\begin{symbols}{lll} % Include a list of Symbols (a three column table)
+%\emph{\big{\textbf{General notation}}}
 
-$a$ & distance & \si{\meter} \\
-$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
-%Symbol & Name & Unit \\
+\begin{symbols}{ll} % Include a list of Symbols (a three column table)
 
 \addlinespace % Gap to separate the Roman symbols from the Greek
 
-$\omega$ & angular frequency & \si{\radian} \\
+$\mathbf{I}$ & Identity matrix \\
+$\RR$ & Set of real-valued numbers \\
+$\RR_+$ & Set of positive real-valued numbers \\
+$\CC$ & Set of complex-valued numbers \\
+$\RR^N$ & Set of real-valued vectors of length $N$ \\
+$\RR^{M\times N}$ & Set of real-valued $M\times N$ matrices \\
+$\CC^{M\times N}$ & Set of complex-valued $M\times N$ matrices \\
+\vspace{30pt}
+$\mathcal{N}(\mu, \Sigma)$ & Multivariate normal distribution with mean $\mu$ and covariance matrix $\Sigma$ \\
+
+%\Large{\textbf{General notation}} \\
+
+$a$, $B$, $\lambda$ & scalars \\
+$\mathbf{a}$, $\mathbf{b}$, $\mathbf{c}$ & column vectors \\
+\vspace{20pt}
+$\mathbf{A}$, $\mathbf{B}$, $\mathbf{C}$ & matrices \\
+
+
+$\mathbf{a}[i]$ & $i^{th}$ element of $\mathbf{a}$ \\
+$\mathbf{A}[i, :]$ & $i^{th}$ row of $\mathbf{A}$ \\
+$\mathbf{A}[:, j]$ & $j^{th}$ column of $\mathbf{A}$ \\
+\vspace{20pt}
+$\mathbf{A}[i, j]$ & matrix element in the $i^{th}$ row and $j^{th}$ column of $\mathbf{A}$ \\
+
+
+$\mathbf{A}^\top$ & matrix transpose of $\mathbf{A}$ \\
+$\mathbf{A}^{\mathcal{H}}$ & Hermitian transpose of $\mathbf{A}$ \\
+\vspace{20pt}
+$\mathbf{A}^{-1}$ & inverse matrix of $\mathbf{A}$ \\
+
+
+$\|\mathbf{a}\|_p$ & $\ell_p$-norm of $\mathbf{a}$ \\
+$\|\mathbf{A}\|_p$ & $\ell_p$-norm of $\mathbf{A}$ \\
+$\|\mathbf{A}\|_{p,q}$ & $\ell_{p,q}$-mixed-norm of $\mathbf{a}$ \\
+$\|\mathbf{A}\|_{Fro}$ & Frobenius norm of $\mathbf{a}$ \\
+\vspace{20pt}
+$\|\mathbf{A}\|$ & Spectral norm of $\mathbf{a}$ \\
+
+
+$\langle \mathbf{a}, \mathbf{b} \rangle$ & inner product of $\mathbf{a}$ and $\mathbf{b}$ \\
+$\mathbf{AB}$ & matrix product of $\mathbf{A}$ and $\mathbf{B}$ \\
+$Tr(\mathbf{A})$ & Trace of matrix $\mathbf{A}$ \\
+\vspace{30pt}
+$(x)_+$ & $max(x,0)$ for $x\in\RR$ \\
+
+
+%\Large{\textbf{Important notations for this thesis}} \\
+
+$\mathbf{M}$ & MEG/EEG measurement matrix \\
+$\mathbf{G}$ & Gain / leadfield / forward matrix \\
+$\mathbf{X}$ & Source activity \\
+$\mathbf{E}$ & Measurement noise \\
+$\mathbf{Z}$ & Time-frequency coefficients of the source activity \\
+$\phi$ & Tight Gabor frame \\
+\vspace{30pt}
+$\mathcal{L}$ & Lipschitz constant \\
+
+
+
+%\Large{\textbf{Notations of matrices dimension}} \\
+
+$N$ & Number of sensors \\
+$T$ & Number of time samples \\
+$S$ & Number of sources \\
+$O$ & Number of orientation (1 or 3) \\
 
 \end{symbols}

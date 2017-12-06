@@ -83,12 +83,14 @@ headsepline, % Uncomment to get a line under the header
 }
 \usepackage{subcaption}
 \usepackage{LpHypermodels}
+\setlength{\parindent}{5ex} % Indent at the start of each paragraph.
 
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Source localization for functional brain imaging with M/EEG} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Sparse source localization for MEG/EEG brain imaging}
+%\thesistitle{Source localization for functional brain imaging with M/EEG} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Alexandre Gramfort \\ Roland Badeau} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{Slim Essid} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Doctor of Philosophy} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -123,7 +125,7 @@ headsepline, % Uncomment to get a line under the header
 \input{Sections/acknowledgement.tex}
 \leavevmode\thispagestyle{empty}\newpage
 \input{Sections/list_contents.tex}
-%\input{Sections/notation.tex}
+\input{Sections/notation.tex}
 \input{Sections/introduction.tex}
 
 %----------------------------------------------------------------------------------------

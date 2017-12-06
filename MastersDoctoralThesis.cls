@@ -358,8 +358,8 @@ KOMA-script documentation for details.}]{fancyhdr}
 %	SYMBOLS PAGE DESIGN
 %----------------------------------------------------------------------------------------
 
-\newcommand{\symbolsname}{List of Symbols}
-\providecaptionname{english,british,american}{\symbolsname}{List of Symbols}
+\newcommand{\symbolsname}{Symbols, and Notation}
+\providecaptionname{english,british,american}{\symbolsname}{Symbols, and Notation}
 \providecaptionname{ngerman,german,austrian,naustrian}{\symbolsname}{Symbolverzeichnis}
 
 \NewDocumentEnvironment{symbols}{ m }{%
