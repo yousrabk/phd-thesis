@@ -14,30 +14,30 @@
 
 %----------------------------------------------------------------------------------------
 \section{Introduction}
-In chapter \ref{chapter:basics}, we have seen all the background of the inverse problem in the MEG and EEG field. We justified the motivation for having sparse priors as regularization for the regression problem. Sparse priors were presented under different approaches. Here we bring an improvement of the source localization in the time-frequency (TF) domain. We have showed why localizing the source in the TF domain was a "true" spatio-temporal approach taking the time correlation into account.
+In chapter \ref{chapter:background}, we have seen all the background of the inverse problem in the MEG and EEG field. We justified the motivation for having sparse priors as regularization for the regression problem. Sparse priors were presented under different approaches. This chapter considers the variational problem in the Time-Frequency domain by fixing the penalization term as a sparse group LASSO as in Equation~\eqref{eq_sglasso}, with $\lambda_1$ a hyperparmeter over space, and $\lambda_2$, a second hyperparameter over time.\\
+ 
+Here we bring an improvement of the source localization in the TF domain. We have showed why localizing the source in the TF domain was a "true" spatio-temporal approach taking the time correlation into account.
 The Time-Frequency Mixed Norm Estimate (TF-MxNE) \cite{Alex13}, Spatio-Temporal Unifying Tomography (STOUT) \cite{castano2015solving} and the iterative reweighted TF-MxNE (irTF-MxNE) \cite{daniel15} improve reconstruction of transient and non-stationary sources by promoting structured sparsity in the TF domain. Those methods compute a sparse group lasso on the TF coefficients. TF-MxNE and STOUT apply a composite convex penalty, the sum of an $\ell_{2, 1}$-mixed-norm and an $\ell_{1}$-norm penalty, on the Gabor transform of the source time courses. On the other hand, irTF-MxNE applies a composite \emph{non-convex} penalty, the sum of an $\ell_{2, 0.5}$-quasinorm and an $\ell_{0.5}$-quasinorm penalty on the TF coefficients.
-The non-convex penalties have been shown to outperform convex approaches both in terms of source recovery and amplitude bias \cite{candes2008enhancing,daubechies2010iteratively} as explained in the previous chapter. However, the choice of an optimal Gabor dictionary for decomposing the data remains difficult.
+The non-convex penalties have been shown to outperform convex approaches both in terms of source recovery and amplitude bias \cite{candes2008enhancing,daubechies2010iteratively} as explained in Chapter~\ref{chapter:background}. However, the choice of an optimal Gabor dictionary for decomposing the data remains difficult.\\
 
 This issue of the choice of the dictionary is specially encountered when a mixture of signals is available in the data, \textit{e.g.}, short transient signal right after the onset of a stimuli, and slower brain waves afterward. A choice of a unique dictionary describing both signals in a sparse way is hard. We show in this chapter how to incorporate a multi-scale dictionary in the iterative reweighted optimization algorithm, \textit{i.e.} multiple dictionaries with different scales concatenated to fit short transients and slow waves at the same time, while keeping computational efficiency. %The optimization problem is solved in the same way as irTF-MxNE \cite{daniel15} \textit{i.e.} each iteration is a weighted TF-MxNE, which we solve using block coordinate descent (BCD) and an active set strategy \cite{friedman2010regularization}. We compare irTF-MxNE with and without a multi-scale dictionary on simulated and real MEG data. %As both solvers are able to recover the active set size,
 We demonstrate the benefit of the multi-scale dictionary in terms of reconstructed source time courses and temporal unmixing of activations.
 
-
 \section{Inverse problem in the Time-Frequency domain} \label{irtfmxne}
 
-Using a dictionary of TF atoms, such as a tight Gabor frame, $\mathbf{\Phi} \in \mathbb{C}^{T \times C}$
-($T$ samples, $C$ atoms), the neuronal activation $\mathbf{X} \in \mathbb{R}^{S \times T}$ ($S$ sources) can be modeled as a linear combination of atoms, $\mathbf{X}=\mathbf{Z\Phi}^{\mathcal{H}}$, where $\mathbf{Z} \in \mathbb{C}^{S \times C}$ is the TF coefficient matrix. A Gabor frame $\mathbf{\Phi}$ is tight (section \ref{section:TF}) when the Euclidean norm of the input signal and the vector of TF coefficients are proportional ($\|\mathbf{Z}\|_2^2 = A_\mathbf{\Phi} \|\mathbf{X}\|_2^2$ where $A_\mathbf{\Phi}>0$). %When $A_\mathbf{\Phi}=1$ the frame is said to be normalized. We will use tight frames in the following.
+Using a dictionary of TF atoms, such as a tight Gabor frame, $\mathbf{\Phi} \in \mathbb{C}^{T \times C}$ ($T$ samples, $C$ atoms), the neuronal activation $\mathbf{X} \in \mathbb{R}^{S \times T}$ ($S$ sources) can be modeled as a linear combination of atoms, $\mathbf{X}=\mathbf{Z\Phi}^{\mathcal{H}}$, where $\mathbf{Z} \in \mathbb{C}^{S \times C}$ is the TF coefficients matrix. A Gabor frame $\mathbf{\Phi}$ is tight (section \ref{section:TF}) when the Euclidean norm of the input signal and the vector of TF coefficients are proportional ($\|\mathbf{Z}\|_2^2 = A_\mathbf{\Phi} \|\mathbf{X}\|_2^2$ where $A_\mathbf{\Phi}>0$). %When $A_\mathbf{\Phi}=1$ the frame is said to be normalized. We will use tight frames in the following.
 The MEG/EEG measurements $\mathbf{M} \in \mathbb{R}^{N \times T}$ ($N$ sensors) follows the forward model:
 \begin{equation} \label{eq:reg_prob_tf}
     \mathbf{M} = \mathbf{GX + E} = \mathbf{GZ \Phi^{\mathcal{H}} + E}
 \end{equation}
-where $\mathbf{G} \in \mathbb{R}^{N \times S}$ stands for the forward operator, each source $s$ can have one or three orientations. $\mathbf{E} \in \mathbb{R}^{N \times T}$ is the measurement noise, which can be assumed to be additive white noise: $\mathbf{E}[:, j] \sim \mathcal{N}(0, \mathbf{I})$ for all $j$ after spatial whitening \cite{denis}. Estimating the coefficients $\mathbf{Z}$ given the measurement $\mathbf{M}$ is an ill-posed problem and constraints have to be imposed on $\mathbf{Z}$ to obtain a unique source estimate, as described for $\mathbf{X}$ in the last chapter. For analyzing evoked responses, we assume that the neuronal activation is spatially sparse and temporally smooth. This corresponds to a row sparsity \cite{Alex13}, which we promote by applying a composite non-convex regularization $\mathcal{R}(\mathbf{Z})$. The associated regularized regression problem is:
-\begin{equation} \label{eq2}
-    \mathbf{Z}^\star = \argmin_{\mathbf{Z}} \frac{1}{2}\|\mathbf{M - GZ\Phi^\mathcal{H}}\|^2_{Fro} + \mathcal{R}(\mathbf{Z})
+where $\mathbf{G} \in \mathbb{R}^{N \times S}$ stands for the forward operator, each source $s$ can have one or three orientations. $\mathbf{E} \in \mathbb{R}^{N \times T}$ is the measurement noise, which can be assumed to be additive white noise: $\mathbf{E}[:, j] \sim \mathcal{N}(0, \mathbf{I})$ for all $j$ after spatial whitening \cite{denis}. Estimating the coefficients $\mathbf{Z}$ given the measurement $\mathbf{M}$ is an ill-posed problem and constraints have to be imposed on $\mathbf{Z}$ to obtain a unique source estimate, as described for $\mathbf{X}$ in the last chapter. For analyzing evoked responses, we assume that the neuronal activation is spatially sparse and temporally smooth. This corresponds to a row sparsity \cite{Alex13}, which we promote by applying a composite non-convex regularization $\mathcal{P}(\mathbf{Z})$. The associated regularized regression problem is:
+\begin{equation} \label{eq:penalized_reg_tf}
+    \mathbf{Z}^\star = \argmin_{\mathbf{Z}} \frac{1}{2}\|\mathbf{M - GZ\Phi^\mathcal{H}}\|^2_{Fro} + \mathcal{P}(\mathbf{Z})
 \end{equation}
 with
 \begin{equation}
 %\begin{split}
-%	\mathcal{R}(\mathbf{Z}) & = \lambda_{space}\mathcal{R}_{1}(\mathbf{Z}) + \lambda_{time}\mathcal{R}_{2}(\mathbf{Z}) \\
+%	\mathcal{P}(\mathbf{Z}) & = \lambda_{space}\mathcal{P}_{1}(\mathbf{Z}) + \lambda_{time}\mathcal{P}_{2}(\mathbf{Z}) \\
 %& = \lambda_{space}\|\mathbf{Z}\|_{2,0.5} + \lambda_{time}\|\mathbf{Z}\|_{0.5} \\
 %\end{split}
 	\mathcal{R}(\mathbf{Z}) = \lambda_{space}\|\mathbf{Z}\|_{2,0.5} + \lambda_{time}\|\mathbf{Z}\|_{0.5}
@@ -45,10 +45,10 @@ with
 where $\lambda_{space} > 0$, $\lambda_{time}>0$. A large regularization parameter $\lambda_{space}$ will lead to a spatially very sparse solution, while a large $\lambda_{time}$ will promote sources with smooth time series.
 
 \section{Fast iterative reweighted TF-MxNE with tight frames}
-Given a dictionary $\mathbf{\Phi}$, the optimization problem in Eq.~\eqref{eq2} can be solved by iteratively minimizing convex surrogate problems~\cite{daniel15}. The regularization term at each iteration $k$ is a weighted convex mixed norm that can be written as:
-\begin{equation} \label{eq4}
-%   \mathcal{R}(\mathbf{Z}) = \lambda_{space}\sum_{s}\sqrt{\|\mathbf{Z}[s,:]\|_2} + \lambda_{time}\sum_{s,c}\sqrt{|\mathbf{Z}[s,c]|}
-    \mathcal{R}(\mathbf{Z}) = \lambda_{space}\|\mathbf{Z}\|_{\mathbf{W}_1^{(k)};2,1} + \lambda_{time}\|\mathbf{Z}\|_{\mathbf{W}_2^{(k)};1}
+Given a dictionary $\mathbf{\Phi}$, the optimization problem in Eq.~\eqref{eq:penalized_reg_tf} can be solved by iteratively minimizing convex surrogate problems~\cite{daniel15}. The regularization term at each iteration $k$ is a weighted convex mixed norm that can be written as:
+\begin{equation} \label{eq:weights_optim}
+%   \mathcal{P}(\mathbf{Z}) = \lambda_{space}\sum_{s}\sqrt{\|\mathbf{Z}[s,:]\|_2} + \lambda_{time}\sum_{s,c}\sqrt{|\mathbf{Z}[s,c]|}
+    \mathcal{P}(\mathbf{Z}) = \lambda_{space}\|\mathbf{Z}\|_{\mathbf{W}_1^{(k)};2,1} + \lambda_{time}\|\mathbf{Z}\|_{\mathbf{W}_2^{(k)};1}
 \end{equation}
 with $\forall s,c$,
 \begin{equation*}
@@ -58,29 +58,29 @@ with $\forall s,c$,
 \end{aligned} \enspace ,
 \end{equation*}
 %
-where $\mathbf{W}_1$ and $\mathbf{W}_2$ are the weights applied to the TF coefficients, and $\mathbf{\hat{Z}}^{(k-1)}$ are the estimated coefficients at iteration $k-1$. $\epsilon^{(k-1)} \in \mathbb{R}^+$ is used to prevent infinite weights. To have an intuition about the update rule for the weights, one can prove that updating the weights with $w_i$=$|x_i|^{p-2}$ leads to a solution of the $\ell_p$-norm penalized problem.
+where $\mathbf{W}_1$ and $\mathbf{W}_2$ are the weights applied to the TF coefficients, and $\mathbf{\hat{Z}}^{(k-1)}$ are the estimated coefficients at iteration $k-1$. $\epsilon^{(k-1)} \in \mathbb{R}^+$ is used to prevent infinite weights. To have an intuition about the update rule for the weights, one can prove that updating the weights with $w_i$=$|x_i|^{p-2}$ leads to a solution of the $\ell_p$-norm penalized problem.\\
 %Here, $\epsilon$ is set to $0$ and infinite weights are handled as in \cite{daniel15}.
 
-For solving Eq.~\eqref{eq2}, we use BCD \cite{tseng2010approximation}. The algorithm boils down to sequentially computing a gradient step and the proximity operator of the $\ell_{2,1}+\ell_1$ norm for each block $s$ of coefficients. Here a block maps to a location in the brain. One update of a block of coefficients is given by first a gradient step:
-\begin{align} \label{eq5}
+For solving Eq.~\eqref{eq:penalized_reg_tf}, we use BCD \cite{tseng2010approximation}. The algorithm boils down to sequentially computing a gradient step and the proximity operator of the $\ell_{2,1}+\ell_1$ norm for each block $s$ of coefficients. Here a block maps to a location in the brain. One update of a block of coefficients is given by first a gradient step:
+\begin{align} \label{eq:block_update}
     \mathbf{R} &= \mathbf{M} - \mathbf{G}\hat{\mathbf{X}} \\
-    \bar{\mathbf{X}}[s,:] &= \hat{\mathbf{X}}[s,:] + \mathbf{\mu}[s]\mathbf{G}[:,s]^T\mathbf{R} \\
+    \bar{\mathbf{X}}[s,:] &= \hat{\mathbf{X}}[s,:] + \mathbf{\mu}[s]\mathbf{G}[:,s]^\top\mathbf{R} \\
     \bar{\mathbf{Z}}[s,:] &= \bar{\mathbf{X}}[s,:]\mathbf{\Phi}
     % \mathbf{R} &= \mathbf{M} - \mathbf{G}\hat{\mathbf{Z}}\mathbf{\Phi}^{\mathcal{H}} \\
     % \bar{\mathbf{Z}}[s,:] &= \hat{\mathbf{Z}}[s,:] + \mathbf{\mu}[s]\mathbf{G}[:,s]^\mathbf{T}\mathbf{R}\mathbf{\Phi} \\
 \end{align}
-followed by the computation of the proximity operator of the weighted $\ell_{2,1}+\ell_1$ described in Chapter \ref{chapter:basics}-Eq.\ref{prox_mixed}:
+followed by the computation of the proximity operator of the weighted $\ell_{2,1}+\ell_1$ described in Chapter \ref{chapter:background}-Eq.\ref{prox_mixed}:
 \begin{equation} \label{prox_l1}
 \begin{aligned}
-    \tilde{\mathbf{Z}}[s,c] &= \bar{\mathbf{Z}}[s,c]\left(1 - \frac{\mathbf{\mu}[s]\lambda_{time}\mathbf{W}_2^{(k)}[s,c]}{|\bar{\mathbf{Z}}[s,c]|} \right)^+
+    \tilde{\mathbf{Z}}[s,c] &= \bar{\mathbf{Z}}[s,c]\left(1 - \frac{\mathbf{\mu}[s]\lambda_{time}\mathbf{W}_2^{(k)}[s,c]}{|\bar{\mathbf{Z}}[s,c]|} \right)_+
 \end{aligned}
 \end{equation}
 \begin{equation} \label{prox_l21}
 \begin{aligned}
-    \hat{\mathbf{Z}}[s,c] &= \tilde{\mathbf{Z}}[s,c]\left(1 - \frac{\mathbf{\mu}[s]\lambda_{space}\sqrt{\mathbf{W}_1^{(k)}[s,c]}}{\|\tilde{\mathbf{Z}}[s,:]\|_2}\right)^+
+    \hat{\mathbf{Z}}[s,c] &= \tilde{\mathbf{Z}}[s,c]\left(1 - \frac{\mathbf{\mu}[s]\lambda_{space}\sqrt{\mathbf{W}_1^{(k)}[s,c]}}{\|\tilde{\mathbf{Z}}[s,:]\|_2}\right)_+
 \end{aligned}
 \end{equation}
-with $(a)^+=\max(a,0)$. When $\mathbf{\Phi}$ is a tight frame, $\mathbf{\mu}[s]$ is the step length for each BCD subproblem and it is given by $\mathbf{\mu}[s]=\sqrt{\mathbf{A}_{\mathbf{\Phi}}}(\|\mathbf{G}[:,s]^T\mathbf{G}[:,s]\|)^{-1}$. This step length, \textit{i.e.} the inverse of the Lipschitz constant restricted to the source $s$ is typically larger than the step length applicable in iterative proximal gradient methods, which is upper bounded by $\|\mathbf{G}^T\mathbf{G}\|^{-1}$. This implies a bigger step to speed up the convergence.
+with $(a)_+=\max(a,0)$. When $\mathbf{\Phi}$ is a tight frame, $\mathbf{\mu}[s]$ is the step length for each BCD subproblem and it is given by $\mathbf{\mu}[s]=\sqrt{\mathbf{A}_{\mathbf{\Phi}}}(\|\mathbf{G}[:,s]^T\mathbf{G}[:,s]\|)^{-1}$. This step length, \textit{i.e.} the inverse of the Lipschitz constant restricted to the source $s$ is typically larger than the step length applicable in iterative proximal gradient methods, which is upper bounded by $\|\mathbf{G}^T\mathbf{G}\|^{-1}$. This implies a bigger step to speed up the convergence.
 Finally:
 \begin{equation}
     \hat{\mathbf{X}}[s,:] = \hat{\mathbf{Z}}[s,:]\mathbf{\Phi}^\mathcal{H}
@@ -93,7 +93,7 @@ Eq.~\eqref{prox_l1} and \eqref{prox_l21} are respectively solutions of the proxi
 \end{lemma}
 
 Computing the TF decomposition at each iteration can be costly. The consequence of the lemma is that for a lot of source locations one can avoid computing their TF decomposition during the optimization just by computing the $\ell_{2}$ norm of the time courses after the gradient step.
-To speed up the computation even more, we combine the BCD scheme with an active set strategy \cite{friedman2010regularization}, which primarily updates sources that are likely to be active, while keeping the remaining sources inactive.
+To speed up the computation even more, we combine the BCD scheme~\ref{section:BCD} with an active set strategy~\ref{section:active_set}~\cite{friedman2010regularization}, which primarily updates sources that are likely to be active, while keeping the remaining sources inactive.
 
 \section{Inverse problem with multi-scale tight Gabor frames}
 
@@ -104,11 +104,10 @@ Learning the dictionary might be a solution to avoid fixing the parameters, or t
 Let us define a multi-scale TF dictionary, where we concatenate $Q$ tight Gabor frames $\mathbf{\Phi}_q$, $ 1 \leq q \leq Q$, with different resolutions. One can realize that this union of tight frames $\mathbf{\Phi} = [\mathbf{\Phi}_1, \dots, \mathbf{\Phi}_Q]$ is also a tight frame with $A_\mathbf{\Phi} = \sum_q A_{\mathbf{\Phi}_q}$. The strategy presented in the previous section \ref{irtfmxne} is therefore still relevant for a multi-scale dictionary, where the activation $\mathbf{Z}$ is a concatenation of $\mathbf{Z}_1, \mathbf{Z}_2, ..., \mathbf{Z}_Q$.
 
 \section{Experiments with different dictionaries}
-blabla
 %----------------------------------------------------------------------------------------
 We first evaluate the accuracy of irTF-MxNE with and without multi-scale on realistic simulations. We then apply our new solver on MEG somatosensory data.
 
-\section{Simulation}
+\subsection{Simulation}
 We generated a realistic simulation dataset based on a fixed-orientation source model with 7549 cortical locations and 102 magnetometers. Two of these locations were selected to be active in the primary and secondary somatosensory cortex (S1 and S2). The corresponding time courses are shown in Fig. \ref{fig:simulation}-a in blue (S1) and green (S2). We have both a transient source around 40 ms and slow waves afterwards around 70, 100 and 150 ms. The irTF-MxNE solver improves the source recovery \cite{daniel15}. Therefore, we do not compare the solvers presented here over the active set size or an $F_1$ measure, %(based on the Recall and Precision)
 as both solvers are already able to recover all the sources. % due to the \textit{non-convex} optimization.
 We evaluate our approach by computing  %$RMSE=\|X_{sim}-X_{est}\|_{Fro}$ and
@@ -126,7 +125,7 @@ Fig.~\ref{fig:simulation}-b shows the explained variance for the irTF-MxNE with 
     \label{fig:simulation}
 \end{figure}
 
-\section{Experimental results with MEG somatosensory data}
+\subsection{Experimental results with MEG somatosensory data}
 To demonstrate the advantage of irTF-MxNE with a multi-scale dictionary over the basic irTF-MxNE, we tested different parameters for different solvers on a MEG dataset: MIND (for details \cite{weisend2007paving}).
 Source estimation was first performed using several solvers: irTF-MxNE, irMxNE~\cite{strohmeier2014iterative} and dSPM~\cite{dale2000dynamic}. Regarding irTF-MxNE, two dictionaries were tested. A dictionary with a 64 samples window and a 4 samples time shift, which leads to smooth source courses; and a dictionary with a 16 samples window and a 2 samples time shift, which helps capture short transient sources. After inspection of the residual, results showed that at least four sources are necessary to capture all evoked components. We have therefore fixed the parameters of the irTF-MxNE solvers so we obtained only four sources while explaining as much variance as possible. After that, we experimented with two different parameters $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ to show their impact on the smoothness of the different time sources obtained.
 %Both dictionaries were tested using several parameters: $\lambda_{space}=28.5$ and $\lambda_{time}=1.5$ or $\lambda_{time}=2.5$, to show the different source estimates obtained. irMxNE was computed for $\lambda=40$. The parameters were chosen in order to reduce the residual \textit{i.e.} to maximize the explained data by having at least four sources. % XXX
@@ -138,6 +137,7 @@ Fig. \ref{fig:MEG_dics} (a-b) demonstrates the four time courses obtained with i
     \caption{Source reconstruction using somatosensory data with different solvers. (a) - (b) irTF-MxNE on a small window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. (c) - (d) irTF-MxNE on a long window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. From (a) to (d) $\lambda_{space}=28.5$ (e) irMxNE for $\lambda=40$ and (f) dSPM activation for the four activated sources.}
     \label{fig:MEG_dics}
 \end{figure}
+
 We show that for high values of $\lambda_{time}$ (b), the solver is not able to capture the short transient component around 40 ms. While for a small value (a), the unmixing is not reliable since the light blue and the green source estimates catch the activity from the red source. Additionally, the time courses are not smooth. On the other hand, Fig. \ref{fig:MEG_dics} (c-d) demonstrate the four time courses obtained with irTF-MxNE using the long window dictionary for the selected $\lambda_{time}$. They confirm that both parameters are not able to capture the transient effect after the stimulus, although the time courses are smooth. These four subfigures reveal that a combination of the two dictionaries should be critical to acquire source estimates with high precision.
 Moreover, Fig. \ref{fig:MEG_dics} (e) displays the amplitudes obtained with irMxNE for five sources, as for irMxNE, one is not able to obtain the four relevant sources unmixed \cite{gramfort2012mixed}. We notice that the light blue source in Fig.~\ref{fig:MEG_dics} (a) to (d) appears as two separate sources in (e): light blue and purple. If we increase the $\lambda$ parameter, we increase the amplitude bias due to the $l_1$ norm of the solver. If we set it too high ($\lambda=50$) we obtain four sources, but the blue source which is relevant to the study would be removed and the duplicated purple source is kept. The last panel Fig.~\ref{fig:MEG_dics} (f) displays the source estimates for dSPM values corresponding to the four locations of the sources obtained with the irTF-MxNE. These subfigures show that none of irMxNE or dSPM solvers are able to obtain smooth sources without any leakage between the time courses.
 
@@ -151,20 +151,21 @@ Fig.~\ref{fig:MEG} shows source reconstruction using the multi-scale irTF-MxNE f
 	\label{fig:MEG}
 \end{figure}
 
-\section{Discussion}
-For this mid-term thesis, I have presented the first complete contribution which improves the irTF-MxNE solver using a multi-scale dictionary to capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
+
+\section{Conclusion \& Perspective}
+In this chapter, the main motivation of the multi-scale dictionary has been presented. The first contribution has been presented which improves the irTF-MxNE solver using a multi-scale dictionary to capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
 
 The benefits of the multi-scale irTF-MxNE have been shown on simulated and MEG somatosensory data. Both experiments confirm that multi-scale irTF-MxNE improves the source estimates, in terms of reduced mixing of the time courses, smoothness and detection of both short transients and slower waves. In contrast, both solvers are efficient regarding active set size and amplitude bias, which is due to the non-convexity of the methods. Hence, the multi-scale irTF-MxNE should be applied to data where a mixture of signals coexist, and when the aim is to acquire focal sources with non-stationary and smooth time courses.
 
-At a full view of the mid-term of my PhD program, I had an accepted conference paper \cite{bekhti2016m}, and a contribution as second author in a journal paper \cite{irMxNE}. I also had an accepted abstract at Women in Machine Learning (WiML) collocated with NIPS in December 2015, where I had the chance to present a former work on MEG \cite{bekhti2014decoding}. I am very thankful to my two supervisors: Alexandre Gramfort and Roland Badeau for their advices, support and for sharing their expertise with me. We still have half-way to go to accomplish more. % (https://www.researchgate.net/publication/301731870_Brain_reading_with_ordered_targets_using_ranking_metric).
+ % (https://www.researchgate.net/publication/301731870_Brain_reading_with_ordered_targets_using_ranking_metric).
 
-Further work can address different points:
+Further work related to this chapter can address different points:
 \begin{itemize}
-    \item Multi-scale irTF-MxNE investigation in terms of dictionary. So far we have used tight Gabor frames, is it the best choice? Doing some \textit{"exhaustive"} comparison between the STFT used here, Modifed Discrete Cosine Transform (MDCT), and Stockwell transform \textit{a.k.a.} S-Transform will help us better understand the dictionary decomposition of the data.
+%    \item Multi-scale irTF-MxNE investigation in terms of dictionary. So far we have used tight Gabor frames, is it the best choice? Doing some \textit{"exhaustive"} comparison between the STFT used here, Modifed Discrete Cosine Transform (MDCT), and Stockwell transform \textit{a.k.a.} S-Transform will help us better understand the dictionary decomposition of the data.
 	\item Multi-scale irTF-MxNE improvement in terms of hyperparameter learning, \textit{i.e.} estimation of the best parameters $\lambda_{space}$ and $\lambda_{time}$. In the standard cases, these parameters are selected by cross-validation or sometimes by using the discrepancy principle. A key contribution in this direction would be to use Bayesian inference techniques to estimate those regularization parameters in a composite norms setting.
-    \item The source localization in general is computed over an \textit{evoked}, \textit{i.e.} in the M/EEG field, the evoked is the mean of several trials of the same experiment. The main purpose is to reduce the noise, \textit{i.e.}, increase the SNR of the signal. At a trial level, \textit{i.e.}, for a lower SNR, how can we improve the source localization? We can constraint the localization with the prior knowledge that all trials are supposed to have the same source estimate.
-    \item Optimization direction, the idea of incorporating screening techniques presented in a huge amount of papers can help to speed up the convergence, and so the reconstruction time.
+    
+    \item The source localization in general is computed over an \textit{evoked}, \textit{i.e.} in the MEG/EEG field, the evoked is the mean of several trials of the same experiment. The main purpose is to reduce the noise, \textit{i.e.}, increase the SNR of the signal. At a trial level, \textit{i.e.}, for a lower SNR, how can we improve the source localization? We can constraint the localization with the prior knowledge that all trials are supposed to have the same source estimate.
+    
+    \item Optimization direction, the idea of incorporating screening techniques presented in a huge amount of papers can help to speed up the convergence, and so the reconstruction time\cite{massias2017safe,massiasgap,fercoq-etal:2015,Ndiaye_Fercoq_Gramfort_Salmon15,ndiaye2016gap,ndiaye2017efficient}.
 \end{itemize}
 
-\section{Conclusion \& Perspective}
-In this chapter, the main motivation of the multi-scale dictionary has been presented. We showed how we kept the optimization problem with a multi-scale (bigger) dictionary to the same  optimization problem with one dictionary. In the next chapter, we present a comparison and we show the benefits of the new solver \textit{w.r.t.} the basic irTF-MxNE.
