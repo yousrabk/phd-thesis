@@ -46,9 +46,13 @@ and specific HBMs. We show that a particular optimization-based inference strate
 
 %----------Lp hypermodels ------------------------------------------------------------------
 \section{Lp hyper-models}
+In Bayesian statistics, a hyperprior is a prior distribution on a hyperparameter, that is, on a parameter of a prior distribution.
+Firstly, use of a hyperprior allows one to express uncertainty in a hyperparameter: taking a fixed prior is an assumption, varying a hyperparameter of the prior allows one to do sensitivity analysis on this assumption, and taking a distribution on this hyperparameter allows one to express uncertainty in this assumption: "assume that the prior is of this form (this parametric family), but that we are uncertain as to precisely what the values of the parameters should be"~\cite{bernardo2001bayesian}.
+
 
 %----------MAP estimation ------------------------------------------------------------------
 \section{MAP estimation}
+add a description about MAP and explain what is the bayes rule
 
 %----------Link between MM & HBM------------------------------------------------------------
 \section{Link between MM and special case of HBM}
@@ -406,52 +410,12 @@ Using $p(\mathbf{X}^{(k)},\mathbf{M}|\mathbf{\lambda})=p(\mathbf{M}|\mathbf{X}^{
  and 
 \begin{equation} 
  \partial_{\mathbf{\lambda}[i]} \log C(\mathbf{\lambda})=\frac{-ST}{k\mathbf{\lambda}[i]}
-\end{equation} 
-  Regarding the second term in Equation.~\eqref{optimlambda}, Equation~\eqref{eq3} yields $-\partial_{\lambda_i} \log p(\lambda) = -\frac{\alpha-1}{\lambda_i} + \beta$.
+\end{equation}
+  Regarding the second term in Equation~\eqref{optimlambda}, Equation~\eqref{eq3} yields $-\partial_{\lambda_i} \log p(\lambda) = -\frac{\alpha-1}{\lambda_i} + \beta$.
 Completing the derivations, the equation for each $\lambda_i$, $i\in[1\dots S]$, reads:
 \begin{equation} \label{eq9}
 \lambda^\star_i=\frac{ST/k + \alpha - 1}{\|X_{\lambda^\star}[i,:]\| + \beta} \enspace .
 \end{equation}
-
-\subsection{Simulation}
-
-We generated a simulation dataset with $N=302$ sensors, $T=190$ time samples and $S=1500$ sources. Four sources were randomly selected to be active with realistic waveforms obtained from the MIND dataset~\cite{weisend2007paving}. The linear forward operator $\mathbf{G}$ was a random matrix, whose columns were normalized to 1. Two levels of white noise were added to the simulation. We always used $\tau=0.5$.
-
-\begin{figure}
-	\includegraphics[width=0.95\textwidth]{hyperparam_estim/fig1_eusipco_data_size_and_fix_points_a_b}
-    \caption{(a) Source identification results for different number of sources measured with F1 score using $\alpha=1$ and $\beta=1$. The higher the number of regressors the worse is the performance. (b) Estimated $\lambda$ as a function of $\lambda_{init}$ for different values of $a$ and $b$. The red curve for $\beta=0.33$ gives the best plateau, which demonstrates that $(a,b)$ shall be carefully adjusted.
-    }
-    \label{fig:fig1}
-\end{figure}
-
-In order to illustrate the issue when using a synthesis prior for large problems, we run the estimation of the hyperparameter $\lambda$ as suggested in~\cite{Figueiredo} using the $0.5$-homogeneous non-convex prior. Figure~\ref{fig:fig1}-(a) shows the F1 score of the source reconstruction (1 for good reconstruction and 0 for bad). The source estimation is failing for almost all the range of data size. Figure~\ref{fig:fig1}-(b) shows the results after reformulating the problem with different settings of $\alpha$ and $\beta$. One can notice that a setting as in~\cite{Figueiredo} with $\alpha=1$ and $\beta=1$ always gives an estimated $\lambda$ around $1\%$ of $\lambda_{max}$ which is not promoting the sparsity we are looking for in this kind of setting. For this aim, we varied the values of $\beta$ and computed $\alpha$ as defined before. Figure~\ref{fig:fig1}-(b) shows that for most values of $\beta$ we have rather a too low estimation of $\lambda\approx 1\%$ or a too high $\lambda\geq 100\%$ resulting in zero source found active. Interestingly setting $\beta=1/3$ gives a plateau at $\hat{\lambda}$ close to $0.3\lambda_{max}$. This is evidence of a clear fixed point for the iterative process $\lambda^{(t+1)}=f(\lambda^{(t)})$, where $f$ is the update rule of $\lambda$ in Equation~\eqref{eq4}. We use $\beta=1/3$ from now on and its corresponding $\alpha$.
-
-Figure~\ref{fig:mxne_vs_irmxne} represents the simulated sources with stars and the estimated ones with plain lines. Figure~\ref{fig:mxne_vs_irmxne}-(a)-(b) display results with the $\ell_{2,1}$ and $\ell_{2,0.5}$ norms respectively, using one hyperparameter initialized to $\lambda=0.5\lambda_{max}$. One can see that in Figure~\ref{fig:mxne_vs_irmxne}-(a), the $\ell_{2,1}$ norm recovers the four sources with an amplitude bias (the estimated amplitude is lower than the exact one), and that several sources shown in light green are almost flat around zero but still found as active sources. There is no way to reduce the support without losing one of the four simulated sources, \textit{i.e.} the $\ell_{2,1}$ norm with one hyperparameter fails to recover the exact simulated sources.\\
-The $\ell_{2,0.5}$ norm in (b) estimates the exact four source amplitudes without amplitude bias thanks to the non-convexity~\cite{irMxNE}. On the other hand, Figure~\ref{fig:mxne_vs_irmxne}-(c) shows the results for the convex penalty using one hyperparameter per source. It can be seen that it is qualitatively equivalent to the non-convex penalty. \\
-
-The advantage of having one hyperparameter per source is to pick up only the sources involved in the measurement $\mathbf{M}$ and drop the extra almost-zero sources visible in Figure~\ref{fig:mxne_vs_irmxne}-(a) (light green). This extension produces sparser results and less amplitude bias without casting the problem as non-convex. % MAP formulation.
-
-\begin{figure}
-	\includegraphics[width=0.95\textwidth]{hyperparam_estim/mxne_vs_irmxne}
-    \caption{Source reconstruction on simulated data. (a): Source estimates obtained using $\ell_{2,1}$ with one $\lambda$. The solution is not sparse enough (the zero-sources in light green) and there is an amplitude bias between the exact amplitudes (stars) and the estimated ones (raw lines). (b): Good reconstruction of the four sources using $\ell_{2,0.5}$ and one $\lambda$, which is equivalent to the reconstruction using the $\ell_{2,1}$ norm with $\lambda\in\RR^S$ (c). Each of the four sources is encoded with a color.
-    }
-    \label{fig:mxne_vs_irmxne}
-\end{figure}
-
-\subsection{Experimental results with MEG auditory data}
-
-We applied the estimation of a single hyperparameter and a hyperparameter per source using the convex $\ell_{2,1}$ penalty on a real open dataset (MNE sample dataset~\cite{MNE}). It corresponds to a dataset with $N=305$ sensors, $T=55$ time samples and $S=7498$ sources. 
-Figure~\ref{fig:sample_data} shows the source amplitudes of the two auditory sources and their positions in the brain when estimating a hyperparameter per source. When using a single hyperparameter on the convex norm $\ell_{2,1}$, multiple spurious sources are found as active which replicates the simulation on Figure~\ref{fig:mxne_vs_irmxne}-(a). These source estimates in Figure~\ref{fig:sample_data} correspond to the M100 peak (peak around 100 ms) generated in the vicinity of the bilateral auditory cortices in superior temporal gyri (the relevant auditory area).
-
-\begin{figure}
-%\begin{center}	
-\includegraphics[width=0.95\textwidth]{hyperparam_estim/fig_sample}
-    \caption{Source reconstruction on MEG auditory data (sample dataset \cite{MNE}). Source amplitude of two sources (blue and green) in the right and their corresponding positions in the brain on the left. 
-    }
-%\end{center}
-    \label{fig:sample_data}
-\end{figure}
-
 
 %----------------HBM Optim------------------------------------------------------------------
 \section{HBM optimization in the Bayesian formulation}
@@ -538,16 +502,188 @@ which can be sampled with a simple accept-reject algorithm as described in Secti
 \end{algorithm}
 }
 
+
+\subsection{Slice-Within-Gibbs Sampler for Parameter Update}\label{sec:DetailsGammaSampler}
+
+Within the Algorithm \ref{alg:sampling}, to update a group $\bfX[l]$, we need to sample from the all the one-dimensional, SC densities
+\begin{equation}
+p_{post}(\bfX[i,j]|\bfX^{(k-1)}[-(i,j)],\bfM,\mathbf{\gamma}^{(k)}), \qquad (i,j) \in [l] \enspace ,
+\end{equation}
+where $\bfX[-(i,j)]$ refers all the coefficient of the matrix $\bfX$ except the term $(i,j)$.
+
+To implement this efficiently, we can precompute several terms and make use of the specific spatio-temporal group structure of the posterior. We first derive the part of the likelihood as in Equation \eqref{eq:like} that depends on a given index pair $(i,j) \in [l]$:
+\begin{gather*}
+\fl \hspace{2cm} \frac{1}{2} \fronormsq{\bfM - \bfG \bfX} = \sum_{j'}^{T} \frac{1}{2} \norm{\bfM[:,j'] - \bfG \bfX[:,j']}_2^2 \\
+\proptoab{j} \\
+\fl \hspace{3cm} \frac{1}{2} \norm{\bfM[:,j] - \bfG \bfX[:,j]}_2^2 = \frac{1}{2} \norm{\bfM[:,j] - \left( \bfG[:, -i] \bfX[-i,j] + \bfG[:, i] \bfX[i,j] \right)}_2^2 \\
+\proptoab{i} \\
+\fl \hspace{2cm} \frac{1}{2} \norm{\bfG[:,i]}_2^2 \, \bfX[i,j]^2 + \bfG[:,i]^\top \left(\bfM[:,j] - \bfG[:,-i] \bfX[-i,j] \right) \, \bfX[i,j] \\
+\fl \hspace{-6.5cm} = \frac{1}{2} \norm{\bfG[:,i]}_2^2 \, \bfX[i,j]^2 \\
+\fl \hspace{5cm} + \left( \left( \bfG^\top \bfM\right)[i,j] - \left({\bfG[:,i]}^\top \bfG\right) \bfX[:,j] - \norm{\bfG[:,i]}_2^2 \right) \, \bfX[i,j]\\
+\fl\hspace{3cm} := a z^2 + b z \enspace , \quad \text{with} \quad z := \bfX[i,j] \enspace , \quad a := \frac{1}{2} \norm{\bfG[:,i]}_2^2 \enspace , \\
+\fl \hspace{1.5cm} b :=  \left( \bfG^\top \bfM\right)[i,j] - \left({\bfG[:,i]}^\top \bfG\right) \bfX[:,j] - \norm{\bfG[:,i]}_2^2
+\end{gather*}
+
+Note that $\norm{\bfG[:,i]}_2^2 $ and $ \left( \bfG^\top \bfM\right)$ can be precomputed. The challenging part in the computation of $b$ is to compute $\left({\bfG[:,i]}^\top \bfG\right)$, as one typically does not want to pre-compute the $SO \times SO$ matrix $G^\top G$ and hold it in memory. However, to update all the $TO$ components of the $l^{th}$ group (\eg, in the visual evoked fields example, $T = 211$, $O = 3$) one only needs the $O \times SO$ matrix $\left({\bfG[:,[l]]}^\top \bfG\right)$. Thus, we compute $\left({\bfG[:,[l]]}^\top \bfG\right)$ at the start of updating group $\bfX[l]$ and hold it memory throughout the bloc update. Besides this, the most costly operation to compute $b$ is a dot product of vectors of size $SO$. Next, we derive the part of the prior \eqref{eq:condprior} that depends on $\bfX[i,j], (i,j) \in [l]$:
+\begin{gather*}
+\fl \hspace{-5cm} \sum_{l=1}^S \left( \frac{\fronorm{\bfX[l]}^p}{\mathbf{\gamma}{l}} + \frac{O T}{p} \log(\mathbf{\gamma}[l])\right) \quad \\
+\fl \hspace{2cm} \proptoab{\bfX[i,j], (i,j) \in [l]} \quad \mathbf{\gamma}[l]^{-1} \fronorm{\bfX[l]}^p =  \mathbf{\gamma}[l]^{-1} \left( \sum_{(i',j') \in [l]} \bfX[i',j']^2  \right)^{p/2}  \nonumber \\
+\fl \hspace{9.3cm} = \mathbf{\gamma}[l]^{-1} \left(\bfX[i,j]^2 + \sum_{(i',j') \in [l] \atop (i',j') \neq (i,j)} \bfX[i',j']^2  \right)^{p/2} \\
+\fl \hspace{5cm} =: c \left(z^2 + d \right)^{p/2} \enspace ,
+\end{gather*}
+
+with $c$ and $d$ defined and computed in an obvious way. Taken together, to update $\bfX[i,j]$, we have to sample from the one-dimensional density:
+\begin{equation}
+p(z) \propto \exp \left(- a z^2 - b z \right) \exp \left(- c \left(z^2 + d \right)^{p/2} \right) =: p_1(z) p_2(z) \enspace . \label{eq:SCdensity}
+\end{equation}
+We take advantage of the fact thatn \eqref{eq:SCdensity} factorizes in a Gaussian likelihood part $p_1(z)$ and a symmetric, log-concave prior part $p_2(z)$, and use a generalized form of slice sampling \cite{Ne03,RoCa05} as described in more detail in \cite{Lu16} and summarized in Algorithm \ref{alg:Slice}. Determining $S_2^y$ in our case is trivial:
+\begin{align}
+\fl p_2(z) \geqslant y \quad & \Leftrightarrow \quad c \left(z^2 + d \right)^{p/2} \leqslant - \log(y) \quad \\
+\fl & \Leftrightarrow |x| \leqslant \left( \left( \frac{- \log(y)}{c} \right)^{2/p} - d \right)^{1/2}
+\end{align}
+Then, we use a slightly modified, more robust, version of the fast table-based algorithm described in \cite{Ch12} to sample from the truncated Gaussian distribution $p_1(z) \mathbf{\mathcal{1}}_{S^y_2}(z)$. As initialization for $z$, we always chose the current value of $\bfX[i,j]$.
+
+{\fontsize{4}{4}\selectfont
+%above is to make smaller fonts in algorithm
+\begin{algorithm}[t]
+\SetKwInOut{Input}{input}
+\SetKwInOut{Init}{init}
+\SetKwInOut{Parameter}{param}
+\caption{\textsc{Slice Sampling}}
+\Input{$p(z) \propto p_1(z) p_2(z), z, K_{(SS)} $}
+\For{
+     $k = 1$ to $K_{SS}$
+    }
+    {
+    Draw $y$ uniform from $\left[0,p_2(z)\right]$ (vertical move).\\
+    Determine $S_2^y \mydef \left\lbrace z \;|\; p_2(z) \geqslant y \right\rbrace$\\
+	Draw $z$ from $p_1(z) \mathbf{\mathcal{1}}_{S^y_2}(z)$ (weighted horizontal move).
+    }
+{\Return{$z$} as a sample of $p(z)$}
+\label{alg:Slice}
+\end{algorithm}
+}
+
+
+\subsection{Accept-Reject Sampler for Hyperparameter Update} \label{sec:DetailsGammaSampler}
+
+The conditional density \eqref{eq:conPostGammaiRed} is of the type
+\begin{equation}
+\fl \qquad p(x) \propto \exp \left(- \frac{c}{x} \right) \exp \left(- \frac{x}{\beta} \right) \enspace, \qquad c, \beta \geqslant 0.
+\end{equation}
+Note that the first factor is monotonically increasing with limit $0$ for $x \searrow 0$ and limit $1$ for $x \rightarrow \infty$ while the second factor is proportional to a simple exponential distribution (\lcf Figure \ref{fig:AccRejSketch}). We can therefore easily construct a dominating density $g(x) \geqslant p(x)$ to carry out accept-reject sampling \cite[Section 2.3.2]{RoCa05} to generate a sample $z \sim p$: we generate $y \sim g$, $u \sim \mathcal{U}_{[0,1]}$ and accept $z = y$ if $u \leqslant p(y)/g(y)$ and repeat otherwise. Choosing $g(x) = \exp \left(- x/\beta\right)$ would yield a valid sampling density but this choice becomes inefficient with increasing $c$. Therefore, we split the sampling density into two parts:
+\begin{equation}
+g(x) = 
+\begin{cases}
+\hat p & \text{if} x < \tilde{x} \\
+\exp \left(- \frac{x}{\beta} \right)	& \text{otherwise}  \enspace,
+\end{cases}
+\label{eq:ARsamplingDensity}
+\end{equation}
+where $\hat p = \max_x p(x)$ is the maximal probability attained at $\hat x = \argmax_x p(x) = \sqrt{\beta c}$ and $\tilde{x} = \beta c/\hat x + \hat x$ is the solution to $\exp \left(- x/\beta\right) = \hat p$ (\textit{cf.} Figure~\ref{fig:AccRejSketch}). Sampling from~\eqref{eq:ARsamplingDensity} is then straight-forward using $v, w \sim \mathcal{U}_{[0,1]}$: If one computes
+\begin{equation}
+\fl G_{x\geqslant \tilde{x}} = \int_{\tilde{x}}^\infty g(x) \, dx = \beta \exp(- \tilde{x}/\beta), \qquad
+G_{x < \tilde{x}} = \int_0^{\tilde{x}} g(x) \, dx = \hat{p} \tilde{x} \enspace,
+\end{equation}
+then $v <  G_{x\geqslant \tilde{x}} / (G_{x\geqslant \tilde{x}} + G_{x < \tilde{x}})$ determines that we are in the tail, $x > \tilde{x}$, where we can use a simple inverse cumulative distribution method to draw a proposal from $g(x)$ using $w$. If $v$ determines that we are in $x \leqslant \tilde{x}$, then $x = w \tilde{x}$ is the proposal. For numerical precision, we only compute logarithms of probabilities and use that for $a > 0$, b$\geqslant 0$:
+ \begin{equation}
+ \log \left(a +b \right) = \log a + \log \left(1 + \exp \left(b - a \right)\right) \enspace .
+ \end{equation}
+ The whole sampling scheme is shown in Algorithm~\ref{alg:acceptreject}. We found the scheme to be efficient enough for all of our computations, \ie the chosen $g(x)$ is close enough to $p(x)$ to result in an accepted sample after a few trails. If this would become a problem, it would be easy to adaptively improve the dominating density.
+
+{\fontsize{4}{4}\selectfont
+%above is to make smaller fonts in algorithm
+\begin{algorithm}[t]
+\SetKwInOut{Input}{input}
+\SetKwInOut{Init}{init}
+\SetKwInOut{Parameter}{param}
+\caption{\textsc{Accept-Reject Algorithm for Hyperparameter Update}}
+\Input{$c \geqslant 0, \beta > 0$}
+%\Init{$\bfX^{(1)}=\mathbf{0}^{n\cdot d\cdot t}$, $\gamma= \lambda^{-1} \mathbf{1}^{n}$}
+% \Parameter{}
+Set $\hat x = \sqrt{\beta c}$.\\
+Set $\log \hat p = -c/\hat x - \hat x/\beta$.\\
+Set $\tilde{x} = \beta c/\hat x + \hat x$.\\
+Set $\log G_{x\geqslant \tilde{x}} = \log \beta - \tilde{x}/\beta$.\\
+Set $\log G_{x < \tilde{x}} = \log \hat p + \log \tilde{x}$. \\
+Set $\log G_{tot} = \log G_{x\geqslant \tilde{x}} + \log\left(1 + \exp\left(G_{x < \tilde{x}} - G_{x\geqslant \tilde{x}}  \right)\right)$.\\
+\While{true}
+    {
+    Draw $u, v, w$ uniform from $\left(0,1\right)$.\\
+    \If{$\log v + \log G_{tot} < \log G_{x\geqslant \tilde{x}}$}{
+		Set $W = \log w - \tilde{x}/\beta$.\\
+		Propose $x = - \beta W$:\\
+		\If{$\beta \log(u) < c/W$}{\Return{$x$} (acceptance)}
+    }
+    \Else{Propose $x = w \tilde{x}$:\\
+    		\If{$\log u + \log \hat{p} < -c/x - x/\beta$}{\Return{$x$} (acceptance)}
+    		}
+    }
+\label{alg:acceptreject}
+\end{algorithm}
+}
+
+\begin{figure}[tb]
+   \centering
+\includegraphics[width = 0.8\textwidth]{hbm/AcceptRejectSketch}
+\caption{Sketch of the quantities used in the accept-reject sampling Algorithm~\ref{alg:acceptreject}.}
+   \label{fig:AccRejSketch}
+\end{figure}
+
+
 %----------------uncertainty maps-----------------------------------------------------------
-\section{Study of the different modes defining uncertainty maps of inverse problems}
+%\section{Study of the different modes defining uncertainty maps of inverse problems}
 
 %----------------Experiments-----------------------------------------------------------
 \section{Experiments}
+\subsection{Hyperparameter estimation in the variational formulation}
+
+\subsubsection{Simulation study}
+
+We generated a simulation dataset with $N=302$ sensors, $T=190$ time samples and $S=1500$ sources. Four sources were randomly selected to be active with realistic waveforms obtained from the MIND dataset~\cite{weisend2007paving}. The linear forward operator $\mathbf{G}$ was a random matrix, whose columns were normalized to 1. Two levels of white noise were added to the simulation. We always used $\tau=0.5$.
+
+\begin{figure}
+	\includegraphics[width=0.95\textwidth]{hyperparam_estim/fig1_eusipco_data_size_and_fix_points_a_b}
+    \caption{(a) Source identification results for different number of sources measured with F1 score using $\alpha=1$ and $\beta=1$. The higher the number of regressors the worse is the performance. (b) Estimated $\lambda$ as a function of $\lambda_{init}$ for different values of $a$ and $b$. The red curve for $\beta=0.33$ gives the best plateau, which demonstrates that $(a,b)$ shall be carefully adjusted.
+    }
+    \label{fig:fig1}
+\end{figure}
+
+In order to illustrate the issue when using a synthesis prior for large problems, we run the estimation of the hyperparameter $\lambda$ as suggested in~\cite{Figueiredo} using the $0.5$-homogeneous non-convex prior. Figure~\ref{fig:fig1}-(a) shows the F1 score of the source reconstruction (1 for good reconstruction and 0 for bad). The source estimation is failing for almost all the range of data size. Figure~\ref{fig:fig1}-(b) shows the results after reformulating the problem with different settings of $\alpha$ and $\beta$. One can notice that a setting as in~\cite{Figueiredo} with $\alpha=1$ and $\beta=1$ always gives an estimated $\lambda$ around $1\%$ of $\lambda_{max}$ which is not promoting the sparsity we are looking for in this kind of setting. For this aim, we varied the values of $\beta$ and computed $\alpha$ as defined before. Figure~\ref{fig:fig1}-(b) shows that for most values of $\beta$ we have rather a too low estimation of $\lambda\approx 1\%$ or a too high $\lambda\geq 100\%$ resulting in zero source found active. Interestingly setting $\beta=1/3$ gives a plateau at $\hat{\lambda}$ close to $0.3\lambda_{max}$. This is evidence of a clear fixed point for the iterative process $\lambda^{(t+1)}=f(\lambda^{(t)})$, where $f$ is the update rule of $\lambda$ in Equation~\eqref{eq4}. We use $\beta=1/3$ from now on and its corresponding $\alpha$.
+
+Figure~\ref{fig:mxne_vs_irmxne} represents the simulated sources with stars and the estimated ones with plain lines. Figure~\ref{fig:mxne_vs_irmxne}-(a)-(b) display results with the $\ell_{2,1}$ and $\ell_{2,0.5}$ norms respectively, using one hyperparameter initialized to $\lambda=0.5\lambda_{max}$. One can see that in Figure~\ref{fig:mxne_vs_irmxne}-(a), the $\ell_{2,1}$ norm recovers the four sources with an amplitude bias (the estimated amplitude is lower than the exact one), and that several sources shown in light green are almost flat around zero but still found as active sources. There is no way to reduce the support without losing one of the four simulated sources, \textit{i.e.} the $\ell_{2,1}$ norm with one hyperparameter fails to recover the exact simulated sources.\\
+The $\ell_{2,0.5}$ norm in (b) estimates the exact four source amplitudes without amplitude bias thanks to the non-convexity~\cite{irMxNE}. On the other hand, Figure~\ref{fig:mxne_vs_irmxne}-(c) shows the results for the convex penalty using one hyperparameter per source. It can be seen that it is qualitatively equivalent to the non-convex penalty. \\
+
+The advantage of having one hyperparameter per source is to pick up only the sources involved in the measurement $\mathbf{M}$ and drop the extra almost-zero sources visible in Figure~\ref{fig:mxne_vs_irmxne}-(a) (light green). This extension produces sparser results and less amplitude bias without casting the problem as non-convex. % MAP formulation.
+
+\begin{figure}
+	\includegraphics[width=0.95\textwidth]{hyperparam_estim/mxne_vs_irmxne}
+    \caption{Source reconstruction on simulated data. (a): Source estimates obtained using $\ell_{2,1}$ with one $\lambda$. The solution is not sparse enough (the zero-sources in light green) and there is an amplitude bias between the exact amplitudes (stars) and the estimated ones (raw lines). (b): Good reconstruction of the four sources using $\ell_{2,0.5}$ and one $\lambda$, which is equivalent to the reconstruction using the $\ell_{2,1}$ norm with $\lambda\in\RR^S$ (c). Each of the four sources is encoded with a color.
+    }
+    \label{fig:mxne_vs_irmxne}
+\end{figure}
+
+\subsubsection{Experimental results with MEG auditory data}
+
+We applied the estimation of a single hyperparameter and a hyperparameter per source using the convex $\ell_{2,1}$ penalty on a real open dataset (MNE sample dataset~\cite{MNE}). It corresponds to a dataset with $N=305$ sensors, $T=55$ time samples and $S=7498$ sources. 
+Figure~\ref{fig:sample_data} shows the source amplitudes of the two auditory sources and their positions in the brain when estimating a hyperparameter per source. When using a single hyperparameter on the convex norm $\ell_{2,1}$, multiple spurious sources are found as active which replicates the simulation on Figure~\ref{fig:mxne_vs_irmxne}-(a). These source estimates in Figure~\ref{fig:sample_data} correspond to the M100 peak (peak around 100 ms) generated in the vicinity of the bilateral auditory cortices in superior temporal gyri (the relevant auditory area).
+
+\begin{figure}
+%\begin{center}	
+\includegraphics[width=0.95\textwidth]{hyperparam_estim/fig_sample}
+    \caption{Source reconstruction on MEG auditory data (sample dataset \cite{MNE}). Source amplitude of two sources (blue and green) in the right and their corresponding positions in the brain on the left. 
+    }
+%\end{center}
+    \label{fig:sample_data}
+\end{figure}
+
+\subsection{Study of the different modes defining uncertainty maps of MEG/EEG inverse problem}
+
 We now examine the benefits of our re-interpretation of the MM algorithm described in Section~\ref{section:MM} as a specific way to compute a full-MAP estimate for a specific HBM as described in Sections~\ref{section:HBM} and ~\ref{section:MM}.
 In particular, we investigate how using MCMC sampling of the posterior distribution as described in Section~\ref{sub:sampling} can help getting better initializations for the optimization algorithm.
 We first present results for a simulated MEG dataset and then for two experimental MEG/EEG datasets.
 
-\subsection{Simulation study}
+\subsubsection{Simulation study}
 We generated a realistic simulation based on a free-orientation ($d=3$) source model with $n=7498$ cortical locations and $m=306$ MEG sensors. Two of these locations were selected to be active, one in each hemisphere. One of the sources had a deep ventral location in the inferior occipital gyrus (Figure~\ref{fig:simulated_data}-c), and the second one had a more superficial location in the motor cortex (Figure~\ref{fig:simulated_data}-a). Their corresponding waveforms are shown in Figure~\ref{fig:simulated_data}-b. When passed to the solvers, they are cropped between 40 to 180 ms to keep only the two peaks. This leads to $t=43$ time samples.
 
 \begin{figure}[htp]
@@ -570,7 +706,7 @@ Then, we sampled the corresponding posterior distribution given in Equation~\eqr
 	\label{fig:simu_MM_best_MCMC}
 \end{figure}
 
-Finding the correct support in a sparse under-determined regression problem like Equation~\eqref{eq:FwdEq} is inherently of combinatorial complexity. In our two approaches, this is reflected in the non-convexity of the objective function (Equation~\eqref{eq:L2pReg}) and the multi-modality of the joint posterior distribution (Equation~\eqref{eq:full-post}), respectively. The second question we want to investigate is whether the methods we developed here can reveal or quantify some of the ambiguity and uncertainty of this sparse support identification problem. Traditional uncertainty quantification (UQ) measures such as variance estimates of $\bfX$ or $\mathbf{\gamma}$ fail to do so as they cannot capture the multi-modality of the posterior in a satisfactory way. In addition, no sample $\bfX^{(k)}$ is exactly sparse: as the posterior distribution is a continuous probability density, the probability of event $\{\bfX^{(k)}[i] = 0\}$ is zero, which means that the whole support of $\bfX^{(k)}$ is active with probability $1$. Even a thresholded average of the support of $\bfX^{(k)}$ will only reveal the average probability of a location being part of the support. In source analysis, it is arguably more interesting which networks of sources from different brain areas have most likely produced a given data set, a question left open by these measures. Here, we propose to tackle this question in a different way.
+Finding the correct support in a sparse under-determined regression problem like Equation~\eqref{eq_linmeeg} is inherently of combinatorial complexity. In our two approaches, this is reflected in the non-convexity of the objective function (Equation~\eqref{eq:L2pReg}) and the multi-modality of the joint posterior distribution (Equation~\eqref{eq:full-post}), respectively. The second question we want to investigate is whether the methods we developed here can reveal or quantify some of the ambiguity and uncertainty of this sparse support identification problem. Traditional uncertainty quantification (UQ) measures such as variance estimates of $\bfX$ or $\mathbf{\gamma}$ fail to do so as they cannot capture the multi-modality of the posterior in a satisfactory way. In addition, no sample $\bfX^{(k)}$ is exactly sparse: as the posterior distribution is a continuous probability density, the probability of event $\{\bfX^{(k)}[i] = 0\}$ is zero, which means that the whole support of $\bfX^{(k)}$ is active with probability $1$. Even a thresholded average of the support of $\bfX^{(k)}$ will only reveal the average probability of a location being part of the support. In source analysis, it is arguably more interesting which networks of sources from different brain areas have most likely produced a given data set, a question left open by these measures. Here, we propose to tackle this question in a different way.
 
 \begin{figure}[htp]
 	\centering
@@ -581,7 +717,7 @@ Finding the correct support in a sparse under-determined regression problem like
 	\label{fig:results_simu_circular}
 \end{figure}
 
-Our procedure of initializing an MM iteration with a sample from the posterior distribution yields different local minima of Equation~\eqref{eq:L2pReg}, \ie approximate solutions to Equation~\eqref{eq:FwdEq} that fulfill our \emph{a priori} knowledge of a sparse support, but it also yields the relative frequencies with which these minima are found by the MM algorithm. If we assume that the division of $\R^{SO\times T}$ into attractors of the MM algorithm roughly overlaps with the division of $\R^{SO\times T}$ into modes of the marginalized posterior over $\bfX$ within the HBM framework, this relative frequency corresponds to the relative volume of the local minima of Equation~\eqref{eq:L2pReg}. The latter is a better measure to compare different local minima than their depth (a local minimum that is deep but thin corresponds to an unstable source estimate). While a mathematically more profound and detailed analysis of this heuristic is left for future work, we examine here if this approach reacts to changes in the measurement design in the way we would expect. To do so, we switch from using all 306 MEG sensors to using only 204 gradiometers or each other gradiometer (102 sensors). By reducing the number of sensors we increase the under-determinedness of the problem and the intuition is that it should lead to
+Our procedure of initializing an MM iteration with a sample from the posterior distribution yields different local minima of Equation~\eqref{eq:L2pReg}, \ie approximate solutions to Equation~\eqref{eq_linmeeg} that fulfill our \emph{a priori} knowledge of a sparse support, but it also yields the relative frequencies with which these minima are found by the MM algorithm. If we assume that the division of $\R^{SO\times T}$ into attractors of the MM algorithm roughly overlaps with the division of $\R^{SO\times T}$ into modes of the marginalized posterior over $\bfX$ within the HBM framework, this relative frequency corresponds to the relative volume of the local minima of Equation~\eqref{eq:L2pReg}. The latter is a better measure to compare different local minima than their depth (a local minimum that is deep but thin corresponds to an unstable source estimate). While a mathematically more profound and detailed analysis of this heuristic is left for future work, we examine here if this approach reacts to changes in the measurement design in the way we would expect. To do so, we switch from using all 306 MEG sensors to using only 204 gradiometers or each other gradiometer (102 sensors). By reducing the number of sensors we increase the under-determinedness of the problem and the intuition is that it should lead to
 more variability among the plausible sparse solutions. The graphical analysis presented and described in Figure~\ref{fig:results_simu_circular} and Figure~\ref{fig:results_simu_heat_maps} confirms this. A first observation is the superficial source in the premotor cortex was correctly identified as part of the support of every local minima when using the full 306 MEG sensors. It was however sometimes miss-localized when reducing the number of sensors (Figure~\ref{fig:results_simu_circular}). A second observation is that the spatial spread of these miss-localizations is smaller for this superficial source than it is for the deep source. This deep source in the ventral cortex is more difficult to find even with all sensors. Indeed, none of the 100 best initialization perfectly localized the deep simulated source. In general, we can clearly see how the ambiguity increases when decreasing the number of sensors, and how the distribution of source networks gets more fuzzy. However, our analysis also provides useful local measures of these phenomena.
 
 
@@ -600,8 +736,7 @@ more variability among the plausible sparse solutions. The graphical analysis pr
 	\label{fig:results_simu_heat_maps}
 \end{figure}
 
-
-\subsection{Experimental MEG data}
+\subsubsection{Experimental results with MEG auditory and visual data}
 We now repeat our analysis with two experimental open datasets. The first one is a recording of auditory evoked fields (MNE sample dataset~\cite{mne-python}). The second one contains visual evoked fields (visual condition of MNE sample dataset) for which source localization is a more difficult task due to the proximity between neural sources. The true nature of the underlying source network is also less clear for this second dataset.
 
 Figure~\ref{fig:hist_real_datasets} shows the equivalent to Figure~\ref{fig:simu_MM_best_MCMC} for both datasets. Again, we see that lower objective function value can be obtained using MCMC-based initializations. The auditory sample dataset is commonly assumed to be generated by two bilateral focal sources around the auditory cortices in the superior temporal gyrus of the temporal lobe. Due to the superficial nature of these sources and their large distance, estimation of their position is regarded as a relatively simple task. Indeed, the histogram shows that using MCMC-based initializations does not help a lot to reduce the objective function compared to a uniformly initialized MM solution. In the case of the visual dataset, where several closed-by sources are active, the difference is however quite drastic. The majority of the MCMC-based initializations lead to lower values of the objective function. Looking at the source distribution plots on the brain for both datasets, one can also observe more complex source configurations for the visual data.
