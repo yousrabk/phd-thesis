@@ -200,23 +200,48 @@ Fig.~\ref{fig:simulation}-b shows the explained variance for the irTF-MxNE with 
 \end{figure}
 
 \subsection{Experimental results with MEG somatosensory data}
-To demonstrate the advantage of irTF-MxNE with a multi-scale dictionary over the basic irTF-MxNE, we tested different parameters for different solvers on a MEG dataset: MIND (for details \cite{weisend2007paving}).
-Source estimation was first performed using several solvers: irTF-MxNE, irMxNE~\cite{strohmeier2014iterative} and dSPM~\cite{dale2000dynamic}. Regarding irTF-MxNE, two dictionaries were tested. A dictionary with a 64 samples window and a 4 samples time shift, which leads to smooth source courses; and a dictionary with a 16 samples window and a 2 samples time shift, which helps capture short transient sources. After inspection of the residual, results showed that at least four sources are necessary to capture all evoked components. We have therefore fixed the parameters of the irTF-MxNE solvers so we obtained only four sources while explaining as much variance as possible. After that, we experimented with two different parameters $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ to show their impact on the smoothness of the different time sources obtained.
-%Both dictionaries were tested using several parameters: $\lambda_{space}=28.5$ and $\lambda_{time}=1.5$ or $\lambda_{time}=2.5$, to show the different source estimates obtained. irMxNE was computed for $\lambda=40$. The parameters were chosen in order to reduce the residual \textit{i.e.} to maximize the explained data by having at least four sources. % XXX
-Fig. \ref{fig:MEG_dics} (a-b) demonstrates the four time courses obtained with irTF-MxNE using the short window dictionary for the selected values of $\lambda_{time}$.
+To demonstrate the advantage of irTF-MxNE with a multi-scale dictionary over the basic irTF-MxNE, we tested different parameters for different solvers on a MEG dataset: somatosensory study of the MIND dataset (for details \cite{weisend2007paving}). The evoked is shown in Figure~\ref{fig:evoked_mind}. One can already notice this mixture of brain waves in the evoked. Sharper waves right after the onset in the evoked are due to a nice alignment of the trials which their information is not lost after averaging. This is mainly known as a response of the primary somatosensory area (S1) which answers quickly after a painless electrical stimulation of the median nerve. It is clearly seen from the evoked also this longer wave which comes later around 70ms. This is what makes this data a challenging dataset and a very good one for testing the multi-scale solver.
+
+\begin{figure}
+\centering
+	\includegraphics[width=0.9\textwidth]{multidict/evoked_mind_MEG}
+    \caption{Somatosensory evoked response after preprocessing and averaging (gradiometers and magnetometers data).}
+    \label{fig:evoked_mind}
+\end{figure}
+
+Source estimation was first performed using several solvers: irTF-MxNE, irMxNE~\cite{strohmeier2014iterative} and dSPM~\cite{dale2000dynamic}. Regarding irTF-MxNE, two dictionaries were tested (both STFT dictionaries). A dictionary with a 64 samples window and a 4 samples time shift, which leads to smooth source courses; and a dictionary with a 16 samples window and a 2 samples time shift, which helps capture short transient sources. After inspection of the residual in the Figure~\ref{fig:residual_mind}, results showed that at least four sources are necessary to capture all evoked components. 
+
+We have therefore fixed the parameters of the irTF-MxNE solvers so we obtained only four sources while explaining as much variance as possible. After that, we experimented with a set of different parameters and we show two of them $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ to demonstrate their impact on the smoothness of the different time sources obtained.
+The parameters were chosen in such a way to reduce the residual \textit{i.e.} to maximize the explained data by having at least four sources. 
+Figure~\ref{fig:MEG_dics} (a-b) demonstrates the four time courses obtained with irTF-MxNE using the short window dictionary for the selected values of $\lambda_{time}$.
+
+\begin{figure}
+\centering
+	\includegraphics[width=0.9\textwidth]{multidict/residual_mind_MEG}
+    \caption{Residual of the somatosensory data after applying the multi-scale irTF-MxNE.}
+    \label{fig:residual_mind}
+\end{figure}
+
+We show that for high values of $\lambda_{time}$ (b), the solver is not able to capture the short transient component around 30 ms. While for a small value (a), the unmixing is not reliable since the light blue and the green source estimates catch the activity from the red source. Additionally, the time courses are not smooth. On the other hand, Figure~\ref{fig:MEG_dics} (c-d) demonstrate the four time courses obtained with irTF-MxNE using the long window dictionary for the selected $\lambda_{time}$. The figure confirms that both parameters are not able to capture the transient effect after the stimulus, although the time courses are smooth. These four sub-figures reveal that one need a short window to capture the transient effect of the brain signal (See Figure~\ref{fig:residual_long_dic}), while it needs to have a long window to capture the long waves and to have smooth source estimates. This result demonstrates how a combination of the two dictionaries is critical to acquire source estimates with high precision, but the hyperparameters needs to be tuned as well as shown in this Figure~\ref{fig:MEG_dics} that their values change drastically the results.
+
+\begin{figure}
+\centering
+	\includegraphics[width=0.9\textwidth]{multidict/residual_mind_MEG_long_dictionary}
+    \caption{Residual of the somatosensory data after applying irTF-MxNE with a long window dictionary (window size = 64, time shift = 4). The transient part of the brain signal is left in the residual as it cannot be modeled by the long dictionary.}
+    \label{fig:residual_long_dic}
+\end{figure}
+
+Moreover, Figure~\ref{fig:MEG_dics} (e) displays the amplitudes obtained with MxNE for five sources, as for MxNE, one is not able to obtain the four relevant sources unmixed (See for more demonstrative figures~\cite{gramfort2012mixed}). We notice that the light blue source in Figure~\ref{fig:MEG_dics} (a) to (d) appears as two separate sources in (e): light blue and purple. If we increase the $\lambda$ parameter, we increase the amplitude bias due to the $l_1$ norm of the solver. If we set it too high ($\lambda=50$) we obtain four sources, but the blue source which is relevant to the study would be removed and the duplicated purple source is kept. The last panel Figure~\ref{fig:MEG_dics} (f) displays the source estimates for dSPM values corresponding to the four locations of the sources obtained with the irTF-MxNE. These sub-figures show that none of MxNE or dSPM solvers are able to obtain smooth sources without any leakage between the time courses.
 
 \begin{figure}
 \centering
 	\includegraphics[width=0.95\textwidth]{multidict/fig_dics}
-    \caption{Source reconstruction using somatosensory data with different solvers. (a) - (b) irTF-MxNE on a small window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. (c) - (d) irTF-MxNE on a long window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. From (a) to (d) $\lambda_{space}=28.5$ (e) irMxNE for $\lambda=40$ and (f) dSPM activation for the four activated sources.}
+    \caption{Source reconstruction using somatosensory data with different solvers. (a) - (b) irTF-MxNE on a small window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. (c) - (d) irTF-MxNE on a long window dictionary with $\lambda_{time}=1.5$ and $\lambda_{time}=2.5$ respectively. From (a) to (d) $\lambda_{space}=28.5$ (e) MxNE for $\lambda=40$ and (f) dSPM activation for the four activated sources.}
     \label{fig:MEG_dics}
 \end{figure}
 
-We show that for high values of $\lambda_{time}$ (b), the solver is not able to capture the short transient component around 40 ms. While for a small value (a), the unmixing is not reliable since the light blue and the green source estimates catch the activity from the red source. Additionally, the time courses are not smooth. On the other hand, Fig. \ref{fig:MEG_dics} (c-d) demonstrate the four time courses obtained with irTF-MxNE using the long window dictionary for the selected $\lambda_{time}$. They confirm that both parameters are not able to capture the transient effect after the stimulus, although the time courses are smooth. These four subfigures reveal that a combination of the two dictionaries should be critical to acquire source estimates with high precision.
-Moreover, Fig. \ref{fig:MEG_dics} (e) displays the amplitudes obtained with irMxNE for five sources, as for irMxNE, one is not able to obtain the four relevant sources unmixed \cite{gramfort2012mixed}. We notice that the light blue source in Fig.~\ref{fig:MEG_dics} (a) to (d) appears as two separate sources in (e): light blue and purple. If we increase the $\lambda$ parameter, we increase the amplitude bias due to the $l_1$ norm of the solver. If we set it too high ($\lambda=50$) we obtain four sources, but the blue source which is relevant to the study would be removed and the duplicated purple source is kept. The last panel Fig.~\ref{fig:MEG_dics} (f) displays the source estimates for dSPM values corresponding to the four locations of the sources obtained with the irTF-MxNE. These subfigures show that none of irMxNE or dSPM solvers are able to obtain smooth sources without any leakage between the time courses.
-
 Source estimation was then achieved using irTF-MxNE with the combination of the two dictionaries.
-Fig.~\ref{fig:MEG} shows source reconstruction using the multi-scale irTF-MxNE for the regularization parameters $\lambda_{space}=28.5$ and $\lambda_{time}=1.5$. Each source's location is marked by a sphere in Fig.~\ref{fig:MEG} left, and its amplitude over time is color-coded in the right panel. The results show a suitable succession of the sources. The transient source (red) is the only source explaining the event related field until 48 ms. This red source corresponds to the contralateral primary somatosensory cortex (cS1) located in the postcentral gyrus of the parietal lobe (right hemisphere (rh)). The red sphere on the lateral view coincides with the smeared dSPM activation around 40 ms. The second source (light blue) corresponds to the secondary somatosensory cortex (cS2), and also occurs with dSPM activation around 80 ms. About 100 ms after stimulus, additional cortical sources are activated, such as ipsilateral secondary somatosensory cortex (iS2) (blue-lh), and contralateral medial wall (green-rh). 
+Figure~\ref{fig:MEG} shows source reconstruction using the multi-scale irTF-MxNE for the regularization parameters $\lambda_{space}=28.5$ and $\lambda_{time}=1.5$. Each source's location is marked by a sphere in Figure~\ref{fig:MEG} left, and its amplitude over time is color-coded in the right panel. The results show a suitable succession of the sources. The transient source (red) is the only source explaining the event related field until 48 ms. This red source corresponds to the contralateral primary somatosensory cortex (cS1) located in the postcentral gyrus of the parietal lobe (right hemisphere (rh)). The red sphere on the lateral view coincides with the smeared dSPM activation around 40 ms. The second source (light blue) corresponds to the secondary somatosensory cortex (cS2), and also occurs with dSPM activation around 80 ms. About 100 ms after stimulus, additional cortical sources are activated, such as ipsilateral secondary somatosensory cortex (iS2) (blue-lh), and contralateral medial wall (green-rh). 
 
 \begin{figure}
 \centering
@@ -225,6 +250,63 @@ Fig.~\ref{fig:MEG} shows source reconstruction using the multi-scale irTF-MxNE f
 	\label{fig:MEG}
 \end{figure}
 
+The multi-scale version of the MEG/EEG inverse problem in the TF domain does not only allow the capture of mixture of brain signals. An interesting point is the non-stationary aspect of the sources, which can be activated only for a short time window in a longer one. This multi-scale solver is then allowing us to analyze and reconstruct signals with variable characteristics over time. So far, all the results presented have been using a Gabor transform by fixing its window length and the time shift. The Gabor transform is a special case of STFT (the discrete case), and the question is what if this dictionary is not the best choice of where to decompose the data. The choice of the STFT was driven mostly by its flexibility of the choice of the dictionary being redundant or overcomplete. Moreover, its efficient implementation using fast FFT makes the STFT/iSTFT computation possible even with very redundant dictionaries.\\
+
+We investigated a second choice: Modified Discrete Cosine Transform (MDCT). The problem found with MDCT is that it is critically sampled. The sliding time windows are overlapping so that the last half of one block coincides with the first half of the next block, \textit{i.e.}, the time shift is equal to the half of the window's length. 
+
+\begin{figure*}
+        \centering
+        \begin{subfigure}[b]{0.475\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{multidict/mdct_ws_64_16_tshift_32_8}
+            \caption[Network2]%
+            {{\small Network 1}}    
+            \label{fig:mean and std of net14}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}  
+            \centering 
+            \includegraphics[width=\textwidth]{multidict/stft_ws_64_16_tshift_32_8}
+            \caption[]%
+            {{\small Network 2}}    
+            \label{fig:mean and std of net24}
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{multidict/mdct_ws_128_16_tshift_64_8}
+            \caption[]%
+            {{\small Network 3}}    
+            \label{fig:mean and std of net34}
+        \end{subfigure}
+        \quad
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{multidict/stft_ws_128_16_tshift_64_8}
+            \caption[]%
+            {{\small Network 4}}    
+            \label{fig:mean and std of net44}
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{multidict/mdct_ws_128_64_16_8_tshift_64_32_8_4}
+            \caption[]%
+            {{\small Network 3}}    
+            \label{fig:mean and std of net34}
+        \end{subfigure}
+        \quad
+        \begin{subfigure}[b]{0.475\textwidth}   
+            \centering 
+            \includegraphics[width=\textwidth]{multidict/stft_ws_128_64_16_8_tshift_64_32_8_4}
+            \caption[]%
+            {{\small Network 4}}    
+            \label{fig:mean and std of net44}
+        \end{subfigure}
+        \caption[ The average and standard deviation of critical parameters ]
+        {\small The average and standard deviation of critical parameters: Region R4} 
+        \label{fig:mean and std of nets}
+\end{figure*}
 
 \section{Conclusion \& Perspective}
 In this chapter, the main motivation of the multi-scale dictionary has been presented. The first contribution has been presented which improves the irTF-MxNE solver using a multi-scale dictionary to capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
