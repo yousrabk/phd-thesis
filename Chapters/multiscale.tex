@@ -194,7 +194,7 @@ Fig.~\ref{fig:simulation}-b shows the explained variance for the irTF-MxNE with 
 
 \begin{figure}
 \centering
-	\includegraphics[width=0.8\textwidth]{multidict/fig_sim}
+	\includegraphics[width=0.85\textwidth]{multidict/fig_sim}
     \caption{(a) Simulated source time courses in S1 (blue) and S2 (green). (b) The explained variance for irTF-MxNE using two different dictionaries: long window size (ws) 64 with time shift (s) 4 (green), and small ws 16 with s 2 (red). The combination of the two dictionaries is shown in blue. This shows how the multi-scale dictionary (MSD) improves the explained variance.}
     \label{fig:simulation}
 \end{figure}
@@ -252,61 +252,60 @@ Figure~\ref{fig:MEG} shows source reconstruction using the multi-scale irTF-MxNE
 
 The multi-scale version of the MEG/EEG inverse problem in the TF domain does not only allow the capture of mixture of brain signals. An interesting point is the non-stationary aspect of the sources, which can be activated only for a short time window in a longer one. This multi-scale solver is then allowing us to analyze and reconstruct signals with variable characteristics over time. So far, all the results presented have been using a Gabor transform by fixing its window length and the time shift. The Gabor transform is a special case of STFT (the discrete case), and the question is what if this dictionary is not the best choice of where to decompose the data. The choice of the STFT was driven mostly by its flexibility of the choice of the dictionary being redundant or overcomplete. Moreover, its efficient implementation using fast FFT makes the STFT/iSTFT computation possible even with very redundant dictionaries.\\
 
-We investigated a second choice: Modified Discrete Cosine Transform (MDCT). The problem found with MDCT is that it is critically sampled. The sliding time windows are overlapping so that the last half of one block coincides with the first half of the next block, \textit{i.e.}, the time shift is equal to the half of the window's length. 
-
 \begin{figure*}
         \centering
-        \begin{subfigure}[b]{0.475\textwidth}
+        \begin{subfigure}[b]{0.48\textwidth}
             \centering
             \includegraphics[width=\textwidth]{multidict/mdct_ws_64_16_tshift_32_8}
-            \caption[Network2]%
-            {{\small Network 1}}    
-            \label{fig:mean and std of net14}
+            \caption{MDCT: window size = 64-16,\\
+            		    time shift = 32-8}
+            \label{fig:mdct_short}
         \end{subfigure}
         \hfill
-        \begin{subfigure}[b]{0.475\textwidth}  
+        \begin{subfigure}[b]{0.48\textwidth}  
             \centering 
             \includegraphics[width=\textwidth]{multidict/stft_ws_64_16_tshift_32_8}
-            \caption[]%
-            {{\small Network 2}}    
-            \label{fig:mean and std of net24}
+            \caption{STFT: window size = 64-16,\\
+            		    time shift = 32-8}
+            \label{fig:stft_short}
         \end{subfigure}
-        \vskip\baselineskip
-        \begin{subfigure}[b]{0.475\textwidth}   
+        \vskip\baselineskip\vspace{-15pt}
+        \begin{subfigure}[b]{0.48\textwidth}   
             \centering 
             \includegraphics[width=\textwidth]{multidict/mdct_ws_128_16_tshift_64_8}
-            \caption[]%
-            {{\small Network 3}}    
-            \label{fig:mean and std of net34}
+            \caption{MDCT: window size = 128-16,\\
+            		    time shift = 64-8}
+            \label{fig:mdct_long}
         \end{subfigure}
         \quad
-        \begin{subfigure}[b]{0.475\textwidth}   
+        \begin{subfigure}[b]{0.48\textwidth}   
             \centering 
             \includegraphics[width=\textwidth]{multidict/stft_ws_128_16_tshift_64_8}
-            \caption[]%
-            {{\small Network 4}}    
-            \label{fig:mean and std of net44}
+            \caption{STFT: window size = 128-16,\\
+            		    time shift = 64-8}
+            \label{fig:stft_long}
         \end{subfigure}
-        \vskip\baselineskip
-        \begin{subfigure}[b]{0.475\textwidth}   
+        \vskip\baselineskip\vspace{-15pt}
+        \begin{subfigure}[b]{0.48\textwidth}   
             \centering 
             \includegraphics[width=\textwidth]{multidict/mdct_ws_128_64_16_8_tshift_64_32_8_4}
-            \caption[]%
-            {{\small Network 3}}    
-            \label{fig:mean and std of net34}
+            \caption{MDCT: window size = 128-64-16-8,\\
+            		    time shift = 64-32-8-4}
+            \label{fig:mdct_all_dict}
         \end{subfigure}
         \quad
-        \begin{subfigure}[b]{0.475\textwidth}   
+        \begin{subfigure}[b]{0.48\textwidth}   
             \centering 
             \includegraphics[width=\textwidth]{multidict/stft_ws_128_64_16_8_tshift_64_32_8_4}
-            \caption[]%
-            {{\small Network 4}}    
-            \label{fig:mean and std of net44}
+            \caption{STFT: window size = 128-64-16-8,\\
+            		    time shift = 64-32-8-4}
+            \label{fig:stft_all_dict}
         \end{subfigure}
-        \caption[ The average and standard deviation of critical parameters ]
-        {\small The average and standard deviation of critical parameters: Region R4} 
-        \label{fig:mean and std of nets}
+        \caption{Comparison between MDCT and STFT using Somatosensory of the MIND dataset. MDCT is shown in the left column and STFT on the right column.} 
+        \label{fig:comparison_mind_mdct_stft}
 \end{figure*}
+
+We investigated a second choice: Modified Discrete Cosine Transform (MDCT). The problem found with MDCT is the fact that it is critically sampled. The sliding time windows are overlapping so that the last half of one block coincides with the first half of the next block, \textit{i.e.}, the time shift is equal to the half of the window's length. Figure~\ref{fig:comparison_mind_mdct_stft} shows several mixture of dictionaries for MDCT, but also for STFT if we set the time shift at half the window size. One can directly notice that it is harder to obtain both transient and smooth signals without any leakage between the time sources. MDCT is more sensitive to all the hyperparameters: the dictionary window length and the $\lambda_{space}$/$\lambda_{time}$. Even if we leave in a side the compromise that one needs to keep in mind between the size of multi-scale dictionary and the computation time by having multiple dictionaries concatenated together as in Figure~\ref{fig:comparison_mind_mdct_stft}-\ref{fig:mdct_all_dict}, MDCT is still not able to be comparable to STFT as in Figure~\ref{fig:MEG}.
 
 \section{Conclusion \& Perspective}
 In this chapter, the main motivation of the multi-scale dictionary has been presented. The first contribution has been presented which improves the irTF-MxNE solver using a multi-scale dictionary to capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
