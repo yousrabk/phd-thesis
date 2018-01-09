@@ -178,7 +178,7 @@ Assuming spatially whitened MEG/EEG data, a sparse source estimate can be obtain
 \mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{SO\times T}} \frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_2^2 + \lambda\|\mathbf{X}\|p \hspace{5pt} with \lambda > 0.
 \end{equation} \label{eq:regularized_problem}
 
-The optimization problem is non-differentiable, which has not a closed-form solution. Hence iterative approaches needs to be applied to solve the problem in Equation~\eqref{eq:regularized_problem}. Fixing $p=1$ in Equation~\eqref{eq:regularized_problem}, the problem is known as LASSO~\cite{Tibshirani96} in statistics, basis pursuit denoising (BPDN)~\cite{Chen_Donoho_Saunders98} in signal processing, and selective minimum norm (SMN)~\cite{matsuura1995selective} in MEG/EEG. However applying the $\ell_1$-norm for the free or the loose orientation ($O=3$) promotes sparsity even whitin the orientation at each source location. To overcome this issue, Minimum Current Estimate (MCE) has been proposed by~\cite{Uutela-etal:1999} solving SMN by fixing the orientation apriori by compting first a MNE solution. \\
+The optimization problem is non-differentiable, which has not a closed-form solution. Hence iterative approaches needs to be applied to solve the problem in Equation~\eqref{eq:regularized_problem}. Fixing $p=1$ in Equation~\eqref{eq:regularized_problem}, the problem is known as \ac{lasso}~\cite{Tibshirani96} in statistics, basis pursuit denoising (BPDN)~\cite{Chen_Donoho_Saunders98} in signal processing, and selective minimum norm (SMN)~\cite{matsuura1995selective} in MEG/EEG. However applying the $\ell_1$-norm for the free or the loose orientation ($O=3$) promotes sparsity even whitin the orientation at each source location. To overcome this issue, Minimum Current Estimate (MCE) has been proposed by~\cite{Uutela-etal:1999} solving SMN by fixing the orientation apriori by compting first a MNE solution. \\
 
 Several other approaches can be cited investigating the same idea of having focal source estimates. Sparse Bayesian Learning (SBL)~\cite{wipf2006bayesian}, Spatio-Temporal TOmographic NonNegative Independent Component Analysis (STTONNICA)\cite{valdes2009eeg}, mixed-norms~\cite{ou2009distributed}, Champagne~\cite{owen2012performance}, hierarchical Bayesian inference\cite{lucka2012hierarchical}, or the Mixed-Norm estimates (MxNE)~\cite{gramfort2012mixed}. Those methods are called spatio-temporal because they work in a predefined time window, however they completely ignore the temporal correlation. This can be verified by shifting the columns of the source estimate, it will have no effect on the source estimate itself. \\
 
@@ -317,10 +317,10 @@ The cardinal of $\mathcal{S}(y)$ corresponds to the $\ell_0$ pseudo-norm. The op
 Coming back to our application, we assume that the signals $\mathbf{M}$ obtained with M/EEG are linear combinations of a small number of sources in the brain. This implies that only few sources in $\mathbf{X}$ are active, \textit{i.e.}, $\mathbf{X}$ is sparse. However the minimization of Equation~\eqref{eq_reg} with the $\ell_0$-norm is unfortunately an NP hard combinatorial problem.
 % This problem is difficult as we need to select the the number of sources. Furthermore, the $\ell_0$-norm is not convex \cite{natarajan1995sparse}.
 
-Due to the above undesired properties, we need to consider a convex relaxation to the $\ell_0$-norm. The use of the least squares with the $\ell_1$-norm (i.e. $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_1$ in Equation~\eqref{eq_reg}) is the natural approximation, since it is the closest convex norm to the $\ell_0$-norm. The $\ell_1$-norm is known as \textit{lasso} in statistics \cite{tibshirani1996regression}, and as Basis Pursuit Denoising~\cite{chen2001atomic} in signal processing literature.
+Due to the above undesired properties, we need to consider a convex relaxation to the $\ell_0$-norm. The use of the least squares with the $\ell_1$-norm (i.e. $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_1$ in Equation~\eqref{eq_reg}) is the natural approximation, since it is the closest convex norm to the $\ell_0$-norm. The $\ell_1$-norm is known as \textit{\ac{lasso}} in statistics \cite{tibshirani1996regression}, and as Basis Pursuit Denoising~\cite{chen2001atomic} in signal processing literature.
 
 \adjustwidth{1em}{0pt}
-\subsubsection*{Lasso}
+\subsubsection*{\ac{lasso}}
 \begin{equation} \label{eq_lasso}
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_1
 \end{equation}
@@ -349,7 +349,7 @@ We investigated the $\ell_{0.5}$-quasinorm as part of the regularization, writte
 As the $\ell_{0.5}$ is non-convex, it cannot be solved in the same way and with the same guarantees as the $\ell_1$-norm. One algorithm for minimizing Equation~\eqref{eq_reg} using the $\ell_{0.5}$ quasi-norm consists in applying an iterative reweighted approach, where each iteration boils down to a convex problem with a weighted $\ell_1$ regularization.
 \adjustwidth{1em}{0pt}
 
-\subsubsection*{Weighted Lasso}
+\subsubsection*{Weighted \ac{lasso}}
 \begin{equation} \label{eq_wlasso}
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_{\mathbf{W};1}
 \end{equation}
@@ -361,10 +361,10 @@ where $\mathbf{W}$ is the weight applied to the matrix $\mathbf{X}$ aiming to re
 \endadjustwidth
 
 \subsubsection*{Structured Norms: \textit{non stationary sources in TF domain}}
-In some applications, like for MEG/EEG, one is not only interested in sparsity, as a-priori knowledge is available on the structure of the support of $\mathbf{X}$. To go beyond the sparsity with the $\ell_p$-norms where $0<p<1$, \cite{yuan2006model} introduced the Group Lasso in order to take grouped structures  in the data into account. It uses a mixed $\ell_2$ and $\ell_1$-norm on $\mathbf{X}$. The idea is to keep a small number of groups active ($\ell_1$) but once a group is active, then the coefficients of that group will be all nonzero ($\ell_2$).
+In some applications, like for MEG/EEG, one is not only interested in sparsity, as a-priori knowledge is available on the structure of the support of $\mathbf{X}$. To go beyond the sparsity with the $\ell_p$-norms where $0<p<1$, \cite{yuan2006model} introduced the Group \ac{lasso} in order to take grouped structures  in the data into account. It uses a mixed $\ell_2$ and $\ell_1$-norm on $\mathbf{X}$. The idea is to keep a small number of groups active ($\ell_1$) but once a group is active, then the coefficients of that group will be all nonzero ($\ell_2$).
 \adjustwidth{1em}{0pt}
 \vspace{-10pt}
-\subsubsection*{Group Lasso}
+\subsubsection*{Group \ac{lasso}}
 \vspace{-10pt}
 \begin{equation} \label{eq_glasso}
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_{2,1}
@@ -373,19 +373,19 @@ where
 \begin{equation*}	\|\mathbf{X}\|_{2,1}=\sum_i\left(\sum_j|X[i,j]|^2\right)^{1/2}
 \end{equation*}
 \endadjustwidth
-While the group lasso gives only a sparse set of groups, sometimes we would like to obtain sparsity in groups and within each group. In our application, a group is basically a source, \textit{i.e.} a position in the brain. The group lasso is definitely convenient to obtain sparse source estimates, however it is not efficient for sources which are active only during small time windows. Toward this end, one can use sparse group lasso~\cite{simon2013sparse}, which is a convex combination of the lasso and the group lasso penalties.
+While the Group \ac{lasso} gives only a sparse set of groups, sometimes we would like to obtain sparsity in groups and within each group. In our application, a group is basically a source, \textit{i.e.} a position in the brain. The Group \ac{lasso} is definitely convenient to obtain sparse source estimates, however it is not efficient for sources which are active only during small time windows. Toward this end, one can use sparse group \ac{lasso}~\cite{simon2013sparse}, which is a convex combination of the \ac{lasso} and the Group \ac{lasso} penalties.
 \adjustwidth{1em}{0pt}
 
-\subsubsection*{Sparse Group Lasso}
+\subsubsection*{Sparse Group \ac{lasso}}
 \begin{equation} \label{eq_sglasso}
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda_1\|\mathbf{X}\|_{2,1} + \lambda_2\|\mathbf{X}\|_1
 \end{equation}
-If $\lambda_1=0$ then it would be equivalent to the lasso penalty, and if $\lambda_2=0$, it results in the group lasso penalty.
+If $\lambda_1=0$ then it would be equivalent to the \ac{lasso} penalty, and if $\lambda_2=0$, it results in the group \ac{lasso} penalty.
 \endadjustwidth
 
 %----------Methods for solving sparse inverse problems-------------------------------------
 \subsection{Methods for solving sparse inverse problems}
-The previous section describes the MEG/EEG inverse problem as a penalized regression model. This section enumerates some methods for solving this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section~\ref{section_distributed}. Similar iterative weighted methods are used to solve the (sparse) group lasso corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
+The previous section describes the MEG/EEG inverse problem as a penalized regression model. This section enumerates some methods for solving this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section~\ref{section_distributed}. Similar iterative weighted methods are used to solve the (Sparse) Group \ac{lasso} corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
 
 The MEG/EEG inverse problem can be written as:
 \begin{equation}
@@ -410,14 +410,14 @@ $\mu$ stands for the step size and has been proved to be $0<\mu<\|\mathbf{G}^\to
 
 If the penalty is set to be the $\ell_{2,1}$-norm as in Equation~\eqref{eq_glasso}, the solution is obtained by row-wise soft thresholding. These proximal gradient methods are known as forward-backward algorithm, thresholded Landweber iterations, or the Iterative Soft Thresholding Algorithm (ISTA) or Fast-ISTA (FISTA)~\cite{bach-etal:2012,parikh2014proximal}. FISTA or any proximal gradient method can be applied when the objective function is a sum of two terms, a convex smooth term and non-smooth term for which the proximity operator is available.
 % It consists of a forward or gradient step based on $g(\mathbf{X})$ with step size $\mu$, and a backward step based on a proximity operator of $\mathcal{P}(\mathbf{X})$.
-A detailed algorithm of FISTA applied to group LASSO can be found in Algorithm~\ref{alg:FISTA}. 
+A detailed algorithm of FISTA applied to Group \ac{lasso} can be found in Algorithm~\ref{alg:FISTA}. 
 
 {\fontsize{4}{4}\selectfont
 \begin{algorithm}[t]
 \SetKwInOut{Input}{Input}
 \SetKwInOut{Init}{init}
 \SetKwInOut{Parameter}{Auxiliary variables}
-\caption{\textsc{Group LASSO with FISTA}}
+\caption{\textsc{Group \ac{lasso} with FISTA}}
 \Input{$\bfM, \bfG $, $\lambda > 0$}
 \Parameter{$\mathbf{Y}$, $\mathbf{X}_0\in\RR^{S\times T}$, $\tau_0\in\RR$}
 
@@ -454,9 +454,9 @@ where for $z\in\RR, (z)_+ =\max(0,z)$ and by convention $\frac{0}{0}=0$.
 \subsubsection*{Block Coordinate Descent: BCD} \label{section:BCD}
 Other methods for solving the MEG/EEG inverse problem with non-smooth penalties exist. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}. BCD is an extension of the well known coordinate descent (CD)~\cite{li-osher:2009,nesterov2012efficiency}. CD is based on the idea to decompose a large optimization problem into a sequence of one-dimensional optimization problems. \\
 
-BCD was used to solve the group LASSO in~\cite{rakotomamonjy2011surveying,qin2013efficient}, it is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source. Same as CD method, the order in which the different blocks are processed can be cyclic, random which improves theoretical performance~\cite{tseng2001convergence,wei2012doa}. \\
+BCD was used to solve the Group \ac{lasso} in~\cite{rakotomamonjy2011surveying,qin2013efficient}, it is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source. Same as CD method, the order in which the different blocks are processed can be cyclic, random which improves theoretical performance~\cite{tseng2001convergence,wei2012doa}. \\
 
-As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance prox~\ref{prox_mixed} when using $\mathcal{P}(\mathbf{X}) = \ell_{2,1}+\ell_1$. Accordingly, the closed form solution for the BCD subproblems solving the group LASSO problem can be derived, which is given in Equation~\eqref{eq_bcd_glasso}.
+As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance prox~\ref{prox_mixed} when using $\mathcal{P}(\mathbf{X}) = \ell_{2,1}+\ell_1$. Accordingly, the closed form solution for the BCD subproblems solving the Group \ac{lasso} problem can be derived, which is given in Equation~\eqref{eq_bcd_glasso}.
 \begin{equation*} \label{eq_bcd_glasso}
 \bar{\mathbf{X}}_s^{(k)} = \mathbf{X}_s^{(k-1)}+\mathbf{\mu}_s\mathbf{G}^\top_s(\mathbf{M} - \mathbf{GX}^{(k-1)})
 \end{equation*}
@@ -485,7 +485,7 @@ At the optimum (corresponding to $\hat{\mathbf{X}}$), if the $\mathbf{Y}^{(k)}$ 
 \subsubsection*{Screening rules | active set} \label{section:active_set}
 The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ equal to zero. We can thus reduce the computation time by primarily updating blocks, that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08}.\\
 
-The active set strategy can be used for both group LASSO and sparse group LASSO based on~\cite{roth2008group,wang2014two}. The main idea is to start with $\mathbf{X}=0$, which corresponds to an empty active set $\Gamma=\{\}$. We estimate an initial active set of sources $\Gamma$ by evaluating the Karush-Kuhn-Tucker (KKT) optimality conditions~\cite{roth2008group,wang2014two}, which states that $\hat{\mathbf{X}}_s=0$ under some conditions depending on the regularization term. We select the $N$ sources that violates the KKT the most (\textit{e.g.} $N=10$). Subsequently, we restrict the source space to the sources in $\Gamma$ and estimate $\hat{\mathbf{X}}^{\Gamma}$ with convergence controlled by the duality gap. After convergence of this restricted optimization problem, we check whether $\hat{\mathbf{X}}^{\Gamma}$ is $\epsilon$-optimal solution for the original problem (without restricting the source space to $\Gamma$). if $\hat{\mathbf{X}}^{\Gamma}$ is not $\epsilon$-optimal solution indicated by $\eta \leq \epsilon$, we re-evaluate the KKT optimality conditions and update the active set $\Gamma$ by adding the $N$ sources that violates again these optimality conditions. The same procedure is then repeated with warm start.
+The active set strategy can be used for both Group \ac{lasso} and Sparse Group \ac{lasso} based on~\cite{roth2008group,wang2014two}. The main idea is to start with $\mathbf{X}=0$, which corresponds to an empty active set $\Gamma=\{\}$. We estimate an initial active set of sources $\Gamma$ by evaluating the Karush-Kuhn-Tucker (KKT) optimality conditions~\cite{roth2008group,wang2014two}, which states that $\hat{\mathbf{X}}_s=0$ under some conditions depending on the regularization term. We select the $N$ sources that violates the KKT the most (\textit{e.g.} $N=10$). Subsequently, we restrict the source space to the sources in $\Gamma$ and estimate $\hat{\mathbf{X}}^{\Gamma}$ with convergence controlled by the duality gap. After convergence of this restricted optimization problem, we check whether $\hat{\mathbf{X}}^{\Gamma}$ is $\epsilon$-optimal solution for the original problem (without restricting the source space to $\Gamma$). if $\hat{\mathbf{X}}^{\Gamma}$ is not $\epsilon$-optimal solution indicated by $\eta \leq \epsilon$, we re-evaluate the KKT optimality conditions and update the active set $\Gamma$ by adding the $N$ sources that violates again these optimality conditions. The same procedure is then repeated with warm start.
 
 
 \subsubsection*{Comparison of the different solvers}\label{section:comparison_solvers}
@@ -494,11 +494,11 @@ In Strohmeier et al.~\cite{strohmeier-etal:16}, BCD scheme was used for solving 
 \begin{figure}
 	\centering
 	\includegraphics[trim={1cm 0.5cm 2cm 0.5cm},angle=270,width=0.95\textwidth]{background/comparison_fista_bcd}
-    \caption{Computation time as a function of $\lambda$ for group LASSO on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy.}
+    \caption{Computation time as a function of $\lambda$ for group \ac{lasso} on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy.}
     \label{fig:comparison_fista_bcd}
 \end{figure}
 %\textbf{XXX: need to say what is $\lambda_{max}$ somewhere in this chapter}
-Combining the BCD and the active set strategy reduces the computation time by a factor of 100 and allows to compute the group LASSO on real MEG/EEG data in a few seconds. All the experimental results shown in the rest of this thesis will be using BCD with active set strategy.
+Combining the BCD and the active set strategy reduces the computation time by a factor of 100 and allows to compute the group \ac{lasso} on real MEG/EEG data in a few seconds. All the experimental results shown in the rest of this thesis will be using BCD with active set strategy.
 
 \subsection{Conclusion}
 This chapter gives all the needed background which has been used to develop and demonstrate the upcoming results. It demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are one of the interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 

@@ -85,6 +85,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{subcaption}
 \usepackage{LpHypermodels}
 \setlength{\parindent}{5ex} % Indent at the start of each paragraph.
+\usepackage{acro}
 
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
@@ -109,6 +110,8 @@ headsepline, % Uncomment to get a line under the header
 \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
 \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
 \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+
+\input{Sections/acronyms}
 
 \let\cleardoublepage\clearpage
 \begin{document}
@@ -148,8 +151,9 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/benchmark}
 \include{Chapters/decoding}
 
-\frontmatter
+%\frontmatter
 \input{Chapters/conclusion}
+\printacronyms[include-classes=abbrev,name=Abbreviations, heading=chapter*]
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
