@@ -86,6 +86,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{LpHypermodels}
 \setlength{\parindent}{5ex} % Indent at the start of each paragraph.
 \usepackage{acro}
+\usepackage{rotating}
 
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
@@ -153,7 +154,15 @@ headsepline, % Uncomment to get a line under the header
 
 %\frontmatter
 \input{Chapters/conclusion}
+
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures % Prints the list of figures
+
+%\listoftables % Prints the list of tables
+%\addcontentsline{toc}{chapter}{\printacronyms}
 \printacronyms[include-classes=abbrev,name=Abbreviations, heading=chapter*]
+\addcontentsline{toc}{chapter}{Acronyms}
+
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

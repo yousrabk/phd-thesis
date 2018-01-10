@@ -40,7 +40,7 @@ A current phantom is provided with Elekta Neuromag for checking the system perfo
 
 The phantom dipoles are energized using an internal signal generator which also feeds the HPI coils. An external multiplexer box is used to connect the signal to the individual dipoles. Only one dipole can be activated at a time. The location of the dipole is recorded relative to the center of the sphere (0,0,0)m, where X is positive toward the nasion, Y is positive toward the left ear and Z is positive toward the top of the head.\\
 
-The dataset is sorted into four different SNR:
+The dataset is sorted into four different \ac{SNR}:
 \begin{itemize}
 \item Source with \textbf{2000 nAm}. This corresponds to an unrealistically strong 1000 nAm (2000 nAm peak-to-peak) dipole that gives the highest SNR of the experimental source.
 \item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
@@ -64,7 +64,7 @@ The dataset is sorted into four different SNR:
 \end{figure}
 
 
-\subsection{Brainstorm CTF-phantom dataset}
+\subsection{name? dataset} \label{data:used_data}
 
 The dataset is sorted into four different SNR:
 The dataset is sorted into four different SNR:
@@ -82,14 +82,220 @@ The most commonly used head model assumes that it is made up of a set of nested 
 
 \subsection{The selected solvers}
 \subsubsection{dipole fitting}
-\subsubsection{Gamma Map}
-\subsubsection{RAP MUSIC}
-\subsubsection{MxNE}
-\subsubsection{irMxNE}
-\subsubsection{TF-MxNE}
-\subsubsection{irTF-MxNE}
+Dipole fitting assumes that a small number of point-like equivalent current dipoles (ECDs) can describe the measured topography. It optimises the location, the orientation and the amplitude of the model dipoles in order to minimise the difference between the model and the measured topography. A good introduction to dipole fitting is provided by~\cite{scherg1990fundamentals}. A full description is done in Chapter~\ref{chapter:background}-Section~\ref{section_dipfit}.
+
+\subsubsection{$\gamma$-Map}
+$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. The main idea is to use simple Gaussian mixture model with flexible covariance components, more details are in ~\cite{Wipf-Nagarajan:2009}.
+
+\subsubsection{RAP-MUSIC}
+\Ac{RAP-MUSIC} is an extension to \ac{MUSIC} by recursively estimating multiple sources~\cite{mosher1997source,mosher1999source}. In other words, it consists in applying MUSIC successively after removing the contribution of the previously identified sources. Such as matching pursuit algorithms are used for sparse signal decomposition over dictionary of atoms, the RAP-MUSIC method adopts a greedy strategy to select the relevant dipoles in a dictionary of sources.
+
+\subsubsection{MxNE | irMxNE}
+\Ac{MxNE} and \ac{irMxNE} are the convex and the non-convex version of mixed-norms solvers using $\ell_{2,1}$-norm and $\ell_{2,0.5}$-quasinorm as regularizations. For more details, see Chapter~\ref{chapter:background}-Section~\ref{sec:mixed_norms} and~\cite{gramfort2012mixed,strohmeier-etal:16}.
+
+\subsubsection{TF-MxNE | irTF-MxNE}
+\Ac{TF-MxNE} and \ac{irTF-MxNE} are the convex and the non-convex version of the Time-Frequency mixed-norms using $\ell_{2,1}+\ell_1$-norm and $\ell_{2,0.5}+\ell_{0.5}$-quasinorm as regularizations. For more details, see  see Chapter~\ref{chapter:background}-Section~\ref{sec:mixed_norms} and~\cite{TF-MxNE,bekhti2016m}.
 
 \section{Experimental results}
+Three types of errors have been investigated for the different solvers, namely: the position or location error, orientation error, and amplitude error. All the solvers investigated here are implemented in the MNE-python package~\cite{mne-python,mne}.
+
+The position error $err_{pos}$ is represented in millimeters (mm), defining the distance between the exact location ($pos_{simulated}\in\RR^3$) of the simulated dipole in the phantom head and the estimated location ($pos_{estimated}\in\RR^3$) as in Equation~\eqref{eq:pos_err}. When the estimated source space contains multiple dipoles, the one having the biggest peak of amplitude is kept and compared to the exact dipole.
+
+\begin{equation}\label{eq:pos_err}
+err_{pos} = 10^3 \|pos_{estimated} - pos{simulated}\|_{Fro}
+\end{equation}
+
+The orientation error $err_{ori}$ is represented in Radians (Rad), defining the angle between the exact orientation ($ori_{simulated}\in\RR^3$) of the simulated dipole and the estimated one ($ori_{estimated}\in\RR^3$) as in Equation~\eqref{eq:ori_err}. Same for the position error, the best dipole is kept when multiple ones are estimated.
+
+\begin{equation}\label{eq:ori_err}
+err_{ori} = arccos(|<ori_{estimated}, ori_{simulated}>|)
+\end{equation}
+
+Finally, the amplitude error $err_{amp}$is represented in nanoAmpere (nAm) except for some solvers which give source estimates with statistical values and not electrical current values (example: dSPM). This error defines the difference between the peak of amplitude ($max(amp_{estimated}) with amp_{estimated}\in\RR^T$) of the estimated dipole and the peak of simulated dipole $amp_{simulated}\in\RR$ (example 1000nAm, 200nAm, ... 20nAm) as in Equation~\eqref{eq:amp_err}.
+
+\begin{equation}\label{eq:amp_err}
+err_{amp} = |max(amp_{estimated} - amp_{simulated})|
+\end{equation}
+
+Figures showing the three types of error over different solvers are displayed below. Figure~\ref{fig:dipfit_errors} shows position errors obtained with dipole fitting for the 4 simulated dipoles and for the different SNRs. Figure~\ref{fig:dipfit_pos} shows less than 1mm error for the unrealistic high SNR (peak-to-peak amplitude equal to 1000nAm), but also for 200nAM, and 100nAm. The location error gets worse with the very low SNR (20nAm).
+%\subsection*{dipfit}
+
+\begin{sidewaysfigure}[ht]
+        \centering
+        \begin{subfigure}[b]{0.28\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_dipfit_loc_error}
+            \caption{\label{fig:dipfit_pos}}
+        \end{subfigure}
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_dipfit_ori_error}
+            \caption{\label{fig:dipfit_ori}}
+        \end{subfigure}
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}   
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_dipfit_amp_error}
+            \caption{\label{fig:dipfit_amp}}
+        \end{subfigure}
+
+		\caption{The dipole fit errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:dipfit_errors}}
+\end{sidewaysfigure}
+
+Dipole fitting approach is very suitable to localize the neuronal activity when a small number of \ac{ECD}s can describe the data. In this dataset \ref{data:used_data}, each dipole is recorded alone. The errors in orientations and amplitude are in Figure \ref{fig:dipfit_ori}-\ref{fig:dipfit_amp}.
+
+RAP-MUSIC is an approach based on MUSIC techniques which also perform very well when few ECDs are involved, especially when it is data recording only one dipole. It can be seen as very competitive to dipole fitting in Figure \ref{fig:music_pos}-\ref{fig:music_ori}-\ref{fig:music_amp} the errors in position, orientation, and amplitude respectively.
+
+%\subsection*{MUSIC}
+\begin{sidewaysfigure}[ht]
+        \centering
+        \begin{subfigure}[b]{0.28\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_music_loc_error}
+            \caption{\label{fig:music_pos}}
+        \end{subfigure}
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_music_ori_error}
+            \caption{\label{fig:music_ori}}
+        \end{subfigure}
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}   
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_music_amp_error}
+            \caption{\label{fig:music_amp}}
+        \end{subfigure}
+
+		\caption{The MUSIC errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:music_errors}}
+\end{sidewaysfigure}
+
+
+%\subsection*{Gamma map}
+\begin{sidewaysfigure}[ht]
+        \centering
+%        \vspace{10pt}
+        \begin{subfigure}[b]{0.28\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_loc_error}
+%            \caption{pos}
+            \label{fig:gmap_pos}
+        \end{subfigure}
+%        \hfill
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_ori_error}
+%            \caption{ori}
+            \label{fig:gmap_ori}
+        \end{subfigure}
+%        \vskip\baselineskip
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}   
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_amp_error}
+%            \caption{amp}
+            \label{fig:gmap_amp}
+        \end{subfigure}
+
+		\caption{The gamma map errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:gmap_errors}}
+\end{sidewaysfigure}
+
+
+%\subsection*{Mixed norm (MxNE)}
+\begin{sidewaysfigure}[ht]
+        \centering
+%        \vspace{10pt}
+        \begin{subfigure}[b]{0.28\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_loc_error}
+%            \caption{pos}
+            \label{fig:mxne_pos}
+        \end{subfigure}
+%        \hfill
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_ori_error}
+%            \caption{ori}
+            \label{fig:mxne_ori}
+        \end{subfigure}
+%        \vskip\baselineskip
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}   
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_amp_error}
+%            \caption{amp}
+            \label{fig:mxne_amp}
+        \end{subfigure}
+
+		\caption{The mixed norm (MxNE) errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:gmap_errors}}
+\end{sidewaysfigure}
+
+%\subsection*{Time-Frequency mixed-norm (TF-MxNE)}
+\begin{sidewaysfigure}[ht]
+        \centering
+%        \vspace{10pt}
+        \begin{subfigure}[b]{0.28\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_loc_error}
+%            \caption{pos}
+            \label{fig:tfmxne_pos}
+        \end{subfigure}
+%        \hfill
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_ori_error}
+%            \caption{ori}
+            \label{fig:tfmxne_ori}
+        \end{subfigure}
+%        \vskip\baselineskip
+		\hspace{35pt}
+        \begin{subfigure}[b]{0.28\textwidth}   
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_amp_error}
+%            \caption{amp}
+            \label{fig:tfmxne_amp}
+        \end{subfigure}
+
+		\caption{The time-frequency mixed-norm (TF-MxNE) errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:tfmxne_errors}}
+\end{sidewaysfigure}
+
+$\gamma$-map which is a Bayesian formulation to the MEG/EEG inverse problem is performing less well than dipole fitting or RAP-MUSIC for very high and very SNR. For SNRs in range of realistic data, its location error is majored by 5mm depending on the depth of the studied dipole. $\gamma$-map is doing worse for amplitude=1000nAm compared to 100nAm or 200nAm because it overestimates the noise when estimating the hyperparameter $\gamma$.
+
+
 
 \subsection{Critical comparison of these MEG/EEG source localization}
-\section{Discussion \& Conclusion}
+Position error for all solvers...
+
+\begin{sidewaysfigure}[ht]
+        \centering
+%        \vspace{10pt}
+        \begin{subfigure}[b]{0.47\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_loc_error}
+%            \caption{pos}
+            \label{fig:all_solvers_loc_error}
+        \end{subfigure}
+%        \hfill
+		\hspace{25pt}
+        \begin{subfigure}[b]{0.47\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_ori_error}
+%            \caption{ori}
+            \label{fig:tfmxneall_solvers_ori_error}
+        \end{subfigure}
+
+		\caption{Comparison of the position and the orientation error between most of the solvers for 4 different dipoles.\label{all_solvers_loc_error}}
+\end{sidewaysfigure}
+
+Amplitude error...
+\begin{figure}
+	\includegraphics[width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_amp_error}
+	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{all_solvers_amp_error}}
+\end{figure}
+
+
+\section{Discussion \& Perspectives}

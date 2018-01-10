@@ -10,7 +10,7 @@
 
 $\mathbf{I}$ & Identity matrix \\
 $\RR$ & Set of real-valued numbers \\
-$\RR_+$ & Set of positive real-valued numbers \\
+$\RR_+$ & Set of non-negative real-valued numbers \\
 $\CC$ & Set of complex-valued numbers \\
 $\RR^N$ & Set of real-valued vectors of length $N$ \\
 $\RR^{M\times N}$ & Set of real-valued $M\times N$ matrices \\
@@ -41,10 +41,10 @@ $\mathbf{A}^{-1}$ & inverse matrix of $\mathbf{A}$ \\
 
 $\|\mathbf{a}\|_p$ & $\ell_p$-norm of $\mathbf{a}$ \\
 $\|\mathbf{A}\|_p$ & $\ell_p$-norm of $\mathbf{A}$ \\
-$\|\mathbf{A}\|_{p,q}$ & $\ell_{p,q}$-mixed-norm of $\mathbf{a}$ \\
-$\|\mathbf{A}\|_{Fro}$ & Frobenius norm of $\mathbf{a}$ \\
+$\|\mathbf{A}\|_{p,q}$ & $\ell_{p,q}$-mixed-norm of $\mathbf{A}$ \\
+$\|\mathbf{A}\|_{Fro}$ & Frobenius norm of $\mathbf{A}$ \\
 \vspace{20pt}
-$\|\mathbf{A}\|$ & Spectral norm of $\mathbf{a}$ \\
+$\|\mathbf{A}\|$ & Spectral norm of $\mathbf{A}$ \\
 
 
 $\langle \mathbf{a}, \mathbf{b} \rangle$ & Inner product of $\mathbf{a}$ and $\mathbf{b}$ \\
@@ -52,29 +52,29 @@ $\otimes$ & Kronecker product \\
 $\mathbf{AB}$ & Matrix product of $\mathbf{A}$ and $\mathbf{B}$ \\
 $Tr(\mathbf{A})$ & Trace of matrix $\mathbf{A}$ \\
 \vspace{30pt}
-$(x)_+$ & $max(x,0)$ for $x\in\RR$ \\
+$(x)_+$ & $\max(x,0)$ for $x\in\RR$ \\
 
 
 %\Large{\textbf{Important notations for this thesis}} \\
+$N$ & Number of sensors \\
+$T$ & Number of time samples \\
+$S$ & Number of sources \\
+\vspace{30pt}
+$O$ & Number of orientations (1 or 3) \\
 
 $\mathbf{M}$ & MEG/EEG measurement matrix \\
 $\mathbf{G}$ & Gain / leadfield / forward matrix \\
 $\mathbf{X}$ & Source activity \\
 $\mathbf{X}[i,:]$ & $i^{th}$ row of source activity $\mathbf{X}$ \\
-$\mathbf{X}[i]$, $\mathbf{X}_i$ & Sub-matrix of $O\times T$ of $\mathbf{X}$ \\
+$\mathbf{X}[i]$, $\mathbf{X}_i$ & $O\times T$ sub-matrix of $\mathbf{X}$ \\
 $\mathbf{E}$ & Measurement noise \\
 $\mathbf{Z}$ & Time-frequency coefficients of the source activity \\
 $\phi$ & Tight Gabor frame \\
-\vspace{30pt}
 $\mathcal{L}$ & Lipschitz constant \\
 
 
 
 %\Large{\textbf{Notations of matrices dimension}} \\
 
-$N$ & Number of sensors \\
-$T$ & Number of time samples \\
-$S$ & Number of sources \\
-$O$ & Number of orientation (1 or 3) \\
 
 \end{symbols}
