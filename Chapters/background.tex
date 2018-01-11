@@ -82,7 +82,7 @@ $\left\{
 
 For the biological signals of interest in MEG/EEG, the time-derivatives of the associated electric and magnetic fields are sufficiently small to be ignored in Maxwell’s equations. Recent discussions and details of this quasi-static approximation can be found in\cite{hamalainen1993magnetoencephalography,tripp1983physical,heller1992brain}.\\
 
-The propagation of the electric potentials and magnetic field measured by EEG and MEG suffers from no temporal delay, meaning that the recording is instantaneous. Let us note $\mathbf{M}\in\RR^{N\times T}$ the measurement matrix of MEG/EEG, $\mathbf{G}\in\RR^{N\times SO}$ the design matrix (leadfield or gain matrix~\cite{h1994}) with $S$ source locations in the brain and $O$ number of orientations (1 or 3), one has:
+The propagation of the electric potentials and magnetic field measured by EEG and MEG suffers from no temporal delay, meaning that the recording is instantaneous. Let us note $\mathbf{M}\in\RR^{N\times T}$ the measurement matrix of MEG/EEG, $\mathbf{G}\in\RR^{N\times SO}$ the design matrix (leadfield or gain matrix~\cite{h1994}) with $S$ source locations in the brain and $O$ number of orientations (1 or 3). One has:
 \begin{equation}
 \mathbf{M} = \mathbf{GX}+\mathbf{E}
 \end{equation} \label{eq:meeg_ip}
@@ -146,7 +146,7 @@ The MEG/EEG inverse problem with distributed source models leads to a regularize
 MNE has been very attractive due to the fact that the inverse solution is given by a simple matrix multiplication as $\ell_2$-based methods have closed-form solutions:
 
 \begin{equation}\label{eq_MNE}
-\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{SO\times T}} \|\mathbf{M}-\mathbf{GX}\|_F^2 + \lambda\|\mathbf{X}\|_2^2 \hspace{10pt} \mathrm{with} \hspace{10pt} \lambda > 0
+\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{SO\times T}} \|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_2^2 \hspace{10pt} \mathrm{with} \hspace{10pt} \lambda > 0
 \end{equation}
 
 However, the choice of the $\lambda$ parameter as the trade-off between data fit and regularization is sometimes tricky, because it depends on the data since $\lambda$ is related to the noise level present in the measurement. $\lambda$ is most of the time chosen with a cross-validation strategy to find the optimal value in the machine learning community. While in the MEG/EEG world, it is mostly tuned by hand.
@@ -154,7 +154,7 @@ However, the choice of the $\lambda$ parameter as the trade-off between data fit
 When applying a minimum-norm estimate as in Equation~\eqref{eq_MNE}, all the sources are penalized equivalently. This approach introduces bias over sources which are far from the sensors. Indeed sources which are close to the sensors have a higher forward field. Those sources are called superficial sources, and this bias is often known as the depth bias~\cite{pascual1999review}. This led to the introduction of the Weighted Minimum Norm (WMN) estimate \cite{lin2006assessing}, which downweights the dipoles in the head that are closer to the surface. 
 
 \begin{equation}\label{eq_wMNE}
-\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{SO\times T}} \|\mathbf{M}-\mathbf{GX}\|_F^2 + \lambda\|\mathbf{WX}\|_2^2 \hspace{10pt} \mathrm{with} \hspace{10pt} \lambda > 0
+\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{SO\times T}} \|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{WX}\|_2^2 \hspace{10pt} \mathrm{with} \hspace{10pt} \lambda > 0
 \end{equation}
 
 $\mathbf{W}$ is a weighting matrix, which represents a priori knowledge on the source covariance. Assigning a higher variance to a deep sources is a standard approach to reduce the depth bias in MEG/EEG source imaging~\cite{lin2006assessing, Gramfort_Strohmeier_Haueisen_Hamalainen_Kowalski13,haufe2008combining, haufe2011large,huang2014meg,palmero2007swloreta}. A common practice is to normalize the columns of $\mathbf{G}_s\in\RR^{S\times O}$ of the gain matrix corresponding to the $s^{th}$ source location using its Frobenius norm $\|\mathbf{G}_s\|^\delta_{Fro}$ or spectral norm $\|\mathbf{G}_s\|^\delta$~\cite{gramfort2014mne,Gramfort_Strohmeier_Haueisen_Hamalainen_Kowalski13, kohler2006depth}. The hyperparameter $\delta$ is used to prevent a bias towards very deep sources (often fixed to $\delta=0.9$).\\
@@ -264,60 +264,60 @@ This last part briefly introduced some important properties of time-frequency re
 
 %-----------------Optimization--------------------------------------------------------------
 \section{Optimization}
-Due to the fact that the MEG/EEG sensors are linear combinations of the electromagnetic fields produced by all current sources, the linear forward operator, called \textit{gain matrix}, or the \textit{mixing matrix}, predicts the MEG/EEG measurements. Here we introduce the linear regression on what is based the formulation of the M/EEG inverse problem in this thesis.
+Due to the fact that the MEG/EEG sensors are linear combinations of the electromagnetic fields produced by all current sources, the linear forward operator, called \textit{gain matrix}, or the \textit{mixing matrix}, predicts the MEG/EEG measurements. Here we introduce the linear regression on which the formulation of the MEG/EEG inverse problem is based in this thesis.
 
 \subsection{Linear model and regression}
 %\textbf{XXX: intro to convexity...}
-In statistics, linear regression consists of modeling the linear relationship between an observation $y$ and some explanatory variables $\mathbf{A}=[A_1,\dots ,A_m]^\top$. This relationship involves the vector of coefficients $\mathbf{x}\in\RR^m$ such that:
+In statistics, linear regression consists of modeling the linear relationship between an observation $\textbf{y}$ and some explanatory variables $\mathbf{A}=[A_1,\dots ,A_n]^\top$. This relationship involves the vector of coefficients $\mathbf{x}\in\RR^m$ such that:
 \begin{equation} \label{eq_linreg}
 	y = Ax	
 \end{equation}
 % \langle\mathbf{s}, \mathbf{x}\rangle = y \enspace .
-This linear model is verified for a set of observations coming from the same event, \textit{i.e.}, the linear combination defined by $\mathbf{x}$ is the same for all (variable, observation) couples originating from the same event: $(\mathbf{A}_i, y_i)\in\RR^m\times\RR$ with $i\in [1,\dots ,n]$. We can note $[y_1, \dots ,y_n]^\top=\mathbf{y}\in\RR^n$ and $[\mathbf{A}_1,\dots ,\mathbf{A}_n]\in\RR^{m\times n}$. If all couples $\{(\mathbf{A}_i,y_i)\}_{i\in [1,\dots ,n]}$ verify exactly a linear model, then there exists a $\mathbf{x}\in\RR^m$ such that $\mathbf{Ax}=y$.
+This linear model is verified for a set of observations coming from the same event, \textit{i.e.} the linear combination defined by $\mathbf{x}$ is the same for all (variable, observation) couples originating from the same event: $(\mathbf{A}_i, y_i)\in\RR^m\times\RR$ with $i\in [1,\dots ,n]$. We can note $[y_1, \dots ,y_n]^\top=\mathbf{y}\in\RR^n$ and $[\mathbf{A}_1,\dots ,\mathbf{A}_n]\in\RR^{m\times n}$. If all couples $\{(\mathbf{A}_i,y_i)\}_{i\in [1,\dots ,n]}$ verify exactly a linear model, then there exists a vector $\mathbf{x}\in\RR^m$ such that $\mathbf{Ax}=\textbf{y}$.
 
 In a MEG/EEG application, the equivalent of $\mathbf{A}$ is the forward operator $\mathbf{G}$ which describes the linear relationship between the MEG/EEG measurements $\mathbf{M}\in\RR^{N\times T}$ ($N$ number of sensors, $T$ number of time instants) and the source activation $\mathbf{X}\in\RR^{S\times T}$ ($S$ is the number of source locations). The linear model then reads: $\mathbf{M} = \mathbf{GX}$ where $\mathbf{G}\in\RR^{N\times S}$ is the gain or the lead-field matrix (forward operator), a known instantaneous mixing matrix, which links source and sensor signals. 
 
-In practice, the linear model is never exactly verified due to external noise. The aim of the linear regression is to additionally assume that an unobserved random variable, \textit{i.e.}, error term is added to the linear relationship between the M/EEG measurements $\mathbf{M}$ and the source activation $\mathbf{X}$. The regression model can then be written as:
+In practice, the linear model is never exactly verified due to external noise. The aim of linear regression is to additionally assume that an unobserved random variable, \textit{i.e.} error term, is added to the linear relationship between the M/EEG measurements $\mathbf{M}$ and the source activation $\mathbf{X}$. The regression model can then be written similarly to Equation~\eqref{eq:meeg_ip}:
 \begin{equation} \label{eq_linmeeg}
 	\mathbf{M} = \mathbf{GX} + \mathbf{E}
 \end{equation}
-where $\mathbf{E}$ is the measurement noise, which is assumed to be additive, white, and Gaussian, \mbox{$\mathbf{E}_{.,j}\sim\mathcal{N}(0,\mathbf{I})$} for all $j$. This assumption is acceptable on the basis of a proper spatial whitening of the data using an estimate of the noise covariance \cite{engemann2015automated}.
+with $\mathbf{E}$ is the measurement noise, which is assumed to be additive, white, and Gaussian, \mbox{$\mathbf{E}_{.,j}\sim\mathcal{N}(0,\mathbf{I})$} for all $j$. This assumption is acceptable on the basis of a proper spatial whitening of the data using an estimate of the noise covariance \cite{engemann2015automated}.
 
-Several methods exist to approximate the solution of the regression model, the most widely used is the Ordinary least square (OLS) approach \cite{legendre1805nouvelles}, which minimizes the sum of the squares of the errors or residuals as follows:
+Several methods exist to approximate the solution of the regression model. The most widely used is the \ac{OLS} approach \cite{legendre1805nouvelles}, which minimizes the sum of the squares of the errors or residuals as follows:
 \begin{equation} \label{eq_ls}
 	\mathbf{X^\star} \in \argmin_{\mathbf{X}\in \RR^{S\times T}}\frac{1}{2} \|\mathbf{M}-\mathbf{GX}\|_{Fro}^2
 \end{equation}
-There exist other types of approaches like the least absolute deviations (LAD), also known as least absolute errors. Instead of minimizing the squares of the errors, LAD tries to minimize the sum of the absolute values of the errors/residuals. Its advantage over OLS is that it is more robust to outliers in the data. However the LAD is not stable, \textit{i.e.}, a small modification of the observation $\mathbf{M}$ may result in a huge variation of the estimation of $\mathbf{X}$. Moreover it can have multiple solutions, because unlike OLS, it does not have an analytical expression but needs to be computed iteratively. This explains why the OLS approach has been the standard one and also due to the fact that it has a closed-form solution.
+There exist other types of approaches like the \ac{LAD}, also known as least absolute errors. Instead of minimizing the squares of the errors, \ac{LAD} tries to minimize the sum of the absolute values of the errors/residuals. Its advantage over \ac{OLS} is that it is more robust to outliers in the data. However the LAD is not stable, \textit{i.e.}, a small modification of the observation $\mathbf{M}$ may result in a huge variation of the estimation of $\mathbf{X}$. Moreover it can have multiple solutions, because unlike \ac{OLS}, it does not have an analytical expression but needs to be computed iteratively. This explains why the OLS approach has been the standard one, along with the fact that it has a closed-form solution.
 
 \subsection{Regularization}
 
-Regularization in general can be applied for different reasons. We have seen why the least squares is the standard approach in linear regression. However this approach has some drawbacks: \textit{overfitting} and the fact that the closed-form solution is computed using $\mathbf{G}^\top\mathbf{G}$, which might not be invertible, giving rise to an infinitely many solutions. This requires to set regularization.\\
+Regularization in general can be applied for different reasons. We have seen why the least squares is the standard approach in linear regression. However this approach has some drawbacks: \textit{overfitting} \footnote{Overfitting: when the model fits the training data too well and has bad generalization} and the fact that the closed-form solution is computed using $\mathbf{G}^\top\mathbf{G}$, which might not be invertible, giving rise to infinitely many solutions. This requires to set regularization.\\
 
-In general, the penalization term will be marked $\mathcal{P}(\mathbf{X})$ as in Equation~\eqref{eq_reg} and it can take any dense or sparse form.
+In general, the penalization term will be marked $\mathcal{P}(\mathbf{X})$ as in Equation~\eqref{eq_reg} and it can take any dense or sparse form:
 \begin{equation} \label{eq_reg}
 	\mathbf{X}^\star = \argmin_{X\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\mathcal{P}(\mathbf{X})
 \end{equation}
-We can list the different regularization term $\mathcal{P}(\mathbf{X})$ as the one using: dense norms, convex sparse norms, non-convex sparse norms, and structured norms.
+In the rest of this section, we list the different regularization terms $\mathcal{P}(\mathbf{X})$ as those using: dense norms, convex sparse norms, non-convex sparse norms, and structured norms.
 
 \subsubsection*{Non-sparsity promoting norms}
-Thikonov regularization \cite{tikhonov1977solutions} is the most commonly used, also known as rigde regression \cite{hoerl1970ridge}. It is part of dense norms as the estimated $\mathbf{X}^\star$ is dense, even if most of its values are almost zero. It reads:
+Thikonov regularization \cite{tikhonov1977solutions} is the most commonly used penalty, also known as rigde regression \cite{hoerl1970ridge}. It is part of dense norms as the estimated $\mathbf{X}^\star$ is dense, even if most of its values are almost zero. It reads:
 \begin{equation} \label{eq_thikonov}
 	\mathbf{X}^\star = \argmin_{X\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda\|\mathbf{X}\|_2^2
 \end{equation}
 
-The first term of the minimization is called the data fit, and the second term penalizes the solution by keeping the values of $\mathbf{X}$ small. The penalization is controlled by the $\lambda>0$ parameter. The higher it is, the more penalized the regression is. An explicit solution of Equation~\eqref{eq_thikonov} is given by $\mathbf{X}^\star = (\mathbf{G}^\top\mathbf{G}+\lambda\mathbf{I})^{-1}\mathbf{G}^\top\mathbf{M}$. 
+The first term of the minimization is called the data fit, and the second term penalizes the solution by keeping the values of $\mathbf{X}$ small. We always keep the same data fit term $\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2$ and change the second penalization term depending on our priori knowledge. The penalization is controlled by the $\lambda$ parameter. The higher it is, the more penalized the regression is. An explicit solution of Equation~\eqref{eq_thikonov} is given by $\mathbf{X}^\star = (\mathbf{G}^\top\mathbf{G}+\lambda\mathbf{I})^{-1}\mathbf{G}^\top\mathbf{M}$. 
 
 In this thesis, we are interested in sparsity promoting regularizations, which are natural for the MEG/EEG inverse problem. Indeed, it is reasonable to assume that only a few focal regions in the brain are active during a certain cognitive task.
 
 \subsubsection*{Sparse norms: \textit{Convex norms}}
-Let $\mathbf{y}\in\RR^n$ a vector. The support of $y$ is defined by the set $\mathcal{S}(y) = \{i=1,\dots ,n \mathrm{\ s.t.\ } y[i]\neq 0\}$.
+Let $\mathbf{y}\in\RR^n$ a vector. The support of $y$ is defined by the set $\mathcal{S}(y) = \{i=[1,\dots ,n] \mathrm{\ s.t.\ } \\ y[i]\neq 0\}$.
 A vector is sparse if its support is small, \textit{i.e.} the cardinal $\# \mathcal{S}(y)$ is small compared to $n$.
-The cardinal of $\mathcal{S}(y)$ corresponds to the $\ell_0$ pseudo-norm. The optimization problem is then to identify $\mathcal{S}(y)$.\\
+The cardinal of $\mathcal{S}(y)$ corresponds to the $\ell_0$ pseudo-norm. The optimization problem implies then to identify $\mathcal{S}(y)$.\\
 
-Coming back to our application, we assume that the signals $\mathbf{M}$ obtained with M/EEG are linear combinations of a small number of sources in the brain. This implies that only few sources in $\mathbf{X}$ are active, \textit{i.e.}, $\mathbf{X}$ is sparse. However the minimization of Equation~\eqref{eq_reg} with the $\ell_0$-norm is unfortunately an NP hard combinatorial problem.
+Coming back to our application, we assume that the signals $\mathbf{M}$ obtained with MEG/EEG are linear combinations of a small number of sources in the brain. This implies that only few sources in $\mathbf{X}$ are active, \textit{i.e.}, $\mathbf{X}$ is sparse. However the minimization of Equation~\eqref{eq_reg} with the $\ell_0$-norm ($\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_0$) is unfortunately an NP-hard combinatorial problem.
 % This problem is difficult as we need to select the the number of sources. Furthermore, the $\ell_0$-norm is not convex \cite{natarajan1995sparse}.
 
-Due to the above undesired properties, we need to consider a convex relaxation to the $\ell_0$-norm. The use of the least squares with the $\ell_1$-norm (i.e. $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_1$ in Equation~\eqref{eq_reg}) is the natural approximation, since it is the closest convex norm to the $\ell_0$-norm. The $\ell_1$-norm is known as \textit{\ac{lasso}} in statistics \cite{tibshirani1996regression}, and as Basis Pursuit Denoising~\cite{chen2001atomic} in signal processing literature.
+Due to the above undesired properties, we need to consider a convex relaxation of the $\ell_0$-norm. The use of the least squares with the $\ell_1$-norm (i.e. $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_1$ in Equation~\eqref{eq_reg}) is the natural approximation, since it is the closest convex norm to the $\ell_0$-norm. The $\ell_1$-norm is known as \textit{\ac{lasso}} in statistics \cite{tibshirani1996regression}, and as Basis Pursuit Denoising~\cite{chen2001atomic} in signal processing literature.
 
 \adjustwidth{1em}{0pt}
 \subsubsection*{\ac{lasso}}
@@ -328,7 +328,7 @@ Due to the above undesired properties, we need to consider a convex relaxation t
 The use of a convex approximation of the $\ell_0$-norm is convenient, as the method always converges to a globally optimal solution. There exist also very efficient algorithms.
 
 \subsubsection*{Sparser norms: \textit{Non-Convex norms}}
-These convex approaches allow for fast algorithms with guaranteed global convergence. However, the resulting source estimates are biased in amplitude and often suboptimal in terms of support recovery~\cite{candes2008enhancing}. This is particularly due to the high spatial correlation of the MEG/EEG forward model. As shown, e.g. in the compressed sensing literature, promoting sparsity by applying non-convex penalties, such as logarithmic or $\ell_p$-quasinorm penalties with $0 < p < 1$, can improve support identification, as well as reduce amplitude bias~\cite{candes2008enhancing,chartrand2007exact,saab2008stable}. Figure~\ref{fig:norms} shows the geometric interpretation of different norms in the 1-dimensional space. The smaller the $p$, the closer is this approximation to the exact definition of sparsity. 
+These convex approaches allow for fast algorithms with guaranteed global convergence. However, the resulting source estimates are biased in amplitude and often suboptimal in terms of support recovery~\cite{candes2008enhancing}. This is particularly due to the high spatial correlation of the MEG/EEG forward model. As shown, \textbf{e.g.} in the compressed sensing literature, promoting sparsity by applying non-convex penalties, such as logarithmic or $\ell_p$-quasinorm penalties with $0 < p < 1$, can improve support identification, as well as reduce amplitude bias~\cite{candes2008enhancing,chartrand2007exact,saab2008stable}. Figure~\ref{fig:norms} shows the geometric interpretation of different norms in the 1-dimensional space. The smaller $p$, the closer is this approximation to the exact definition of sparsity. 
 
 \begin{figure}
 \centering
@@ -346,7 +346,7 @@ We investigated the $\ell_{0.5}$-quasinorm as part of the regularization, writte
 \end{equation}
 \endadjustwidth
 
-As the $\ell_{0.5}$ is non-convex, it cannot be solved in the same way and with the same guarantees as the $\ell_1$-norm. One algorithm for minimizing Equation~\eqref{eq_reg} using the $\ell_{0.5}$ quasi-norm consists in applying an iterative reweighted approach, where each iteration boils down to a convex problem with a weighted $\ell_1$ regularization.
+As the $\ell_{0.5}$-quasinorm is non-convex, it cannot be solved in the same way and with the same guarantees as the $\ell_1$-norm. One algorithm for solving Equation~\eqref{eq_reg} using the $\ell_{0.5}$ quasi-norm consists in applying an iterative reweighted approach, where each iteration boils down to a convex problem with a weighted $\ell_1$ regularization.
 \adjustwidth{1em}{0pt}
 
 \subsubsection*{Weighted \ac{lasso}}
@@ -357,7 +357,7 @@ with
 \begin{equation*}
 	\|\mathbf{X}\|_{\mathbf{W};1}=\sum_i\sum_j W[i,j]|X[i,j]|
 \end{equation*}
-where $\mathbf{W}$ is the weight applied to the matrix $\mathbf{X}$ aiming to regularize more the low coefficients resulting in a higher sparsity. The update of the weight $\mathbf{W}$ will be seen in chapter \ref{chapter:multiscale}.
+where $\mathbf{W}$ is the weight applied to matrix $\mathbf{X}$ aiming to regularize more the low coefficients, resulting in a higher sparsity. The update of the weight $\mathbf{W}$ will be presented in Chapter \ref{chapter:multiscale}.
 \endadjustwidth
 
 \subsubsection*{Structured Norms: \textit{non stationary sources in TF domain}}\label{sec:mixed_norms}
@@ -373,21 +373,21 @@ where
 \begin{equation*}	\|\mathbf{X}\|_{2,1}=\sum_i\left(\sum_j|X[i,j]|^2\right)^{1/2}
 \end{equation*}
 \endadjustwidth
-While the Group \ac{lasso} gives only a sparse set of groups, sometimes we would like to obtain sparsity in groups and within each group. In our application, a group is basically a source, \textit{i.e.} a position in the brain. The Group \ac{lasso} is definitely convenient to obtain sparse source estimates, however it is not efficient for sources which are active only during small time windows. Toward this end, one can use sparse group \ac{lasso}~\cite{simon2013sparse}, which is a convex combination of the \ac{lasso} and the Group \ac{lasso} penalties.
+While the Group \ac{lasso} gives only a sparse set of groups, sometimes we would like to obtain sparsity in groups and within each group. In our application, a group is basically a source, \textit{i.e.} a position in the brain. The Group \ac{lasso} is definitely convenient to obtain sparse source estimates, however it is not efficient for sources which are active only during small time windows. Toward this end, one can use Sparse Group \ac{lasso}~\cite{simon2013sparse}, which is a convex combination of the \ac{lasso} and the Group \ac{lasso} penalties.
 \adjustwidth{1em}{0pt}
 
 \subsubsection*{Sparse Group \ac{lasso}}
 \begin{equation} \label{eq_sglasso}
 	\mathbf{X}^\star = \argmin_{\mathbf{X}\in\RR^{S\times T}}\frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \lambda_1\|\mathbf{X}\|_{2,1} + \lambda_2\|\mathbf{X}\|_1
 \end{equation}
-If $\lambda_1=0$ then it would be equivalent to the \ac{lasso} penalty, and if $\lambda_2=0$, it results in the group \ac{lasso} penalty.
+If $\lambda_1=0$ then it would be equivalent to the \ac{lasso} penalty, and if $\lambda_2=0$, it results in the Group \ac{lasso} penalty.
 \endadjustwidth
 
 %----------Methods for solving sparse inverse problems-------------------------------------
 \subsection{Methods for solving sparse inverse problems}
-The previous section describes the MEG/EEG inverse problem as a penalized regression model. This section enumerates some methods for solving this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the iterative least squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$. This corresponds to WMN in Section~\ref{section_distributed}. Similar iterative weighted methods are used to solve the (Sparse) Group \ac{lasso} corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
+The previous section describes the MEG/EEG inverse problem as a penalized regression model. This section enumerates some methods for solving this inverse problem using sparse priors. The corresponding MEG/EEG inverse solver for the $\ell_1$-norm is the MCE solver (Minimum Current Estimate) introduced by Matsuura and Okabe \cite{matsuura1995selective}. One possible way to solve the $\ell_1$ penalty is to use the Iterative Least Squares (IRLS). IRLS consists in iteratively computing weighted LS by setting appropriate weights. This is based on the fact that a weighted $\ell_2$-norm: $\|\mathbf{x}\|_{\mathbf{w};2}=\sum_i w[i]^k |x[i]|^2$ is equal to the $\ell_1$-norm: $\|x\|_1=\sum_i|x[i]|$, when $w[i]^k=1/|x[i]|$, where $k$ denotes the iteration index. This corresponds to WMN in Section~\ref{section_distributed}. Similar iterative weighted methods are used to solve the (Sparse) Group \ac{lasso} corresponding to mixed-norms in both standard and time-frequency domains presented in Section~\ref{section_distributed}. Other methods based on the proximity operator are used to solve non-differentiable convex optimization problems. The idea is to alternate the minimization over the smooth convex data fit using a small gradient step and the computation of the proximal operator associated with the penalty which is non-smooth.\\
 
-The MEG/EEG inverse problem can be written as:
+Indeed, the MEG/EEG inverse problem can be written as:
 \begin{equation}
 \hat{\mathbf{X}} = \argmin_{\mathbf{X}\in\RR^{SO\times T}}f(\mathbf{X}) = \argmin_{\mathbf{X}\in\RR^{SO\times T}}(g(\mathbf{X}) + \lambda\mathcal{P}(\mathbf{X})) \mathrm{\;with\;} \lambda>0 \enspace .
 \end{equation}
@@ -405,10 +405,10 @@ This corresponds to the inverse problem where $\mathbf{G}=\mathbf{I}$. To be abl
 \begin{equation}
 \mathbf{X}^{(k+1)}[:,j]=\prox_{\mu\lambda\mathcal{P}}(\mathbf{X}^{(k)}[:,j]+\mu\mathbf{G}^\top(\mathbf{M}[:,j]-\mathbf{GX}^{(k)}[:,j]), \forall j\in [1,\dots ,T]
 \end{equation}
-$\mu$ stands for the step size and has been proved to be $0<\mu<\|\mathbf{G}^\top\mathbf{G}\|_2^{-1}$. In practice, it is fixed to $\mu=\frac{1}{\mathcal{L}}=
- \|\mathbf{G}^\top\mathbf{G}\|_2^{-1}$. For more details refer to~\cite{moreau1965proximite,combettes2005signal,daubechies2004iterative}.
+$\mu$ stands for the step size and has been proved to satisfy $0<\mu<\|\mathbf{G}^\top\mathbf{G}\|_2^{-1}$. In practice, it is fixed to $\mu=\frac{1}{\mathcal{L}}=
+ \|\mathbf{G}^\top\mathbf{G}\|_2^{-1}$, where $\mathcal{L}$ denotes the Lipschitz constant. $k$ represents the iteration index. For more details refer to~\cite{moreau1965proximite,combettes2005signal,daubechies2004iterative}.
 
-If the penalty is set to be the $\ell_{2,1}$-norm as in Equation~\eqref{eq_glasso}, the solution is obtained by row-wise soft thresholding. These proximal gradient methods are known as forward-backward algorithm, thresholded Landweber iterations, or the Iterative Soft Thresholding Algorithm (ISTA) or Fast-ISTA (FISTA)~\cite{bach-etal:2012,parikh2014proximal}. FISTA or any proximal gradient method can be applied when the objective function is a sum of two terms, a convex smooth term and non-smooth term for which the proximity operator is available.
+If the penalty is set to be the $\ell_{2,1}$-norm as in Equation~\eqref{eq_glasso}, the solution is obtained by row-wise soft thresholding. These proximal gradient methods are known as the forward-backward algorithm, thresholded Landweber iterations, or the \ac{ISTA} or \ac{FISTA}~\cite{bach-etal:2012,parikh2014proximal}. FISTA or any proximal gradient method can be applied when the objective function is a sum of two terms, a convex smooth term and non-smooth term for which the proximity operator is available.
 % It consists of a forward or gradient step based on $g(\mathbf{X})$ with step size $\mu$, and a backward step based on a proximity operator of $\mathcal{P}(\mathbf{X})$.
 A detailed algorithm of FISTA applied to Group \ac{lasso} can be found in Algorithm~\ref{alg:FISTA}. 
 
@@ -434,7 +434,7 @@ A detailed algorithm of FISTA applied to Group \ac{lasso} can be found in Algori
 \end{algorithm}
 }
 
-However as seen before, the $\ell_1$-norm is not very appropriate for M/EEG applications as it does not take the temporal correlation of the data into account. For the spatio-temporal solvers as TF-MxNE or irTF-MxNE presented in Chapter~\ref{chapter:multiscale}, one needs to introduce the proximity operator for these composite penalties.
+However, as seen before, the $\ell_1$-norm is not very appropriate for M/EEG applications as it does not take the temporal correlation of the data into account. For the spatio-temporal solvers such as TF-MxNE or irTF-MxNE presented in Chapter~\ref{chapter:multiscale}, one needs to introduce the proximity operator for these composite penalties.
 
 \adjustwidth{1em}{0pt}
 \subsubsection*{Proximity operator of $\ell_{2,1}+\ell_1$}
@@ -452,55 +452,55 @@ where for $z\in\RR, (z)_+ =\max(0,z)$ and by convention $\frac{0}{0}=0$.
 
 
 \subsubsection*{Block Coordinate Descent: BCD} \label{section:BCD}
-Other methods for solving the MEG/EEG inverse problem with non-smooth penalties exist. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}. BCD is an extension of the well known coordinate descent (CD)~\cite{li-osher:2009,nesterov2012efficiency}. CD is based on the idea to decompose a large optimization problem into a sequence of one-dimensional optimization problems. \\
+Other methods for solving the MEG/EEG inverse problem with non-smooth penalties exist. We mention here the block coordinate descent (BCD) scheme \cite{tseng2010approximation}. BCD is an extension of the well known coordinate descent (CD)~\cite{li-osher:2009,nesterov2012efficiency}. CD is based on the idea of decomposing a large optimization problem into a sequence of one-dimensional optimization problems. \\
 
-BCD was used to solve the Group \ac{lasso} in~\cite{rakotomamonjy2011surveying,qin2013efficient}, it is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source. Same as CD method, the order in which the different blocks are processed can be cyclic, random which improves theoretical performance~\cite{tseng2001convergence,wei2012doa}. \\
+BCD was used to solve the Group \ac{lasso} in~\cite{rakotomamonjy2011surveying,qin2013efficient}, it is based on the same idea of alternating between a gradient step and the computation of the proximity operator of $\mathcal{P}(\mathbf{X})$ (for instance: $\ell_{2,1}+\ell_1$). BCD is used on block-separable schemes where a block is a set of coordinates and can be defined depending on the data. Here a block maps a location in the brain, \textit{i.e.}, a block is one source. Similarly to the CD method, the order in which the different blocks are processed can be cyclic, random which improves theoretical performance~\cite{tseng2001convergence,wei2012doa}. \\
 
-As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance prox~\ref{prox_mixed} when using $\mathcal{P}(\mathbf{X}) = \ell_{2,1}+\ell_1$. Accordingly, the closed form solution for the BCD subproblems solving the Group \ac{lasso} problem can be derived, which is given in Equation~\eqref{eq_bcd_glasso}.
+As both BCD and FISTA are based on the same idea of alternating between the gradient and the proximal operator, their difference is that BCD uses at each step a subproblem specific to one block. The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\mathcal{P}(\mathbf{X})$, for instance that defined in Equation~\ref{prox_mixed} when using $\ell_{2,1}+\ell_1$ ($\mathcal{P}(\mathbf{X}) = \|\mathbf{X}\|_{2,1}+\|\mathbf{X}\|_1$. Accordingly, the closed form solution for the BCD subproblems solving the Group \ac{lasso} problem can be derived as:
 \begin{equation*} \label{eq_bcd_glasso}
 \bar{\mathbf{X}}_s^{(k)} = \mathbf{X}_s^{(k-1)}+\mathbf{\mu}_s\mathbf{G}^\top_s(\mathbf{M} - \mathbf{GX}^{(k-1)})
 \end{equation*}
 \begin{equation}
-\tilde{\mathbf{X}}_s^{(k)} = \tilde{\mathbf{X}}_s^{(k)}max(1-\frac{\mathbf{\mu[s]\lambda}}{max(\|\bar{\mathbf{X}}_s^{(k)}\|_{Fro}, \mathbf{\mu}[s]\lambda)}, 0)
+\tilde{\mathbf{X}}_s^{(k)} = \tilde{\mathbf{X}}_s^{(k)}\max(1-\frac{\mathbf{\mu[s]\lambda}}{\max(\|\bar{\mathbf{X}}_s^{(k)}\|_{Fro}, \mathbf{\mu}[s]\lambda)}, 0)
 \end{equation}
-The step length $\mathbf{\mu}[s]$ for each BCD subproblem is determined by $\mathbf{\mu}[s]=\mathcal{L}_s^{-1}$ with $\mathcal{L}_s=\|\mathbf{G}_s^\top\mathbf{G}_s\|$ being the Lipschitz constant of the data-fit restricted to the $s^{th}$ source location. This step length is typically larger than the step length applicable in any proximal gradient methods, which is upper-bounded by the inverse of $\mathcal{L} = \|\mathbf{G}^\top\mathbf{G}\|$.
+The step length $\mathbf{\mu}[s]$ for each BCD subproblem is determined by $\mathbf{\mu}[s]=\mathcal{L}_s^{-1}$ with $\mathcal{L}_s=\|\mathbf{G}_s^\top\mathbf{G}_s\|$ being the Lipschitz constant of the data-fit restricted to the $s^{th}$ source location. This step length is typically larger than the step length applicable in any proximal gradient method, which is upper-bounded by the inverse of $\mathcal{L} = \|\mathbf{G}^\top\mathbf{G}\|$.
 
 \subsubsection*{Optimality conditions and stopping criterion}\label{section:duality_gap}
 
 \textbf{Stopping criterion:} The standard way is to check if the solution at iteration $k$ has not been improved more than a fixed tolerance threshold $\epsilon$, for either the objective function $|f(\mathbf{X}^{(k-1)})-f(\mathbf{X}^{(k)})|<\epsilon$, or the source estimate itself $\|\mathbf{X}^{(k-1)}-\mathbf{X}^{(k)}\|_{\infty}<\epsilon$. This is an acceptable strategy, although not the best one. A more rigorous criteria would be based on the \textit{duality gap} \cite{boyd2004convex,bach2012optimization}.\\
 
-\textbf{Duality gap:} A way to check the optimality criterion when optimizing a cost function $f$. For a subset of these convex problems, the Slater's conditions apply, therefore the gap at the optimum is exactly zero~\cite{Boyd_Vandenberghe04}. Computing the gap needs to derive first a dual formulation of the original problem, also called as the \textit{primal} problem. For a general minimization problem, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{X})$. Then, the duality gap is defined as the difference between the minimum of the primal cost function $f_p$ and the maximum of the dual cost $f_d$. For a value of of $\mathbf{X}^{(k)}$ of the primal variable at iteration $k$, if one can exhibit a dual variable $\mathbf{Y}^{(k)}$, the duality gap $\eta{(k)}$ is defined as:
+\textbf{Duality gap:} It is a way to check the optimality criterion when optimizing a cost function $f$. For a subset of convex problems, the Slater's conditions apply, therefore the gap at the optimum is exactly zero~\cite{Boyd_Vandenberghe04}. Computing the gap needs to derive first a dual formulation of the original problem, also called the \textit{primal} problem. For a general minimization problem, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{X})$. Then, the duality gap is defined as the difference between the minimum of the primal cost function $f_p$ and the maximum of the dual cost $f_d$. For a value of of $\mathbf{X}^{(k)}$ of the primal variable at iteration $k$, if one can exhibit a dual variable $\mathbf{Y}^{(k)}$, the duality gap $\eta{(k)}$ is defined as:
 
 \begin{equation}
 \eta^{(k)}=f_p(\mathbf{X}^{(k)})-f_d(\mathbf{Y}^{(k)}) \geq 0
 \end{equation}
 
-At the optimum (corresponding to $\hat{\mathbf{X}}$), if the $\mathbf{Y}^{(k)}$ is well chosen, $\eta^{(k)}$ is $0$. By exhibiting a pair $(\mathbf{X}^{(k)}, \mathbf{Y}^{(k)})$, one can guarantee that $\|f_p(\mathbf{X}^{(k)}) - f_p(\hat{\mathbf{X}})\| \leq \|f_p(\mathbf{X}^{(k)})-f_d(\mathbf{Y}^{(k)})\|$. A good stopping criterion is therefore given by a duality gap $\eta^{(k)}<\epsilon$. The solution meeting this condition is called $\epsilon$-optimal. The challenge in practice is to find an expression for $f_d$ and to be able to associate a good $\mathbf{Y}$ with a given $\mathbf{X}$. Experimental studies showed that for whitened data a duality gap lower than $10^{-6}$ does not produce distinguishable solutions~\cite{Gramfort_Kowalski_Hamalainen12}. For more details on how to compute the duality gap in this kind of problems - see~\cite{bach2012optimization,Gramfort_Kowalski_Hamalainen12,strohmeier-etal:16}\\
+At the optimum (corresponding to $\hat{\mathbf{X}}$), if the $\mathbf{Y}^{(k)}$ is well chosen, $\eta^{(k)}$ is $0$. By exhibiting a pair $(\mathbf{X}^{(k)}, \mathbf{Y}^{(k)})$, one can guarantee that $\|f_p(\mathbf{X}^{(k)}) - f_p(\hat{\mathbf{X}})\| \leq \|f_p(\mathbf{X}^{(k)})-f_d(\mathbf{Y}^{(k)})\|$. A good stopping criterion is therefore given by a duality gap $\eta^{(k)}<\epsilon$. The solution meeting this condition is called $\epsilon$-optimal. The challenge in practice is to find an expression for $f_d$ and to be able to associate a good $\mathbf{Y}$ with a given $\mathbf{X}$. Experimental studies showed that for whitened data a duality gap lower than $10^{-6}$ does not produce distinguishable solutions~\cite{Gramfort_Kowalski_Hamalainen12}. For more details on how to compute the duality gap in this kind of problems, see~\cite{bach2012optimization,Gramfort_Kowalski_Hamalainen12,strohmeier-etal:16}\\
 
 %Moreover, the Karush-Kuhn-Tucker (KKT) conditions of the Fenchel-Rockafellar duality theorem give a natural mapping from the primal space to the dual space:
 %\begin{equation}
 %\mathbf{Y}^{(k)}=\mathbf{M}-\mathbf{GX}^{(k)}
 %\end{equation}
 
-\subsubsection*{Screening rules | active set} \label{section:active_set}
-The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ equal to zero. We can thus reduce the computation time by primarily updating blocks, that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08}.\\
+\subsubsection*{Screening rules and active set} \label{section:active_set}
+The regularization term $\mathcal{P}(\mathbf{X})$ used in this thesis promotes spatial sparsity, which makes most of the blocks of $\hat{\mathbf{X}}$ equal to zero. We can thus reduce the computation time by primarily updating blocks that are likely to be non-zero, while keeping the remaining blocks at zero. For this purpose, data-dependent sweep patterns (such as greedy approaches based on steepest descent~\cite{li-osher:2009,wei2012doa}) or active set strategies can be applied~\cite{friedman-etal:2010,roth-etal:08}.\\
 
-The active set strategy can be used for both Group \ac{lasso} and Sparse Group \ac{lasso} based on~\cite{roth2008group,wang2014two}. The main idea is to start with $\mathbf{X}=0$, which corresponds to an empty active set $\Gamma=\{\}$. We estimate an initial active set of sources $\Gamma$ by evaluating the Karush-Kuhn-Tucker (KKT) optimality conditions~\cite{roth2008group,wang2014two}, which states that $\hat{\mathbf{X}}_s=0$ under some conditions depending on the regularization term. We select the $N$ sources that violates the KKT the most (\textit{e.g.} $N=10$). Subsequently, we restrict the source space to the sources in $\Gamma$ and estimate $\hat{\mathbf{X}}^{\Gamma}$ with convergence controlled by the duality gap. After convergence of this restricted optimization problem, we check whether $\hat{\mathbf{X}}^{\Gamma}$ is $\epsilon$-optimal solution for the original problem (without restricting the source space to $\Gamma$). if $\hat{\mathbf{X}}^{\Gamma}$ is not $\epsilon$-optimal solution indicated by $\eta \leq \epsilon$, we re-evaluate the KKT optimality conditions and update the active set $\Gamma$ by adding the $N$ sources that violates again these optimality conditions. The same procedure is then repeated with warm start.
+The active set strategy can be used for both Group \ac{lasso} and Sparse Group \ac{lasso} based on~\cite{roth2008group,wang2014two}. The main idea is to start with $\mathbf{X}=0$, which corresponds to an empty active set $\Gamma=\{\}$. We estimate an initial active set of sources $\Gamma$ by evaluating the Karush-Kuhn-Tucker (KKT) optimality conditions~\cite{roth2008group,wang2014two}, which states that $\hat{\mathbf{X}}_s=0$ under some conditions depending on the regularization term. We select the $N$ sources that violates the KKT conditions the most (\textit{e.g.} $N=10$). Subsequently, we restrict the source space to the sources in $\Gamma$ and estimate $\hat{\mathbf{X}}^{\Gamma}$ with convergence controlled by the duality gap. After convergence of this restricted optimization problem, we check whether $\hat{\mathbf{X}}^{\Gamma}$ is an $\epsilon$-optimal solution for the original problem (without restricting the source space to $\Gamma$). If $\hat{\mathbf{X}}^{\Gamma}$ is not an $\epsilon$-optimal solution indicated by $\eta \leq \epsilon$, we re-evaluate the KKT optimality conditions and update the active set $\Gamma$ by adding the $N$ sources that violate again these optimality conditions. The same procedure is then repeated with warm start.
 
 
 \subsubsection*{Comparison of the different solvers}\label{section:comparison_solvers}
-In Strohmeier et al.~\cite{strohmeier-etal:16}, BCD scheme was used for solving the MEG/EEG inverse problem. For the problem at hand, BCD outperforms FISTA proposed in a former work in~\cite{gramfort2012mixed}. BCD converges faster due to the reasons discussed in the BCD subsection, taking bigger step depending on the current block, makes the algorithm go faster to the optimal solution.
+In Strohmeier et al.~\cite{strohmeier-etal:16}, the BCD scheme was used for solving the MEG/EEG inverse problem. For the problem at hand, BCD outperforms FISTA proposed in a former work in~\cite{gramfort2012mixed}. BCD converges faster due to the reasons discussed in the BCD subsection~\ref{section:BCD}. Taking bigger step depending on the current block makes the algorithm go faster to the optimal solution.
 
 \begin{figure}
 	\centering
 	\includegraphics[trim={1cm 0.5cm 2cm 0.5cm},angle=270,width=0.95\textwidth]{background/comparison_fista_bcd}
-    \caption{Computation time as a function of $\lambda$ for group \ac{lasso} on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy.}
+    \caption{Computation time as a function of $\lambda$ for group \ac{lasso} on real MEG data using BCD and FISTA with (solid) and without (dashed) active set strategy. The size of the data was: 306 sensors, 7498 cortical locations, and free orientation (O=3)}
     \label{fig:comparison_fista_bcd}
 \end{figure}
 %\textbf{XXX: need to say what is $\lambda_{max}$ somewhere in this chapter}
-Combining the BCD and the active set strategy reduces the computation time by a factor of 100 and allows to compute the group \ac{lasso} on real MEG/EEG data in a few seconds. All the experimental results shown in the rest of this thesis will be using BCD with active set strategy.
+Combining the BCD and the active set strategy reduces the computation time by a factor of 100 and allows us to compute the group \ac{lasso} on real MEG/EEG data in a few seconds. All the experimental results shown in the rest of this thesis will be obtained by using BCD with active set strategy.
 
 \subsection{Conclusion}
-This chapter gives all the needed background which has been used to develop and demonstrate the upcoming results. It demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are one of the interest of this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
+This chapter gives all the needed background which has been used to develop and demonstrate the upcoming results. It demonstrated how to model the inverse problem as a regularized regression problem. It defined the multiple priors that have been used in the literature including the sparse approaches that are of interest in this thesis. Then it introduced some of the methods for solving the different convex optimization problems. This is again not an exhaustive list and not all details have been presented here. 
 
-This chapter also defined the state of the art of the MEG/EEG inverse problem and how research in this field have been evolving. From penalized regression formulation to hierarchical Bayesian formulation, this thesis will show in the next chapters how it tries to bridge the gap between those two communities. Especially, the aim is to take advantage of each part, the computationally fast solvers developed so far by one community and the ability to quantify uncertainties of the solution in the second community.
+This chapter also defined the state of the art of the MEG/EEG inverse problem and how research in this field have been evolving. From the penalized regression formulation to the hierarchical Bayesian formulation, I will show in the next chapters how this thesis tries to bridge the gap between those two communities. Especially, the aim is to take advantage of each part, the computationally fast solvers developed so far by one community and the ability to quantify uncertainties of the solution in the second community.
