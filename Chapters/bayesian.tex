@@ -249,7 +249,7 @@ In the context of inverse problems or high-dimensional statistics using sparsity
 \begin{equation} \label{eq:L2pReg}
 \hat{\bfX} \in \argmin_{\bfX\in\R^{SO \times T}} \frac{1}{2} \fronormsq{\bfM - \bfG \bfX}  + \lambda \sum_{i=1}^S \fronorm{\bfX{[i]}}^p \enspace,
 \end{equation}
-where $\lambda > 0$ is the regularization parameter balancing the data fit and the penalty term. One possible MM approach to solve Equation~\eqref{eq:L2pReg} with $p=0.5$ would consist of minimizing a sequence of non-smooth convex surrogate functions where the non-convex regularization (irMXNE solver) is replaced by a weighted $\ell_{2,1}$ norm similar to MxNE solver~\cite{strohmeier-etal:16}. In each iteration, the weights are derived from the current estimate of $\bfX$.
+similarly to Equation~\eqref{eq_reg}, where $\lambda > 0$ is the regularization parameter balancing the data fit and the penalty term, and $\mathbf{X}[i]$ defines the block of source $i$ ($\RR^T$ if $O=1$ or $\RR^{3\times T}$ if $O=3$). One possible MM approach to solve Equation~\eqref{eq:L2pReg} with $p=0.5$ would consist of minimizing a sequence of non-smooth convex surrogate functions where the non-convex regularization (irMXNE solver) is replaced by a weighted $\ell_{2,1}$ norm similar to MxNE solver~\cite{strohmeier-etal:16}. In each iteration, the weights are derived from the current estimate of $\bfX$.
 
 Due to the concavity of the non-decreasing function $\bfX\mapsto\sqrt{\fronorm{\bfX}}$, it is upper bounded by its tangent and a first order Taylor expansion at the current estimate $\bfX{[i]}$ provides an upper bound that can be used to construct the non-smooth convex surrogate problem. By solving this sequence of surrogate problems, the value of the non-convex objective function is guaranteed to decrease. However, due to the non-convexity, only convergence towards a local minimum can be guaranteed.
 
@@ -275,10 +275,10 @@ Defining $\tilde{\bfG}^{(k)}=\bfG \bfW^{(k-1)}$, the reformulated problem reads:
 \tilde{\bfX}^{(k)} \in \argmin_{\bfX\in\R^{SO \times T}} \frac{1}{2}\fronormsq{\bfM - \tilde{\bfG}^{(k)} \bfX}  + \lambda \sum_{i=1}^S \fronorm{\bfX[i]} \enspace .
 \end{eqnarray}
 
-The convergence of each weighted $\ell_{2,1}$ (MxNE) is controlled by monitoring the duality gap (see Section~\ref{section:duality_gap}). For more details about convex duality of optimization with sparsity-inducing sparsity, refer to~\cite{bach2012optimization}.\\
+The convergence of each weighted $\ell_{2,1}$ (MxNE) is controlled by monitoring the duality gap (see Section~\ref{section:duality_gap}). For more details about convex duality of optimization with sparsity-inducing penalties, refer to~\cite{bach2012optimization}.\\
 As mentioned in Section~\ref{section:duality_gap}, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{Y})$, \textit{i.e.},\\
 $f_d(\mathbf{Y}^\star)\leq f_p(\mathbf{X}^\star)$ where $\mathbf{X}^\star$ and $\mathbf{Y}^\star$ are the optimal solutions of the primal and the dual objective functions respectively. If strong duality holds, the duality gap defined as $\eta=f_p(\mathbf{X})-f_d(\mathbf{Y})$ would be zero at the optimum.\\
-Due to Slater's conditions~\cite{Boyd_Vandenberghe04}, strong duality gap holds for MxNE subproblem to check the convergence of Equation~\eqref{MM}. Based on Fenchel-Rockafellar duality theorem~\cite{rockafellar:1997}, the dual objective function associated with the primal objective function:
+Due to Slater's conditions~\cite{Boyd_Vandenberghe04}, the strong duality gap holds for the MxNE subproblem to check the convergence of Equation~\eqref{eq:MM}. Based on Fenchel-Rockafellar duality theorem~\cite{rockafellar:1997}, the dual objective function associated with the primal objective function:
 \begin{equation}
 \begin{split}
 f_p(\mathbf{X}) & = \frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2+\lambda\mathcal{P}(\mathbf{X}) \\
@@ -289,7 +289,7 @@ is given by:
 \begin{equation}
 f_d(\mathbf{Y})=-\frac{1}{2}\|\mathbf{Y}\|_{Fro}^2+Tr(\mathbf{Y}^\top\mathbf{M})-\lambda\mathcal{P}^\star(\mathbf{G}^\top\mathbf{Y}/\lambda)
 \end{equation}
-where $\mathcal{P}^\star$ is the Fenchel conjugate of $\mathcal{P}$, which is the indicator function of the associated dual form. For a full derivation, see~\cite{Gramfort_Kowalski_Hamalainen12}. Moreover, the Karush-Khun-Tucker (KKT) conditions of the Fenchel-Rockafellar duality theorem give a natural from
+where $\mathcal{P}^\star$ is the Fenchel conjugate of $\mathcal{P}$, which is the indicator function of the associated dual form. For a full derivation, see~\cite{Gramfort_Kowalski_Hamalainen12}. Moreover, the Karush-Khun-Tucker (KKT) conditions of the Fenchel-Rockafellar duality theorem give a natural mapping from
 the primal to the dual space, which is given by a scaling of the residual $\tilde{\mathbf{Y}}=\mathbf{M}-\mathbf{GX}$, as shown in~\cite{Gramfort_Kowalski_Hamalainen12}.\\
 In practice, we terminate the optimization scheme for solving MxNE when the estimate at the $k^{th}$ iteration is $epsilon$-optimal with $\epsilon=10^{-6}$~\cite{strohmeier-etal:16}.\\
 
@@ -309,11 +309,11 @@ In practice, we terminate the optimization scheme for solving MxNE when the esti
     {
 		$\tilde{\bfG}^{(k)} = \bfG \bfW^{(k-1)}$
 
-		Get $\tilde{\bfX}^{(k)}$ solving Equation~\eqref{eq:lasso_new_gram} at $\epsilon$-precision as done in Algorithm~\ref{alg:mxne_activeset}.
+		Get $\tilde{\bfX}^{(k)}$ by solving Equation~\eqref{eq:lasso_new_gram} at $\epsilon$-precision as done in Algorithm~\ref{alg:mxne_activeset}.
 
 		Update $\hat{\bfX}^{(k)} = \bfW^{(k-1)} \tilde{\bfX}^{(k)}$
 
-	    Update $\bfW^{(k)}=\mathrm{diag}(\bfw^{(k)} \otimes \mathbf{1}_{O})$ where $\bfw^{(k)}[i] = 2 \sqrt{\fronorm{\hat{\bfX}^{(k)}[i]}}$,  $\forall i\in [1, cdots, S]$
+	    Update $\bfW^{(k)}=\mathrm{diag}(\bfw^{(k)} \otimes \mathbf{1}_{O})$ where $\bfw^{(k)}[i] = 2 \sqrt{\fronorm{\hat{\bfX}^{(k)}[i]}}$  $\forall i\in [1, \cdots, S]$
 
 		\If{ $\norm{\hat{\bfX}^{(k)}-\hat{\bfX}^{(k-1)}}_{\infty} \leq \tau$}{Break}
 
@@ -323,7 +323,7 @@ In practice, we terminate the optimization scheme for solving MxNE when the esti
 \end{algorithm}
 }
 
-For solving the weighted MxNE subproblems, a block coordinate descent (BCD) scheme was used~\cite{tseng}, which for the problem at hand converges faster than the Fast Iterative Shrinkage Thresholding Algorithm (FISTA) (See Section~\ref{section:comparison_solvers}). The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\ell_{2,1}$-mixed-norm~\cite{gramfort2012mixed,strohmeier-etal:16}.
+For solving the weighted MxNE subproblems, \ac{BCD} scheme was used~\cite{tseng}, which for the problem at hand converges faster than \ac{FISTA} (See Section~\ref{section:comparison_solvers}). The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\ell_{2,1}$-mixed-norm~\cite{gramfort2012mixed,strohmeier-etal:16}.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -351,7 +351,7 @@ For solving the weighted MxNE subproblems, a block coordinate descent (BCD) sche
 
 	  	Define $\mathbf{G}^\Gamma$ and $\mathbf{X}^\Gamma$ by restricting $\mathbf{G}$ and $\mathbf{X}$ to $\Gamma$
 
-	  	$\mathbf{X}^{\star\Gamma}\leftarrow$ Solve Algorithm~\ref{alg:} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}^\Gamma$
+	  	$\mathbf{X}^{\star\Gamma}\leftarrow$ Use Algorithm~\ref{alg:mxne_bcd} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}^\Gamma$
 
 	  	$\mathbf{X}=\mathbf{X}^{\star\Gamma}$ for $i\in\Gamma$, else 0
 
@@ -377,10 +377,10 @@ For solving the weighted MxNE subproblems, a block coordinate descent (BCD) sche
 	  }
 	  {
 	  	\For{
-	  			$i=1 in S$
+	  			$i=1 \in S$
 	  		}
 	  		{
-	  			$\mathbf{X}[i]\leftarrow$ Solve Equation~\eqref{eq:} with $\mathbf{X}, \mathbf{\mu}$, and $\mathbf{M}$
+	  			$\mathbf{X}[i]\leftarrow$ Solve Equation~\eqref{eq_bcd_glasso} with $\mathbf{X}, \mathbf{\mu}$, and $\mathbf{M}$
 	  		}
 	  	$\eta = f_p(\mathbf{X})-f_d(\mathbf{Y})$
 	  }
@@ -393,14 +393,14 @@ After convergence, we reapply the scaling to $\tilde{\bfX}$ to obtain $\hat{\bfX
     \label{eq:MM_weights}
     \bfX^{\star(k)} = \bfW^{(k-1)} \tilde{\bfX}^{(k)} \enspace .
 \end{equation}
-The reformulation through Equation~\eqref{eq:lasso_new_gram} and Equation~\ref{eq:MM_weights} avoids any division by zero when $\bfX^{(k-1)}=0$. The above procedure, which matches the strategy of the Adaptive \ac{lasso} estimator~\cite{Zou06}, is expressed as pseudo-code in Algorithm~\ref{alg:adpative_lasso}.
+The reformulation through Equation~\eqref{eq:lasso_new_gram} and Equation~\eqref{eq:MM_weights} avoids any division by zero when $\bfX^{(k-1)}=0$. The above procedure, which matches the strategy of the Adaptive \ac{lasso} estimator~\cite{Zou06}, is expressed as pseudo-code in Algorithm~\ref{alg:adpative_lasso}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Hierarchical Bayesian Modeling}
 \label{section:HBM}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section, we formulate the inference problem given by Equation~\eqref{eq:FwdEq} and the regularization strategy with $\ell_{2,p}$-quasi-norms from a Bayesian perspective~\cite{KaSo05,Lu14}: the Bayesian approach incorporates prior beliefs about the model parameters in terms of probability distributions. Under the additive, white Gaussian noise (AWGN) assumption the likelihood of the model is given by:
+In this section, we formulate the inference problem defined by Equation~\eqref{eq_linmeeg} and the regularization strategy with $\ell_{2,p}$-quasinorm from a Bayesian perspective~\cite{KaSo05,Lu14}: the Bayesian approach incorporates prior beliefs about the model parameters in terms of probability distributions. Under the Additive, White Gaussian Noise (AWGN) assumption, the likelihood of the model is given by:
 \begin{eqnarray} \label{eq:like}
 \like &\propto \exp \left( - \frac{1}{2} \fronormsq{\bfM - \bfG \bfX} \right) \enspace.
 \end{eqnarray}
@@ -411,7 +411,6 @@ From Equation~\eqref{eq:L2pReg} we can construct the $\ell_{2,p}$ group prior as
 \prior \propto \exp \left( - \lambda \sum_{i=1}^S \fronorm{\bfX[i]}^p \right)
 = \prod_{i=1}^S \exp \left( - \lambda \fronorm{\bfX[i]}^p \right) \enspace,
 \end{equation}
-
 which leads to the following posterior probability density using the Bayes rule:
 
 \begin{equation} \label{eq:post}
@@ -421,7 +420,7 @@ which leads to the following posterior probability density using the Bayes rule:
 To extend Equation~\eqref{eq:prior} to a hierarchical prior model~\cite{mackay2003information}, the scalar $\lambda$ has been replaced by a vector of hyperparameters $\mathbf{\gamma} \in \R^{S}_+$ and for any $p \geq 1$ we write the \emph{conditional $\ell_{2,p}$ prior} as:
 \begin{equation} \label{eq:condprior}
 \fl \hiprior
-\propto \exp \left( - \sum_{i=1}^S \left( \frac{\fronorm{\bfX[i]}^p}{\mathbf{\gamma}[i]} + \frac{O T}{p} \log(\mathbf{\gamma}[i])\right)\right) \enspace,
+= \exp \left( - \sum_{i=1}^S \left( \frac{\fronorm{\bfX[i]}^p}{\mathbf{\gamma}[i]} + \frac{O T}{p} \log(\mathbf{\gamma}[i])\right)\right) \enspace,
 \end{equation}
 where the logarithmic term accounts for the terms of the normalization that depend on $\mathbf{\gamma}$~\cite{Lu14}. A common choice for a hyper-prior on each $\gamma[i]$ is given by a \emph{Gamma distribution}~\cite{mackay2003information,KaSo05,CaHaPuSo09,Lucka-etal:2012} with shape and scale parameters $\alpha$ and $\beta$:
 \begin{align} \label{eq:hyper}
@@ -429,6 +428,7 @@ where the logarithmic term accounts for the terms of the normalization that depe
 & = \exp \left( - \sum_{i=1}^S \left( - \frac{\mathbf{\gamma}[i]}{\beta} + (\alpha - 1) \log(\mathbf{\gamma}[i]) \right) \right) \enspace.
 \end{align}
 Then, the full posterior over both $\bfX$ and $\gamma$ becomes:
+
 \begin{eqnarray}
 \label{eq:full-post}
 \fl \hipost \propto \nonumber \\
@@ -450,7 +450,7 @@ A common strategy  to compute it is to minimize the \emph{negative log posterior
 & \forall i\in [1,\cdots, S] \enspace. 
 \end{split}
 \end{equation}
-Other fully-Bayesian estimates are defined as integrals of functions of $\bfX$ and $\mathbf{\gamma}$ with respect to the posterior distribution, \textit{e.g.} first or second moment estimates. To compute these high dimensional integrals efficiently, only Markov chain Monte-Carlo (MCMC) methods that draw correlated samples from the posterior distribution can be used\cite{RoCa05,KaSo05} . A commonly used MCMC scheme for HBM is given by \emph{blocked Gibbs sampling} which alternates as:
+Other fully-Bayesian estimates are defined as integrals of functions of $\bfX$ and $\mathbf{\gamma}$ with respect to the posterior distribution, \textit{e.g.} first or second moment estimates. To compute these high dimensional integrals efficiently, only \ac{MCMC} methods that draw correlated samples from the posterior distribution can be used~\cite{RoCa05,KaSo05} . A commonly used MCMC scheme for HBM is given by \emph{blocked Gibbs sampling}, which alternates as:
 \begin{eqnarray}
 \bfX^{(k)} &\sim \: p_{post}(\bfX,\mathbf{\gamma}^{(k-1)}|\bfM) &\propto p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)}) \enspace, \label{eq:AS-X}\\
 \mathbf{\gamma}^{(k)} &\sim \: p_{post}(\bfX^{(k)},\mathbf{\gamma}|\bfM) &\propto p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})\enspace. \label{eq:AS-gamma}
@@ -482,23 +482,23 @@ If we furthermore choose $\alpha = O T/p + 1$, then $\nu = 0$ and most terms dis
 \bfX^{(k)} &= \argmin_{\bfX\in\R^{SO \times T}} \left\lbrace \frac{1}{2} \fronormsq{\bfM -\bfG \bfX} + \sum_{i=1}^S \frac{\fronorm{\bfX[i]}^p}{\mathbf{\gamma}^{(k-1)}[i]} \right\rbrace \enspace, \label{eq:AO-nu0-X}\\
 \mathbf{\gamma}^{(k)}[i] &= \sqrt{\beta} \sqrt{\fronorm{\bfX^{(k)}[i]}^p} \, , \quad \forall i=1,\ldots,S \enspace, \label{eq:AO-nu0-gamma}
 \end{eqnarray}
+which can be combined into the fixed point iteration:
 
-which can be combined to the fixed point iteration:
 \begin{equation} \label{eq:AO-nu0-2}
 \bfX^{(k)} = \argmin_{\bfX\in\RR^{SO \times T}} \left\lbrace \frac{1}{2} \fronormsq{\bfM -\bfG \bfX} + \frac{2}{\sqrt{\beta}} \sum_{i=1}^S  \frac{\fronorm{\bfX[i]}^p}{2 \sqrt{\fronorm{\bfX^{(k-1)}[i]}^p}} \right\rbrace \enspace .
 \end{equation}
 If we compare Equation~\eqref{eq:AO-nu0-2} with Equation~\eqref{eq:MM}, we see that we re-derived the MM algorithm for $p=1$ as an alternating optimization scheme to compute the \emph{full-MAP} estimate for a specific HBM, namely using a conditional $\ell_{2,1}$ group prior and a Gamma hyper-prior with $\alpha = OT + 1$ and $\beta = 4/\lambda^2$. Using $\bfw^{(0)}[i] := 1$ in the MM scheme corresponds to starting with $\mathbf{\gamma}[i]^{(0)} := 1/\lambda =  2/\sqrt{\beta}$.\\
 
-From previous work~\cite{strohmeier-etal:16} we know that due to the non-convexity, a good initialization of the weights $\bfw^{(0)}[i]$ in the MM algorithm is crucial for its performance, but aside uniform initialization, only heuristic initialization strategies were used, \textit{e.g.} using the same re-weighting as in the sLORETA method~\cite{Pa02}. In this thesis, we leverage the re-interpretation of the MM algorithm through the HBM framework to obtain multiple initializations in a systematic fashion, namely as samples drawn from the full posterior. This way, we can not only reach better local minima but more importantly, we can identify and characterize multiple possible sparse solutions. Such plausible solutions to the sparse regression problem in Equation~\eqref{eq:FwdEq} are the modes of the posterior distribution (Equation~\eqref{eq:full-post}) with different relative probability masses.
+From previous work~\cite{strohmeier-etal:16} we know that due to the non-convexity, a good initialization of the weights $\bfw^{(0)}[i]$ in the MM algorithm is crucial for its performance, but aside uniform initialization, only heuristic initialization strategies were used, \textit{e.g.} using the same re-weighting as in the sLORETA method~\cite{Pa02}. In this thesis, we leverage the re-interpretation of the MM algorithm through the HBM framework to obtain multiple initializations in a systematic fashion, namely as samples drawn from the full posterior. This way, we can not only reach better local minima but more importantly, we can identify and characterize multiple possible sparse solutions. Such plausible solutions to the sparse regression problem in Equation~\eqref{eq_linmeeg} are the modes of the posterior distribution (Equation~\eqref{eq:full-post}) with different relative probability masses.
 
 %----------------Sampling-------------------------------------------------------------------
 \section{Posterior Sampling}
 \label{section:hbm_sampling}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-As outlined in Equation~\eqref{eq:AS-X} and~\eqref{eq:AS-gamma} in Section~\ref{section:HBM}, we sample the full posterior $\hipost$ by blocked Gibbs sampling, \ie we alternate between sampling the conditional distributions $p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)})$ and $p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})$. The conditional $p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)})$ is a high dimensional distribution composed of a Gaussian likelihood and an $\ell_{2,p}$ prior, where our main interest here is $p = 1$. It was demonstrated in~\cite{Lu12} that \termabb{single component Gibbs sampling}{SC Gibbs} is an efficient MCMC technique to sample such distributions. For the specific $\ell_{2,p}$ priors used here, \emph{slice sampling} can be used to perform the sub-steps in SC Gibbs sampling, namely the sampling of the one-dimensional single-component conditional densities. The resulting \emph{Slice-Within-Gibbs} sampler was examined in~\cite{Lu16}. For completeness, the details of the implementation are given in~\ref{sec:DetailsGammaSampler}.\\
+As outlined in Equations~\eqref{eq:AS-X} and~\eqref{eq:AS-gamma} in Section~\ref{section:HBM}, we sample the full posterior $\hipost$ by blocked Gibbs sampling, \ie we alternate between sampling the conditional distributions $p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)})$ and $p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})$. The conditional $p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)})$ is a high dimensional distribution composed of a Gaussian likelihood and an $\ell_{2,p}$ prior, where our main interest here is $p = 1$. It was demonstrated in~\cite{Lu12} that \termabb{single component Gibbs sampling}{SC Gibbs} is an efficient MCMC technique to sample such distributions. For the specific $\ell_{2,p}$ priors used here, \emph{slice sampling} can be used to perform the sub-steps in SC Gibbs sampling, namely the sampling of the one-dimensional single-component conditional densities. The resulting \emph{Slice-Within-Gibbs} sampler was examined in~\cite{Lu16}. For completeness, the details of the implementation are given in Section~\ref{sec:DetailsGammaSampler}.
 
-The conditional $p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})$ factorizes over groups $i$:
+Following Equation~\eqref{eq:full-post}, the conditional $p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})$ factorizes over groups $i$:
 \begin{equation}
 \fl \qquad p_{post}(\mathbf{\gamma}[i]|\bfM,\bfX^{(k)}) \propto \exp \left( -\frac{\fronorm{\bfX^{(k)}[i]}^p}{\mathbf{\gamma}[i]} - \frac{\mathbf{\gamma}[i]}{\beta} + (\alpha - 1 - O T/p) \log(\mathbf{\gamma}[i]) \right) \enspace. \label{eq:conPostGammai}
 \end{equation}
@@ -506,7 +506,7 @@ For the case of $\alpha = O T/p + 1$, which is our main interest due to its conn
 \begin{equation}
 \fl \qquad p_{post}(\mathbf{\gamma}[i] |\bfM, \bfX^{(k)}) \propto \exp \left(- \frac{\fronorm{\bfX^{(k)}[i]}^p}{\mathbf{\gamma}[i]} \right) \exp \left(- \frac{\mathbf{\gamma}[i]}{\beta} \right) \enspace, \label{eq:conPostGammaiRed}
 \end{equation}
-which can be sampled with a simple accept-reject algorithm as described in Section~\ref{sec:DetailsGammaSampler}. The complete procedure is described in Algorithm~\ref{alg:sampling}. Therein, $K_0$ refers to the burn-in size, \ie the initial samples that are discarded, $K$ to the sample size of the blocked Gibbs sampler and $K_{SC}, K_{SS}$ to the sample sizes of the SC Gibbs and the slice sampler that carry out the sampling in the sub-steps.
+which can be sampled with a simple accept-reject algorithm as described in Section~\ref{sec:DetailsGammaSampler}. The complete procedure is described in Algorithm~\ref{alg:sampling}. Therein, $K_0$ refers to the burn-in size, \ie the initial samples that are discarded, $K$ to the sample size of the blocked Gibbs sampler and $K_{SC}, K_{SS}$ to the sample sizes of the SC Gibbs and the slice sampler that carries out the sampling in the sub-steps.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -519,12 +519,12 @@ which can be sampled with a simple accept-reject algorithm as described in Secti
 % \Parameter{}
 
 \For{
-        $k = -K_0+1$ to $K$
+        $k = -K_0+1$ \textbf{to} $K$
     }
     {%Sample $(\bfX,\gamma) \sim p_{post}(\bfX,\gamma |\bfM)$ via \textbf{Block Gibbs:}
     Set $\bfX^{(k)} = \bfX^{(k-1)}$.\\
     \For{
-    		$k_{SC} = 1$ to $K_{SC}$
+    		$k_{SC} = 1$ \textbf{to} $K_{SC}$
     		}
     		{
     		Draw a random permutation $P$ of $\{1,\ldots,S\}$\\
@@ -532,7 +532,7 @@ which can be sampled with a simple accept-reject algorithm as described in Secti
     			$l \in P$
     			}
     			{
-			Sample $\bfX^{(k)}[i,j] \sim p_{post}(\bfX[i,j]|\bfX^{(k-1)}[-(i,j)],\bfM,\mathbf{\gamma}^{(k)})$, $\forall (i,j)\in [l]$ - via $K_{SS}$ steps of \textbf{Slice Sampling} Algorithm~\ref{alg:slicesampler}.
+			Sample $\bfX^{(k)}[i,j] \sim p_{post}(\bfX[i,j]|\bfX^{(k-1)}[-(i,j)],\bfM,\mathbf{\gamma}^{(k)})$, $\forall (i,j)\in [l]$ - via $K_{SS}$ steps of \textbf{Slice Sampling} Algorithm~\ref{alg:Slice}.
 			}
 		}
 	{Sample $\gamma^{(k)}_{i} \sim p_{post}(\gamma_{i}|\bfM,\bfX^{(k)})$, $\forall i =1,\ldots,n$ via \textbf{Accept-Reject} Algorithm~\ref{alg:acceptreject}.}
@@ -550,7 +550,7 @@ Within the Algorithm \ref{alg:sampling}, to update a group $\bfX[l]$, we need to
 \begin{equation}
 p_{post}(\bfX[i,j]|\bfX^{(k-1)}[-(i,j)],\bfM,\mathbf{\gamma}^{(k)}), \qquad (i,j) \in [l] \enspace ,
 \end{equation}
-where $\bfX[-(i,j)]$ refers all the coefficient of the matrix $\bfX$ except the term $(i,j)$.
+where $\bfX[-(i,j)]$ refers all the coefficients of matrix $\bfX$ except the term $(i,j)$.
 
 To implement this efficiently, we can precompute several terms and make use of the specific spatio-temporal group structure of the posterior. We first derive the part of the likelihood as in Equation \eqref{eq:like} that depends on a given index pair $(i,j) \in [l]$:
 \begin{gather*}
@@ -565,24 +565,23 @@ To implement this efficiently, we can precompute several terms and make use of t
 \fl \hspace{1.5cm} b :=  \left( \bfG^\top \bfM\right)[i,j] - \left({\bfG[:,i]}^\top \bfG\right) \bfX[:,j] - \norm{\bfG[:,i]}_2^2
 \end{gather*}
 
-Note that $\norm{\bfG[:,i]}_2^2 $ and $ \left( \bfG^\top \bfM\right)$ can be precomputed. The challenging part in the computation of $b$ is to compute $\left({\bfG[:,i]}^\top \bfG\right)$, as one typically does not want to pre-compute the $SO \times SO$ matrix $G^\top G$ and hold it in memory. However, to update all the $TO$ components of the $l^{th}$ group (\eg, in the visual evoked fields example, $T = 211$, $O = 3$) one only needs the $O \times SO$ matrix $\left({\bfG[:,[l]]}^\top \bfG\right)$. Thus, we compute $\left({\bfG[:,[l]]}^\top \bfG\right)$ at the start of updating group $\bfX[l]$ and hold it memory throughout the bloc update. Besides this, the most costly operation to compute $b$ is a dot product of vectors of size $SO$. Next, we derive the part of the prior \eqref{eq:condprior} that depends on $\bfX[i,j], (i,j) \in [l]$:
+Note that $\norm{\bfG[:,i]}_2^2 $ and $\bfG^\top \bfM$ can be precomputed. The challenging part in the computation of $b$ is to compute ${\bfG[:,i]}^\top \bfG$, as one typically does not want to pre-compute the $SO \times SO$ matrix $\bfG^\top \bfG$ and hold it in memory. However, to update all the $TO$ components of the $l^{th}$ group (\textit{e.g.} in the visual evoked fields example, $T = 211$, $O = 3$) one only needs the $O \times SO$ matrix ${\bfG[:,[l]]}^\top \bfG$. Thus, we compute ${\bfG[:,[l]]}^\top \bfG$ at the start of updating group $\bfX[l]$ and hold it memory throughout the bloc update. Besides this, the most costly operation to compute $b$ is a dot product of vectors of size $SO$. Next, we derive the part of the prior \eqref{eq:condprior} that depends on $\bfX[i,j], (i,j) \in [l]$:
 \begin{gather*}
 \fl \hspace{-5cm} \sum_{l=1}^S \left( \frac{\fronorm{\bfX[l]}^p}{\mathbf{\gamma}{l}} + \frac{O T}{p} \log(\mathbf{\gamma}[l])\right) \quad \\
 \fl \hspace{2cm} \proptoab{\bfX[i,j], (i,j) \in [l]} \quad \mathbf{\gamma}[l]^{-1} \fronorm{\bfX[l]}^p =  \mathbf{\gamma}[l]^{-1} \left( \sum_{(i',j') \in [l]} \bfX[i',j']^2  \right)^{p/2}  \nonumber \\
 \fl \hspace{9.3cm} = \mathbf{\gamma}[l]^{-1} \left(\bfX[i,j]^2 + \sum_{(i',j') \in [l] \atop (i',j') \neq (i,j)} \bfX[i',j']^2  \right)^{p/2} \\
 \fl \hspace{5cm} =: c \left(z^2 + d \right)^{p/2} \enspace ,
 \end{gather*}
-
 with $c$ and $d$ defined and computed in an obvious way. Taken together, to update $\bfX[i,j]$, we have to sample from the one-dimensional density:
 \begin{equation}
 p(z) \propto \exp \left(- a z^2 - b z \right) \exp \left(- c \left(z^2 + d \right)^{p/2} \right) =: p_1(z) p_2(z) \enspace . \label{eq:SCdensity}
 \end{equation}
-We take advantage of the fact thatn \eqref{eq:SCdensity} factorizes in a Gaussian likelihood part $p_1(z)$ and a symmetric, log-concave prior part $p_2(z)$, and use a generalized form of slice sampling \cite{Ne03,RoCa05} as described in more detail in \cite{Lu16} and summarized in Algorithm \ref{alg:Slice}. Determining $S_2^y$ in our case is trivial:
+We take advantage of the fact that \eqref{eq:SCdensity} factorizes in a Gaussian likelihood part $p_1(z)$ and a symmetric, log-concave prior part $p_2(z)$, and use a generalized form of slice sampling \cite{Ne03,RoCa05} as described in more detail in \cite{Lu16} and summarized in Algorithm \ref{alg:Slice}. Determining $S_2^y$ in our case is trivial:
 \begin{align}
 \fl p_2(z) \geqslant y \quad & \Leftrightarrow \quad c \left(z^2 + d \right)^{p/2} \leqslant - \log(y) \quad \\
 \fl & \Leftrightarrow |x| \leqslant \left( \left( \frac{- \log(y)}{c} \right)^{2/p} - d \right)^{1/2}
 \end{align}
-Then, we use a slightly modified, more robust, version of the fast table-based algorithm described in \cite{Ch12} to sample from the truncated Gaussian distribution $p_1(z) \mathbf{\mathcal{1}}_{S^y_2}(z)$. As initialization for $z$, we always chose the current value of $\bfX[i,j]$.
+Then, we use a slightly modified, more robust version of the fast table-based algorithm described in \cite{Ch12} to sample from the truncated Gaussian distribution $p_1(z) \mathbf{\mathbbm{1}}_{S^y_2}(z)$. As initialization for $z$, we always choose the current value of $\bfX[i,j]$.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -596,9 +595,9 @@ Then, we use a slightly modified, more robust, version of the fast table-based a
      $k = 1$ to $K_{SS}$
     }
     {
-    Draw $y$ uniform from $\left[0,p_2(z)\right]$ (vertical move).\\
+    Draw $y$ uniformly from $\left[0,p_2(z)\right]$ (vertical move).\\
     Determine $S_2^y \mydef \left\lbrace z \;|\; p_2(z) \geqslant y \right\rbrace$\\
-	Draw $z$ from $p_1(z) \mathbf{\mathcal{1}}_{S^y_2}(z)$ (weighted horizontal move).
+	Draw $z$ from $p_1(z) \mathbf{\mathbbm{1}}_{S^y_2}(z)$ (weighted horizontal move).
     }
 {\Return{$z$} as a sample of $p(z)$}
 \label{alg:Slice}
@@ -616,21 +615,21 @@ Note that the first factor is monotonically increasing with limit $0$ for $x \se
 \begin{equation}
 g(x) = 
 \begin{cases}
-\hat p & \text{if} x < \tilde{x} \\
+\hat p & \text{if} \hspace{10pt} x < \tilde{x} \\
 \exp \left(- \frac{x}{\beta} \right)	& \text{otherwise}  \enspace,
 \end{cases}
 \label{eq:ARsamplingDensity}
 \end{equation}
-where $\hat p = \max_x p(x)$ is the maximal probability attained at $\hat x = \argmax_x p(x) = \sqrt{\beta c}$ and $\tilde{x} = \beta c/\hat x + \hat x$ is the solution to $\exp \left(- x/\beta\right) = \hat p$ (\textit{cf.} Figure~\ref{fig:AccRejSketch}). Sampling from~\eqref{eq:ARsamplingDensity} is then straight-forward using $v, w \sim \mathcal{U}_{[0,1]}$: If one computes
+where $\hat p = \max_x p(x)$ is the maximal probability attained at $\hat x = \argmax_x p(x) = \sqrt{\beta c}$ and $\tilde{x} = \beta c/\hat x + \hat x$ is the solution to $\exp \left(- x/\beta\right) = \hat p$ (\textit{cf.} Figure~\ref{fig:AccRejSketch}). Sampling from~\eqref{eq:ARsamplingDensity} is then straight forward using $v, w \sim \mathcal{U}_{[0,1]}$: if one computes
 \begin{equation}
 \fl G_{x\geqslant \tilde{x}} = \int_{\tilde{x}}^\infty g(x) \, dx = \beta \exp(- \tilde{x}/\beta), \qquad
 G_{x < \tilde{x}} = \int_0^{\tilde{x}} g(x) \, dx = \hat{p} \tilde{x} \enspace,
 \end{equation}
-then $v <  G_{x\geqslant \tilde{x}} / (G_{x\geqslant \tilde{x}} + G_{x < \tilde{x}})$ determines that we are in the tail, $x > \tilde{x}$, where we can use a simple inverse cumulative distribution method to draw a proposal from $g(x)$ using $w$. If $v$ determines that we are in $x \leqslant \tilde{x}$, then $x = w \tilde{x}$ is the proposal. For numerical precision, we only compute logarithms of probabilities and use that for $a > 0$, b$\geqslant 0$:
+then $v <  G_{x\geqslant \tilde{x}} / (G_{x\geqslant \tilde{x}} + G_{x < \tilde{x}})$ determines that we are in the tail, $x > \tilde{x}$, where we can use a simple inverse cumulative distribution method to draw a proposal from $g(x)$ using $w$. If $v$ determines $x \leqslant \tilde{x}$, then $x = w \tilde{x}$ is the proposal. For numerical precision, we only compute logarithms of probabilities and use that for $a > 0$, b$\geqslant 0$:
  \begin{equation}
  \log \left(a +b \right) = \log a + \log \left(1 + \exp \left(b - a \right)\right) \enspace .
  \end{equation}
- The whole sampling scheme is shown in Algorithm~\ref{alg:acceptreject}. We found the scheme to be efficient enough for all of our computations, \ie the chosen $g(x)$ is close enough to $p(x)$ to result in an accepted sample after a few trails. If this would become a problem, it would be easy to adaptively improve the dominating density.
+ The whole sampling scheme is shown in Algorithm~\ref{alg:acceptreject}. We found the scheme to be efficient enough for all of our computations, \textit{i.e.} the chosen $g(x)$ is close enough to $p(x)$ to result in an accepted sample after a few trials. If this would become a problem, it would be easy to adaptively improve the dominating density.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -650,7 +649,7 @@ Set $\log G_{x < \tilde{x}} = \log \hat p + \log \tilde{x}$. \\
 Set $\log G_{tot} = \log G_{x\geqslant \tilde{x}} + \log\left(1 + \exp\left(G_{x < \tilde{x}} - G_{x\geqslant \tilde{x}}  \right)\right)$.\\
 \While{true}
     {
-    Draw $u, v, w$ uniform from $\left(0,1\right)$.\\
+    Draw $u, v, w$ uniformly from $\left(0,1\right)$.\\
     \If{$\log v + \log G_{tot} < \log G_{x\geqslant \tilde{x}}$}{
 		Set $W = \log w - \tilde{x}/\beta$.\\
 		Propose $x = - \beta W$:\\
@@ -666,7 +665,7 @@ Set $\log G_{tot} = \log G_{x\geqslant \tilde{x}} + \log\left(1 + \exp\left(G_{x
 
 \begin{figure}[tb]
    \centering
-\includegraphics[width = 0.5\textwidth]{hbm/AcceptRejectSketch}
+\includegraphics[width = 0.4\textwidth]{hbm/AcceptRejectSketch}
 \caption{Sketch of the quantities used in the accept-reject sampling Algorithm~\ref{alg:acceptreject}.}
    \label{fig:AccRejSketch}
 \end{figure}
@@ -681,7 +680,7 @@ Set $\log G_{tot} = \log G_{x\geqslant \tilde{x}} + \log\left(1 + \exp\left(G_{x
 \subsection{Study of the different modes defining uncertainty maps of MEG/EEG inverse problem}
 
 We now examine the benefits of our re-interpretation of the MM algorithm described in Section~\ref{section:MM} as a specific way to compute a full-MAP estimate for a specific HBM as described in Sections~\ref{section:HBM} and ~\ref{section:MM}.
-In particular, we investigate how using MCMC sampling of the posterior distribution as described in Section~\ref{sub:sampling} can help getting better initializations for the optimization algorithm.
+In particular, we investigate how using MCMC sampling of the posterior distribution as described in Section~\ref{section:hbm_sampling} can help getting better initializations for the optimization algorithm.
 We first present results for a simulated MEG dataset and then for two experimental MEG/EEG datasets.
 
 \subsubsection{Simulation study}
@@ -698,28 +697,28 @@ We generated a realistic simulation based on a free-orientation ($d=3$) source m
 The aim of the simulation is to answer two separate questions. First, we want to know whether we are able to find better source estimates using MCMC-derived initializations than with the uniformly initialized MM Algorithm~\ref{alg:adpative_lasso}.
 For this, we first run the MM Algorithm~\ref{alg:adpative_lasso} using a uniform initialization, \ie $\bfw^{(0)}_{i} = 1, \forall i=1\in [1,\cdots,S]$, with $\lambda = 0.05\lambda_{max}$ where $\lambda_{max}= \max_{1 \leq i \leq S} \fronormsq{(G^\top M)[i]}$ is the smallest regularization value for which no source is found as active using an $\ell_{2,1}$ regularization~\cite{Ndiaye_Fercoq_Gramfort_Salmon15,strohmeier-etal:16}. As described above, this corresponds to computing a full-MAP estimate for the HBM with $p=1$, $\alpha = OT +1 $, $\beta = 4/\lambda^2$ using the alternation scheme \label{eq:AO-nu0-X} initialized with $\mathbf{\gamma}^{(0)}[i] = 1/\lambda, \forall i=1\in [1, \cdots, S]$.
 
-Then, we sampled the corresponding posterior distribution given in Equation~\eqref{eq:full-post} using Algorithm~\ref{alg:sampling} with $K_0 = 300$, $K = 900$, $K_{SC} = K_{SS} = 1$. From each $\mathbf{\gamma}^{(k)}$ of the $K = 900$ obtained $\mathbf{\gamma}$ samples, we construct an initialization $\bfW^{(0)}$ for the MM Algorithm~\ref{alg:adpative_lasso} by setting $\bfw^{(0)}[i] = \lambda \mathbf{\gamma}^{(k)}[i], \forall i=[1,\dots,S]$. Figure~\ref{fig:simu_MM_best_MCMC}-c shows the histogram of the objective function values (computed with Equation~\ref{eq:lasso_new_gram}) obtained this way. The vertical black bar shows the value of the objective function of the uniformly initialized MM solver and we can see that some initialization indeed lead to source estimates with a lower objective value. Figure~\ref{fig:simu_MM_best_MCMC}-a and Figure~\ref{fig:simu_MM_best_MCMC}-b show the locations of the estimated sources resulting from uniform and best MCMC-based initialization. For the artificial source in Fig.~\ref{fig:simu_MM_best_MCMC}-a, both results find the exact location, so they are superposed. For the deeper source in Figure~\ref{fig:simu_MM_best_MCMC}-b, neither result finds the exact position, but the MCMC-based initialization is closer. This means that the result did not only improve from an optimization point of view, but also judged by the quality criteria of the given application.
+Then, we sampled the corresponding posterior distribution given in Equation~\eqref{eq:full-post} using Algorithm~\ref{alg:sampling} with $K_0 = 300$, $K = 900$, $K_{SC} = K_{SS} = 1$. From each $\mathbf{\gamma}^{(k)}$ of the $K = 900$ obtained $\mathbf{\gamma}$ samples, we construct an initialization $\bfW^{(0)}$ for the MM Algorithm~\ref{alg:adpative_lasso} by setting $\bfw^{(0)}[i] = \lambda \mathbf{\gamma}^{(k)}[i], \forall i=[1,\dots,S]$. Figure~\ref{fig:simu_MM_best_MCMC}-c shows the histogram of the objective function values (computed with Equation~\eqref{eq:lasso_new_gram}) obtained in this way. The vertical black bar shows the value of the objective function of the uniformly initialized MM solver and we can see that some initializations indeed lead to source estimates with a lower objective value. Figure~\ref{fig:simu_MM_best_MCMC}-a and Figure~\ref{fig:simu_MM_best_MCMC}-b show the locations of the estimated sources resulting from uniform and best MCMC-based initialization. For the artificial source in Fig.~\ref{fig:simu_MM_best_MCMC}-a, both results find the exact location, so they are superimposed. For the deeper source in Figure~\ref{fig:simu_MM_best_MCMC}-b, neither result finds the exact position, but the MCMC-based initialization is closer. This means that the result did not only improve from an optimization point of view, but also judged by the quality criteria of the given application.
 
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\columnwidth]{hbm/simulated_data_hist_vertices}
-	\caption{Location of simulated and estimated sources using the uniformly initialized MM solver (denoted as ``MM'') and best MCMC-based initialization in terms of objective function value. Left: estimation of the artificial source on the left hemisphere. Middle: estimation of the deep source on the right hemisphere. Right: histogram of the objective function value for 900 MCMC initializations. The uniform initialization used for the MM (black vertical line) is not very bad, meaning that the basic MM is able to recover a good source estimates for some configurations. See Figure~\ref{fig:hist_real_datasets} for a case where the basic MM fails.}
+	\caption{Location of simulated and estimated sources using the uniformly initialized MM solver (denoted as ``MM'') and best MCMC-based initialization in terms of objective function value. Left: estimation of the artificial source on the left hemisphere. Middle: estimation of the deep source on the right hemisphere. Right: histogram of the objective function value for 900 MCMC initializations. The uniform initialization used for the MM (black vertical line) is not very bad, meaning that the basic MM is able to recover a good source estimate for some configurations. See Figure~\ref{fig:hist_real_datasets} for a case where the basic MM fails.}
 	\label{fig:simu_MM_best_MCMC}
 \end{figure}
 
-Finding the correct support in a sparse under-determined regression problem like Equation~\eqref{eq_linmeeg} is inherently of combinatorial complexity. In our two approaches, this is reflected in the non-convexity of the objective function (Equation~\eqref{eq:L2pReg}) and the multi-modality of the joint posterior distribution (Equation~\eqref{eq:full-post}), respectively. The second question we want to investigate is whether the methods we developed here can reveal or quantify some of the ambiguity and uncertainty of this sparse support identification problem. Traditional uncertainty quantification (UQ) measures such as variance estimates of $\bfX$ or $\mathbf{\gamma}$ fail to do so as they cannot capture the multi-modality of the posterior in a satisfactory way. In addition, no sample $\bfX^{(k)}$ is exactly sparse: as the posterior distribution is a continuous probability density, the probability of event $\{\bfX^{(k)}[i] = 0\}$ is zero, which means that the whole support of $\bfX^{(k)}$ is active with probability $1$. Even a thresholded average of the support of $\bfX^{(k)}$ will only reveal the average probability of a location being part of the support. In source analysis, it is arguably more interesting which networks of sources from different brain areas have most likely produced a given data set, a question left open by these measures. Here, we propose to tackle this question in a different way.
+Finding the correct support in a sparse under-determined regression problem like Equation~\eqref{eq_linmeeg} is inherently of combinatorial complexity. In our two approaches, this is reflected in the non-convexity of the objective function (Equation~\eqref{eq:L2pReg}) and the multi-modality of the joint posterior distribution (Equation~\eqref{eq:full-post}), respectively. The second question we want to investigate is whether the methods we developed here can reveal or quantify some of the ambiguity and uncertainty of this sparse support identification problem. Traditional uncertainty quantification (UQ) measures such as variance estimates of $\bfX$ or $\mathbf{\gamma}$ fail to do so as they cannot capture the multi-modality of the posterior in a satisfactory way. In addition, no sample $\bfX^{(k)}$ is exactly sparse: as the posterior distribution is a continuous probability density, the probability of the event $\{\bfX^{(k)}[i] = 0\}$ is zero, which means that the whole support of $\bfX^{(k)}$ is active with probability $1$. Even a thresholded average of the support of $\bfX^{(k)}$ will only reveal the average probability of a location being part of the support. In source analysis, it is arguably more interesting to estimate which networks of sources from different brain areas have most likely produced a given data set, a question left open by these measures. Here, we propose to tackle this question in a different way.
 
 \begin{figure}[htp]
 	\centering
 	\includegraphics[clip,width=0.98\columnwidth]
 {hbm/simulated_circular_plots_new}
 
-	\caption{Source network analysis for simulated data: for a clearer presentation, the set of 900 initializations was thinned to the 100 that gave the lowest objective function (Equation~\eqref{eq:L2pReg}). The first row of sub-figures displays the support of these best local minima in the following way: each position in the circle represents a source location that was part of the support of at least one minima for one sensor configuration. The black bar attached to each position corresponds to the relative frequency with which this source location appeared as part of the support. Two positions are connected by a line if they were simultaneously part of the support and the color of this line corresponds to the relative frequency with which this happened. Note that the background of the circle is white, but densely covered by purple lines indicating rare connections. The positions are placed left or right, depending on which hemisphere they belong to. For symmetry, for each active source location, its counterpart on the other hemisphere was included in the graphic as well. In addition, the positions are grouped and colored based on a parcellation of the brain into anatomical regions (taken from an atlas). The second row of sub figures shows these regions in the brain and the simulated sources.}
+	\caption{Source network analysis for simulated data: for a clearer presentation, the set of 900 initializations was thinned to the 100 that gave the lowest objective function (Equation~\eqref{eq:L2pReg}). The first row of sub-figures displays the support of these best local minima in the following way: each position in the circle represents a source location that was part of the support of at least one minimum for one sensor configuration. The black bar attached to each position corresponds to the relative frequency with which this source location appeared as part of the support. Two positions are connected by a line if they were simultaneously part of the support and the color of this line corresponds to the relative frequency with which this happened. Note that the background of the circle is white, but densely covered by purple lines indicating rare connections. The positions are placed left or right, depending on which hemisphere they belong to. For symmetry, for each active source location, its counterpart on the other hemisphere was included in the graphic as well. In addition, the positions are grouped and colored based on a parcellation of the brain into anatomical regions (taken from an atlas). The second row of sub figures shows these regions in the brain and the simulated sources.}
 	\label{fig:results_simu_circular}
 \end{figure}
 
-Our procedure of initializing an MM iteration with a sample from the posterior distribution yields different local minima of Equation~\eqref{eq:L2pReg}, \ie approximate solutions to Equation~\eqref{eq_linmeeg} that fulfill our \emph{a priori} knowledge of a sparse support, but it also yields the relative frequencies with which these minima are found by the MM algorithm. If we assume that the division of $\R^{SO\times T}$ into attractors of the MM algorithm roughly overlaps with the division of $\R^{SO\times T}$ into modes of the marginalized posterior over $\bfX$ within the HBM framework, this relative frequency corresponds to the relative volume of the local minima of Equation~\eqref{eq:L2pReg}. The latter is a better measure to compare different local minima than their depth (a local minimum that is deep but thin corresponds to an unstable source estimate). While a mathematically more profound and detailed analysis of this heuristic is left for future work, we examine here if this approach reacts to changes in the measurement design in the way we would expect. To do so, we switch from using all 306 MEG sensors to using only 204 gradiometers or each other gradiometer (102 sensors). By reducing the number of sensors we increase the under-determinedness of the problem and the intuition is that it should lead to
-more variability among the plausible sparse solutions. The graphical analysis presented and described in Figure~\ref{fig:results_simu_circular} and Figure~\ref{fig:results_simu_heat_maps} confirms this. A first observation is the superficial source in the premotor cortex was correctly identified as part of the support of every local minima when using the full 306 MEG sensors. It was however sometimes miss-localized when reducing the number of sensors (Figure~\ref{fig:results_simu_circular}). A second observation is that the spatial spread of these miss-localizations is smaller for this superficial source than it is for the deep source. This deep source in the ventral cortex is more difficult to find even with all sensors. Indeed, none of the 100 best initialization perfectly localized the deep simulated source. In general, we can clearly see how the ambiguity increases when decreasing the number of sensors, and how the distribution of source networks gets more fuzzy. However, our analysis also provides useful local measures of these phenomena.
+Our procedure of initializing an MM iteration with a sample from the posterior distribution yields different local minima of Equation~\eqref{eq:L2pReg}, \ie approximate solutions to Equation~\eqref{eq_linmeeg} that fulfill our \emph{a priori} knowledge of a sparse support, but it also yields the relative frequencies with which these minima are found by the MM algorithm. If we assume that the division of $\R^{SO\times T}$ into attractors of the MM algorithm roughly overlaps with the division of $\R^{SO\times T}$ into modes of the marginalized posterior over $\bfX$ within the HBM framework, this relative frequency corresponds to the relative volume of the local minima of Equation~\eqref{eq:L2pReg}. The latter is a better measure to compare different local minima than their depth (a local minimum that is deep but thin corresponds to an unstable source estimate). While a mathematically more profound and detailed analysis of this heuristic is left for future work, we examine here if this approach reacts to changes in the measurement design in the way we would expect. To do so, we switch from using all 306 MEG sensors to using only 204 gradiometers or one over two gradiometers (102 sensors). By reducing the number of sensors we increase the under-determinedness of the problem and the intuition is that it should lead to
+more variability among the plausible sparse solutions. The graphical analysis presented and described in Figure~\ref{fig:results_simu_circular} and Figure~\ref{fig:results_simu_heat_maps} confirms this. A first observation is that the superficial source in the premotor cortex was correctly identified as part of the support of every local minima when using the full 306 MEG sensors. It was however sometimes miss-localized when reducing the number of sensors (Figure~\ref{fig:results_simu_circular}). A second observation is that the spatial spread of these miss-localizations is smaller for this superficial source than it is for the deep source. This deep source in the ventral cortex is more difficult to find even with all sensors. Indeed, none of the 100 best initializations perfectly localized the deep simulated source. In general, we can clearly see how the ambiguity increases when decreasing the number of sensors, and how the distribution of source networks gets more fuzzy. However, our analysis also provides useful local measures of these phenomena.
 
 
 \begin{figure}[htp]
@@ -733,27 +732,27 @@ more variability among the plausible sparse solutions. The graphical analysis pr
 				\includegraphics[width=\columnwidth]{hbm/colorbar_heat_maps_key}%
 		\end{minipage}
 	\end{minipage}
-	\caption{The support of the MM results based upon 900 MCMC-based initializations were extracted to build an uncertainty map. The relative frequencies with which each source location was part of the support was computed and plotted on the brain surface together with the two simulated sources (green dots). Each column corresponds to the results for each of the three sensor setups examined. Less the number of sensors and/or more the source is deep, more uncertainty in the brain map.}
+	\caption{The support of the MM results based upon 900 MCMC-based initializations was extracted to build an uncertainty map. The relative frequencies with which each source location was part of the support was computed and plotted on the brain surface together with the two simulated sources (green dots). Each column corresponds to the results for each of the three sensor setups examined. The less the number of sensors and/or the deeper the source is, more uncertain the brain map is.}
 	\label{fig:results_simu_heat_maps}
 \end{figure}
 
 \subsubsection{Experimental results with MEG auditory and visual data}
 We now repeat our analysis with two experimental open datasets. The first one is a recording of auditory evoked fields (MNE sample dataset~\cite{mne-python}). The second one contains visual evoked fields (visual condition of MNE sample dataset) for which source localization is a more difficult task due to the proximity between neural sources. The true nature of the underlying source network is also less clear for this second dataset.
 
-Figure~\ref{fig:hist_real_datasets} shows the equivalent to Figure~\ref{fig:simu_MM_best_MCMC} for both datasets. Again, we see that lower objective function value can be obtained using MCMC-based initializations. The auditory sample dataset is commonly assumed to be generated by two bilateral focal sources around the auditory cortices in the superior temporal gyrus of the temporal lobe. Due to the superficial nature of these sources and their large distance, estimation of their position is regarded as a relatively simple task. Indeed, the histogram shows that using MCMC-based initializations does not help a lot to reduce the objective function compared to a uniformly initialized MM solution. In the case of the visual dataset, where several closed-by sources are active, the difference is however quite drastic. The majority of the MCMC-based initializations lead to lower values of the objective function. Looking at the source distribution plots on the brain for both datasets, one can also observe more complex source configurations for the visual data.
+Figure~\ref{fig:hist_real_datasets} shows the equivalent of Figure~\ref{fig:simu_MM_best_MCMC} for both datasets. Again, we see that a lower objective function value can be obtained using MCMC-based initializations. The auditory sample dataset is commonly assumed to be generated by two bilateral focal sources around the auditory cortices in the superior temporal gyrus of the temporal lobe. Due to the superficial nature of these sources and their large distance, the estimation of their position is regarded as a relatively simple task. Indeed, the histogram shows that using MCMC-based initializations does not help a lot to reduce the objective function compared to a uniformly initialized MM solution. In the case of the visual dataset, where several closed-by sources are active, the difference is however quite drastic. The majority of the MCMC-based initializations lead to lower values of the objective function. Looking at the source distribution plots on the brain for both datasets, one can also observe more complex source configurations for the visual data.
 % XXX : say here that there is nothing on right hemi for best MCMC?
 
-Next, we repeat the graphical source network analysis from Figure~\ref{fig:results_simu_circular} for the two datasets. Figure~\ref{fig:circular_plots_LAud} shows the results for the auditory dataset and three sensor configurations: all 364 EEG + MEG sensors, all 306 MEG sensors or each other sensor resulting in 182 EEG + MEG sensors. One can see how adding EEG to MEG sensors reduces the ambiguity of the regression problem. The plots show less but more prominent modes, \ie the posterior mass is concentrated on fewer stable source configurations. We also see that the locations of the most prominent modes shift
-This is consistent with results of other studies on EEG-MEG combination \cite{MoStBrHa08,Lu14,AyVoKuHeKuGaHaWeKeRaWoHe14} as EEG is sensitive to some sources that MEG is almost blind to, \eg sources with a strong radial component. If we subsample the EEG+MEG sensors by only using every other location, the ambiguity and spatial spread of the recovered support increases. One can see that there is more activity in the dark green label, which corresponds to a brain area commonly not associated with auditory responses.% On the other hand, there is less activity in the light green label, which marks central areas of the auditory system.
+Next, we repeat the graphical source network analysis from Figure~\ref{fig:results_simu_circular} for the two datasets. Figure~\ref{fig:circular_plots_LAud} shows the results for the auditory dataset and three sensor configurations: all 364 EEG + MEG sensors, all 306 MEG sensors or one over two sensors resulting in 182 EEG + MEG sensors. One can see how adding EEG to MEG sensors reduces the ambiguity of the regression problem. The plots show fewer but more prominent modes, \textit{i.e.} the posterior mass is concentrated on fewer stable source configurations. We also see that the locations of the most prominent modes shift
+This is consistent with results of other studies on EEG-MEG combination \cite{MoStBrHa08,Lu14,AyVoKuHeKuGaHaWeKeRaWoHe14} as EEG is sensitive to some sources that MEG is almost blind to, \textit{e.g.} sources with a strong radial component. If we subsample the EEG+MEG sensors by only using every other location, the ambiguity and spatial spread of the recovered support increases. One can see that there is more activity in the dark green label, which corresponds to a brain area commonly not associated with auditory responses.% On the other hand, there is less activity in the light green label, which marks central areas of the auditory system.
 %\ag{what green region do you have in mind?}\felix{Good question, that corresponded to the coloring/parcelation in the old figures. In the new ones, I can't really recall what I wanted to say. Maybe we just drop the sentence and not over-interpret our results?}
-The connections between source locations show that none of the modes found really stands out, \ie is found much more often compared to the others. Most of the connections do not occur more than 200 times within the 900 samples, so they are part of the purple background of low frequency connections in the plots.\\
+The connections between source locations show that none of the found modes really stands out, \textit{i.e.} is found much more often compared to the others. Most of the connections do not occur more than 200 times within the 900 samples, so they are part of the purple background of low frequency connections in the plots.\\
 Figure~\ref{fig:circular_plots_LVis} shows the same results for the more complex visual dataset. Compared to the auditory dataset, we see that even with all sensors, the ambiguity of the regression problem seems to be a lot higher compared to the auditory dataset: we see that the posterior mass is distributed among many more source configurations. For the other two sensor configurations, we see similar effects as in the auditory data set. Nevertheless, it can be noticed that the large majority of identified sources with all MCMC initializations are on the right hemisphere. This is consistent with the known functional organisation of the visual cortex. Indeed, in this experimental condition the subject was presented with checker board flashes on the left visual hemifield which is known to primarily project onto the right hemisphere of the cortex.
 
 
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\columnwidth]{hbm/sample_data_hist_vertices}%
-	\caption{Histogram of the objective function value for 900 MCMC initializations for auditory and visual datasets (306 MEG sensors). The histogram for visual dataset shows more MCMC initializations that outperform the uniform one in the MM solution. Under each histogram, these source configurations are shown on the left and right hemisphere.
+	\caption{Histograms of the objective function value for 900 MCMC initializations for auditory and visual datasets (306 MEG sensors). The histogram for the visual dataset shows more MCMC initializations that outperform the uniform one in the MM solution. Under each histogram, these source configurations are shown on the left and right hemisphere.
 	}
 	\label{fig:hist_real_datasets}
 \end{figure}
@@ -777,12 +776,12 @@ Figure~\ref{fig:circular_plots_LVis} shows the same results for the more complex
 \end{figure}
 
 %----------------Conclusion-----------------------------------------------------------------
-\section{Conclusion \& Perspective}
+\section{Conclusion \& Perspectives}
 \label{sec:Dis}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scientific literatures relying either on frequentist or on Bayesian statistical inference often coexist in many fields ranging from machine learning, inverse problems, signal processing or computational biology.
+Scientific literature relying either on frequentist or on Bayesian statistical inference often coexist in many fields ranging from machine learning, inverse problems, signal processing or computational biology.
 In this work, we started from an under-determined, ill-conditioned MMV / multi-task regression problem and examined two seemingly unrelated approaches - MM as an optimization technique for tackling non-convex optimization problems arising in frequentist regression, and HBM as a Bayesian prior modeling framework. We showed that one obtains the same algorithms, and therefore the same solutions, when considering some specific choices of models, parameters and inference strategies. In particular the parallel was done between the $\ell_{2,1/2}$-norm regularized regression by MM and the full-MAP estimation for $\ell_{2,1}$ hierarchical priors with specific Gamma hyper-priors. We further showed that this conceptual parallel can be exploited to improve the MM solution by providing well-informed algorithmic initializations.
 % , and also to complement the single-point result given by MM - in our case a sparse neuronal source configuration - with a more statistical analysis of the multitude of plausible solutions to the non-convex regression problem.
 
@@ -793,13 +792,13 @@ In this work, we started from an under-determined, ill-conditioned MMV / multi-t
 
 For this, we first constructed a multi-layered Gibbs sampler for the joint posterior density of our HBM.
 Each sample is then used to initialize the MM step done with a state-of-the-art convex solver using block coordinate
-descent techniques and acceleration strategies based on active sets. The sampler used has also an efficient sub-sampler for $\ell_{2,1}$ priors at its core. Despite the multi-modality of the posterior, the MCMC scheme is able to jump rapidely between the different attractors of the MM scheme. Indeed, using each sample as an initialization to the MM computation, one ends up in many different local minima (cf. Fig~\ref{fig:hist_real_datasets}, Fig~\ref{fig:circular_plots_LVis}). 
+descent techniques and acceleration strategies based on active sets. The sampler used has also an efficient sub-sampler for $\ell_{2,1}$ priors at its core. Despite the multi-modality of the posterior, the MCMC scheme is able to jump rapidely between the different attractors of the MM scheme. Indeed, using each sample as an initialization to the MM computation, one ends up in many different local minima (\textit{cf.} Figure~\ref{fig:hist_real_datasets}, Figure~\ref{fig:circular_plots_LVis}). 
 Therefore, this procedure allows us to reveal and explore different plausible source configurations in more details.
 % }
 % 
 
 Based on this observation, we showcased how one can use the chain of local minima found by MCMC-initialized MM to analyze the variability of the different sparse solutions. Note that this is different from traditional and generic Bayesian uncertainty quantification techniques that use for example covariance estimates or credible sets derived from posterior samples~\cite{szabo2015frequentist}. It is also different from methods developed specifically for parametric M/EEG source localization based on dipole fitting~\cite{Fuchs20041442,Darvas2005355}. These latter approaches cannot easily be transferred to sparse, non-parametric approaches. Using our developed techniques on simulations and actual data, one could observe that uncertainty in MEG/EEG is location specific and also source configuration specific. This is of course well-known by experts in this field, but here we provide a computational approach to visualize it and quantify it.
-This is an important incentive to develop such automated, data-dependent methods to quantify uncertainties in the context of MEG/EEG source imaging. In more conventional imaging methods such as computer tomography (CT) or magnetic resonance imaging (MRI), the signal originates from weak tissue interaction with strong external fields and the forward operator $\bfG$ depends almost exclusively on the physical properties of the scanner. In this situation, uncertainty is usually distributed in a smooth, well-known way over the image domain. Artifacts as well as real anatomical features are also easy to distinguish for a trained radiologist. The situation for M/EEG is very different. The weak signals originate from endogenous activity, and they are very dependent on dataset specific factors such as source orientation, location and attenuation which all depend on the geometry of the head of the analyzed subject. That is also why the forward matrix $\bfG$ needs to be constructed for each individual patient, after fixing the electrical properties of the head issues, which if wrong, increases the uncertainties.
+This is an important incentive to develop such automated, data-dependent methods to quantify uncertainties in the context of MEG/EEG source imaging. In more conventional imaging methods such as Computer Tomography (CT) or \ac{MRI}, the signal originates from weak tissue interaction with strong external fields and the forward operator $\bfG$ depends almost exclusively on the physical properties of the scanner. In this situation, uncertainty is usually distributed in a smooth, well-known way over the image domain. Artifacts as well as real anatomical features are also easy to distinguish for a trained radiologist. The situation for M/EEG is very different. The weak signals originate from endogenous activity, and they are very dependent on dataset specific factors such as source orientation, location and attenuation which all depend on the geometry of the head of the analyzed subject. That is also why the forward matrix $\bfG$ needs to be constructed for each individual patient, after fixing the electrical properties of the head issues, which if wrong, increases the uncertainties.
 
 When considering real data, the source to recover is often poorly understood, especially when it comes to pathological brain activity such as ictal or inter-ictal epileptic activity. In such a situation, providing a single source configuration as a result, together with an ad-hoc uncertainty quantification based on previous studies or acquired expertise, might not be an optimal use of the M/EEG data.
 Instead, providing multiple hypotheses together, along with a quantification of their uncertainty, can be more useful. Indeed for applications such as pre-surgical epilepsy diagnosis, where M/EEG recordings are one of several diagnostic modalities, each candidate source configuration can provide some evidence for or against a diagnostic hypothesis that could lead to a surgery decision.
