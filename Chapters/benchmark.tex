@@ -12,17 +12,17 @@
 \newpage
 
 \section{Introduction}
-The last chapters define several ways to solve the inverse problem of MEG/EEG brain imaging techniques. The evaluation of these solvers remain difficult due to the completely unknown ground-truth of the exact localization of the involved sources in each specific task. This limitation is primarily coming from the fact that the recording is done over the scalp and that multiple source configurations can rise to exactly the same measurements over the sensors. So the question stayed unanswered of whether these long list of existing source localization techniques are able to locate the positions and the orientations with good precision giving appropriate cortex-based source models.
+The previous chapters define various ways to solve the inverse problem of MEG/EEG brain imaging techniques. The evaluation of these solvers remain difficult due to the completely unknown ground-truth of the exact localization of the involved sources in each specific task. This limitation is primarily coming from the fact that the recording is done over the scalp and that multiple source configurations can rise to exactly the same measurements over the sensors. So the question stayed unanswered of whether these long list of existing source localization techniques are able to locate the positions and estimate the orientations with a good precision giving appropriate cortex-based source models.
 
 The way of this question is handled is typically by performing simulations. It consists on fixing the number and the location of several dipoles with some additive white Gaussian noise. These simulations are unfortunately rarely realistic, which do not take into account the non-ideal nature of the sensors, a realistic head geometries and the correlation with the noise. Furthermore, one needs to also consider the inaccuracies in the computation of the forward operator. There are mainly due to approximations in the conductivity values in the head and/or the numerical errors associated with either spherical head approximations or \ac{bem} based on more realistic head geometries. 
 
-A more sophisticated simulations might be investigated to overcome these issues, but evaluation using data directly collected from an artificial physical object has the advantage that the results can more closely reflect \textit{in vivo} performance since they include factors that cannot readily be included in simulations, such as environmental noise and deviations of the physical system from our model. 
+A more sophisticated simulations might be investigated to overcome these issues, but evaluation using data directly collected from an artificial physical object has the advantage that the results can more closely reflect \textit{in vivo} performance since they include factors that cannot readily be included in simulations, such as environmental noise. 
 
-For this aim, artificial objects that mimic the brain activity called "\textit{phantoms}" are constructed by the manufacturers of MEG systems that we use to evaluate our solvers to the MEG/EEG inverse problem~\cite{hazim2015magnetoencephalography}. It is based on the theoretical description in~\cite{ilmoniemi1985forward} producing realistic data corresponding to complex spatio-temporal current sources including realistic head geometries. From 4 to 32 independent current dipoles were distributed with the "brain" region and MEG data was collected separately for each dipole. The true dipole locations and orientations and the morphology of the brain, skull layers were extracted from X-ray CT data~\cite{leahy1998study}. Its main limitation is that it is unsuitable for EEG.
+For this aim, artificial objects that mimic the brain activity called "\textit{phantoms}" are constructed by the manufacturers of MEG systems that we use to evaluate our solvers to the MEG/EEG inverse problem~\cite{hazim2015magnetoencephalography}. They are based on the theoretical description in~\cite{ilmoniemi1985forward} producing realistic data corresponding to complex spatio-temporal current sources including realistic head geometries. From 4 to 32 independent current dipoles were distributed within the "brain" region and MEG data was collected separately for each dipole. The true dipole locations and orientations, and the morphology of the brain, skull layers were extracted from X-ray CT data~\cite{leahy1998study}. Its main limitation is that it is unsuitable for EEG.
 
-This chapter presents a new study to validate dipole localization techniques using different exisiting phantom datasets. Other work has been done by~\cite{hazim2015magnetoencephalography,leahy1998study,baillet2001evaluation} using also real-skull phantom to investigate the performances of representative methods considering various head models.
+This chapter presents a new study to validate dipole localization techniques using different existing phantom datasets. Other work has been done by~\cite{hazim2015magnetoencephalography,leahy1998study,baillet2001evaluation} using also real-skull phantom to investigate the performances of representative methods considering various head models.
 
-The selected approaches are mainly those described here in this thesis, namely: Dipole fitting, Gamma-Map, RAP-MUSIC, MxNE, irMxNE, TF-MxNE, irTF-MxNE with and without multi-scale dictionary. The methods not defined so far, will be briefly described in the next section.
+The selected approaches are mainly those described here in this thesis, namely: Dipole fitting, Gamma-Map, RAP-MUSIC, MxNE, irMxNE, TF-MxNE, irTF-MxNE. The methods not defined so far, will be briefly described in the next section.
 
 \section{Phantom datasets}
 \subsection{Brainstorm phantom-elekta dataset}
@@ -38,9 +38,9 @@ A current phantom is provided with Elekta Neuromag for checking the system perfo
    \label{fig:phantom_head}
 \end{figure}
 
-The phantom dipoles are energized using an internal signal generator which also feeds the HPI coils. An external multiplexer box is used to connect the signal to the individual dipoles. Only one dipole can be activated at a time. The location of the dipole is recorded relative to the center of the sphere (0,0,0)m, where X is positive toward the nasion, Y is positive toward the left ear and Z is positive toward the top of the head.\\
+The phantom dipoles are energized using an internal signal generator which also feeds the HPI coils. An external multiplexer box is used to connect the signal to the individual dipoles. Only one dipole can be activated at a time. The location of the dipole is recorded relative to the center of the sphere (0,0,0), where X is positive toward the nasion, Y is positive toward the left ear and Z is positive toward the top of the head.\\
 
-The dataset is sorted into four different \ac{SNR}:
+The dataset is sorted into 3 different \ac{SNR}:
 \begin{itemize}
 \item Source with \textbf{2000 nAm}. This corresponds to an unrealistically strong 1000 nAm (2000 nAm peak-to-peak) dipole that gives the highest SNR of the experimental source.
 \item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
@@ -49,9 +49,9 @@ The dataset is sorted into four different \ac{SNR}:
 
 \subsection{Brainstorm CTF-phantom dataset}
 
-The dataset is sorted into four different SNR:
+The dataset is sorted into two different SNR:
 \begin{itemize}
-\item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
+\item Source with \textbf{200 nAm}. This is a close dipole to the range of amplitudes we can expect in raw data.
 \item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies which require averaging to detect and estimate (\textit{i.e.} generally cannot be seen in single trial analysis).
 \end{itemize}
 
@@ -67,7 +67,6 @@ The dataset is sorted into four different SNR:
 \subsection{name? dataset} \label{data:used_data}
 
 The dataset is sorted into four different SNR:
-The dataset is sorted into four different SNR:
 \begin{itemize}
 \item Source with \textbf{2000 nAm}. This corresponds to an unrealistically strong 1000 nAm (2000 nAm peak-to-peak) dipole that gives the highest SNR of the experimental source.
 \item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
@@ -81,11 +80,11 @@ The dataset is sorted into four different SNR:
 The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems admit to well known closed form solutions~\cite{mosher1999eeg}.
 
 \subsection{The selected solvers}
-\subsubsection{dipole fitting}
-Dipole fitting assumes that a small number of point-like equivalent current dipoles (ECDs) can describe the measured topography. It optimises the location, the orientation and the amplitude of the model dipoles in order to minimise the difference between the model and the measured topography. A good introduction to dipole fitting is provided by~\cite{scherg1990fundamentals}. A full description is done in Chapter~\ref{chapter:background}-Section~\ref{section_dipfit}.
+\subsubsection{Dipole fitting}
+Dipole fitting assumes that a small number of point-like \ac{ECD}s can describe the measured topography. It optimises the location, the orientation and the amplitude of the model dipoles in order to minimise the difference between the model and the measured topography. A good introduction to dipole fitting is provided by~\cite{scherg1990fundamentals}. A full description is done in Chapter~\ref{chapter:background}-Section~\ref{section_dipfit}.
 
 \subsubsection{$\gamma$-Map}
-$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. The main idea is to use simple Gaussian mixture model with flexible covariance components, more details are in ~\cite{Wipf-Nagarajan:2009}.
+$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. The main idea is to use simple Gaussian mixture model with flexible covariance components, more details are in~\cite{Wipf-Nagarajan:2009}.
 
 \subsubsection{RAP-MUSIC}
 \Ac{RAP-MUSIC} is an extension to \ac{MUSIC} by recursively estimating multiple sources~\cite{mosher1997source,mosher1999source}. In other words, it consists in applying MUSIC successively after removing the contribution of the previously identified sources. Such as matching pursuit algorithms are used for sparse signal decomposition over dictionary of atoms, the RAP-MUSIC method adopts a greedy strategy to select the relevant dipoles in a dictionary of sources.
@@ -117,7 +116,14 @@ Finally, the amplitude error $err_{amp}$is represented in nanoAmpere (nAm) excep
 err_{amp} = |max(amp_{estimated} - amp_{simulated})|
 \end{equation}
 
-Figures showing the three types of error over different solvers are displayed below. Figure~\ref{fig:dipfit_errors} shows position errors obtained with dipole fitting for the 4 simulated dipoles and for the different SNRs. Figure~\ref{fig:dipfit_pos} shows less than 1mm error for the unrealistic high SNR (peak-to-peak amplitude equal to 1000nAm), but also for 200nAM, and 100nAm. The location error gets worse with the very low SNR (20nAm).
+Figures showing the three types of error over different solvers are displayed below. On the x-axis, three different pre-processing types are presented:
+\begin{itemize}
+\item \textit{Raw}: the source localization is using the raw data without applying maxfilter.
+\item \textit{SSS}: the source localization is applying Signal Space Separation (SSS), also known as maxfilter. It is the first step of preprocessing MEG data, which is a clever mathematical way to separate magnetic signals coming from the brain from those coming from outside the brain.
+\item \textit{$SSS_{MNE}$}: the source localization is applying a new implementation of maxfilter in MNE-python.
+\end{itemize}
+
+Figure~\ref{fig:dipfit_errors} shows position errors obtained with dipole fitting method for the 4 simulated dipoles (dataset \ref{data:used_data}) and for the different SNRs. Figure~\ref{fig:dipfit_pos} shows less than 1mm error for the unrealistic high SNR (peak-to-peak amplitude equal to 1000nAm), but also for 200nAM, and 100nAm. The location error gets worse with the very low SNR (20nAm).
 %\subsection*{dipfit}
 
 \begin{sidewaysfigure}[ht]
@@ -145,7 +151,7 @@ Figures showing the three types of error over different solvers are displayed be
 
 Dipole fitting approach is very suitable to localize the neuronal activity when a small number of \ac{ECD}s can describe the data. In this dataset \ref{data:used_data}, each dipole is recorded alone. The errors in orientations and amplitude are in Figure \ref{fig:dipfit_ori}-\ref{fig:dipfit_amp}.
 
-RAP-MUSIC is an approach based on MUSIC techniques which also perform very well when few ECDs are involved, especially when it is data recording only one dipole. It can be seen as very competitive to dipole fitting in Figure \ref{fig:music_pos}-\ref{fig:music_ori}-\ref{fig:music_amp} the errors in position, orientation, and amplitude respectively.
+RAP-MUSIC is an approach based on MUSIC technique which also perform very well when few ECDs are involved, especially when it is a dataset recording only one dipole in a row. It can be seen as very competitive to dipole fitting in Figure \ref{fig:music_pos}-\ref{fig:music_ori}-\ref{fig:music_amp} showing the errors in position, orientation, and amplitude respectively. However, for deep source (dipole 8) combined with very low SNR (20nAm) the red curve is outside of the box meaning a location error bigger than 20mm. This is an issue with the signal subspace estimation, where the rank of the data covariance is not being well estimated.
 
 %\subsection*{MUSIC}
 \begin{sidewaysfigure}[ht]
@@ -263,12 +269,12 @@ RAP-MUSIC is an approach based on MUSIC techniques which also perform very well 
 		\caption{The time-frequency mixed-norm (TF-MxNE) errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:tfmxne_errors}}
 \end{sidewaysfigure}
 
-$\gamma$-map which is a Bayesian formulation to the MEG/EEG inverse problem is performing less well than dipole fitting or RAP-MUSIC for very high and very SNR. For SNRs in range of realistic data, its location error is majored by 5mm depending on the depth of the studied dipole. $\gamma$-map is doing worse for amplitude=1000nAm compared to 100nAm or 200nAm because it overestimates the noise when estimating the hyperparameter $\gamma$.
+$\gamma$-map which is a Bayesian formulation to the MEG/EEG inverse problem is performing less well than dipole fitting or RAP-MUSIC for very high and very low SNR. For SNRs in range of realistic data, its location error is majored by 5mm depending on the depth of the studied dipole. $\gamma$-map is doing worse for amplitude=1000nAm compared to 100nAm or 200nAm because it overestimates the noise when estimating the hyperparameter $\gamma$.
 
-
+For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:mxne_pos}-\ref{fig:tfmxne_pos} respectively demonstrate an improvement more the SNR is high.
 
 \subsection{Critical comparison of these MEG/EEG source localization}
-Position error for all solvers...
+Figure \ref{all_solvers_loc_error} shows all solvers in the same plot to compare both errors in location and orientation with maxfilter as preprocessing. We keep the same scale for y-axis to not go beyond 20 mm of location error and not beyond 1 Rad of orientation error. The left plot of location error shows firstly (RAP) MUSIC as being very sensitive the SNR (comparing 20nAm to 1000nAm). Then MNE and dSPM as the methods giving the worst results for this dataset. One important argument is the fact that the study is biased as we know that the simulated phantom data is focal/sparse, while MNE and dSPM are not sparse methods. We always take the peak of amplitude and displays the best dipole for each method. sLORETA in the other hand is not a sparse method either, however, it performs much better than MNE or dSPM. The "center" of the pattern estimated with sLORETA is then closer to the exact dipole location compared to the center of dSPM or MNE. TF-MxNE is not the best method for this study as it is a spatio-temporal approach when having a specific waveforms in the data which is not the case here.
 
 \begin{sidewaysfigure}[ht]
         \centering
@@ -285,17 +291,25 @@ Position error for all solvers...
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_ori_error}
 %            \caption{ori}
-            \label{fig:tfmxneall_solvers_ori_error}
+            \label{fig:all_solvers_ori_error}
         \end{subfigure}
 
 		\caption{Comparison of the position and the orientation error between most of the solvers for 4 different dipoles.\label{all_solvers_loc_error}}
 \end{sidewaysfigure}
 
-Amplitude error...
+The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, MxNE and irMxNE keeps being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except the depth is different. When summing up this type of dipole, they still have the same pattern in the sensor space, which makes the source localization impossible.
+
 \begin{figure}
 	\includegraphics[width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_amp_error}
 	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{all_solvers_amp_error}}
 \end{figure}
 
+Figure~\ref{all_solvers_amp_error} shows the errors in amplitude, the most important point in this figure is to see the difference between the convex MxNE and the non-convex irMxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE). For some cases, irMxNE amplitude estimate is even better than dipole fitting one.
 
-\section{Discussion \& Perspectives}
+
+\section{Conclusion \& Perspectives}
+In this chapter, the main motivation was to present some results on various source localization techniques applied to phantom data. Being able to examine "real" datasets with ground-truth is a big privilege to test the big list of existing methods for solving the MEG/EEG inverse problem.
+
+Here we presented some of them, focusing on the approaches defined in this thesis. The conclusion would be that the dipole fitting is the most competitive and unbeatable method when having a focal dataset with only one dipole. Unfortunately here, we could not present phantom dataset with two or more dipoles in the same recording, which would make the source localization more challenging.
+
+A further work would be to investigate this aspect of multiple dipoles. The idea would be to confirm a better performance of convex and non-convex solvers (Variational or Bayesian formulation) compared to dipole fitting or MUSIC.
