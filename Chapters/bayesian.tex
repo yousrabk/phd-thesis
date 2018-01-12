@@ -1,6 +1,6 @@
 % Chapter 3
 
-\chapter{The Bayesian approach: Hierarchical Bayesian modeling}
+\chapter{Bridges between Bayesian models and sparsity inducing norms}
 \label{chapter:bayesian}
 \noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
 \noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
@@ -17,7 +17,7 @@
 \label{sec:bayes_intro}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This chapter presents a novel way to look at the MEG/EEG inverse problem. It tries to gap the bridge between two communities both interested in sparse models of inverse problems. As mentioned several times so far in this thesis, sparsity has emerged as a key concept to solve inverse problems, not only the MEG/EEG inverse problem, but also tomographic image reconstruction, deconvolution, or inpainting. The idea is to regularize high dimensional regression problems in the field of machine learning. There are mainly two routes to introduce sparsity to such problems.
+This chapter presents a different perspective on the MEG/EEG inverse problem. It tries to bridge the gap between two communities both interested in sparse models for solving inverse problems. As mentioned several times so far in this thesis, sparsity has emerged as a key concept to solve inverse problems, not only the MEG/EEG inverse problem, but also tomographic image reconstruction, deconvolution, or inpainting. The idea is also well established to regularize high dimensional regression problems in the field of machine learning. There are mainly two routes to introduce sparsity to such problems.
 
 The first route, embraced by the optimization community and frequentist
 statisticians, is to promote sparsity using convex optimization theory.
@@ -54,6 +54,7 @@ A popular choice of hyperprior is the gamma distribution $\Gamma$ with $\alpha$ 
 	p(\lambda) = \frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}\exp(-\beta\lambda)\mathbf{1}_{\RR^+}(\lambda), \; \lambda \in \RR
 \end{equation}
 In the following of this chapter, the hyperprior is always a gamma distribution.
+\alex{What is $\Gamma(\alpha)$ here?}
 
 %----------MAP estimation ------------------------------------------------------------------
 %\section{MAP estimation}
@@ -87,29 +88,29 @@ Recently \textit{Pereyra et al.} \cite{Figueiredo} proposed a strategy for hyper
 
 The $k$-homogeneous condition is satisfied for all $\ell_{p,q}$ mixed norms. We focus on the estimation of the hyperparameters for hierarchical Bayesian models yielding convex $\ell_{2,1}$ ($\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,1}$) or non-convex $\ell_{2,0.5}$ penalties, which are respectively $1$-homogeneous and $0.5$-homogeneous. The non-convex penalization is solved using iterative re-weighted convex optimization schemes, \textit{i.e.}, each iteration is a weighted $\ell_{2,1}$-norm as described in Section~\ref{section:MM}.
 
-In \cite{Figueiredo}, the fixed point strategy proposed is validated on an image denoising problem using an analysis prior, \textit{i.e.} where the solution is not sparse but has a sparse representation in some transformed domain. This sections illustrates and explains why the method from~\cite{Figueiredo} cannot be used out-of-the-box when using a synthesis prior for an under-determined problem. A synthesis prior is when the solution itself is sparse.
+In \cite{Figueiredo}, the fixed point strategy proposed is validated on an image denoising problem using an analysis prior, \textit{i.e.} where the solution is not sparse but has a sparse representation in some transformed domain. This section illustrates and explains why the method from~\cite{Figueiredo} cannot be used out-of-the-box when using a synthesis prior for an under-determined problem. A synthesis prior is when the solution itself is sparse.
 
 \subsection{Hierarchical Bayesian modeling and reformulation}
 
-Bayesian modeling imposes hyperpriors, which are priors on the distributions of the hyperparameters. Here we chose gamma distribution as defined in Equation~\eqref{eq:gamma_dist}.
+% Bayesian modeling imposes hyperpriors, which are priors on the distributions of the hyperparameters. Here we chose gamma distribution as defined in Equation~\eqref{eq:gamma_dist}.
 
-Following~\cite{Figueiredo} that uses a joint MAP estimator of $\lambda$ and $\mathbf{X}$, one obtains that $\hat{\lambda}$ should satisfy:
+The result shown in~\cite{Figueiredo} and adapted to our problem and the notations used in this manuscript is the following. Using a joint MAP estimator of $\lambda$ and $\mathbf{X}$, it states that $\hat{\lambda}$ should satisfy:
 \begin{equation} \label{eq4}
 	\hat{\lambda} = \frac{ST/k + \alpha - 1}{\mathcal{P}(\mathbf{\hat{X}}_{\hat{\lambda}}) + \beta} \enspace ,
 \end{equation}
-where $\mathbf{\hat{X}}_{\hat{\lambda}}$ is the solution of Equation~\eqref{eq_reg} for $\lambda = \hat{\lambda}$.
+where $\mathbf{\hat{X}}_{\hat{\lambda}}$ is the solution of Equation~\eqref{eq_reg} for $\lambda = \hat{\lambda}$. In \cite{Figueiredo}, it is further suggested to set $\alpha$ and $\beta$ to 1.
 
 Looking at Equation~\eqref{eq4}, one can observe that if $ST$ is big, which is the case for high dimensional problems, the numerator can significantly dominate the denominator, especially if the estimate $\hat{X}$ is very sparse.
 In practice using Equation~\eqref{eq4} in this scenario results rapidly in huge values of $\lambda$ and empty supports. This issue is much less critical when using an analysis prior for denoising as in~\cite{Figueiredo}, as the size of the unknown coefficients is in this case $NT$, where $NT \ll ST$.\\
 
-As reported earlier, the update of the regularization parameter $\lambda$ as in (Equation~\eqref{eq4}) is not suitable for synthesis prior $\mathcal{P}(\mathbf{X})$. The issue is due to the over-scaled numerator compared to the denominator. When the problem is big (as in~\cite{Figueiredo}) - $ST$ is big, whereas the support in $\mathbf{X}^\star$ is small - the estimated parameter $\lambda$ then exploded resulting in an empty support.
+As reported earlier, the update of the regularization parameter $\lambda$ as in (Equation~\eqref{eq4}) is not suitable for synthesis prior $\mathcal{P}(\mathbf{X})$. The issue is due to the over-scaled numerator compared to the denominator. When the problem is big (as in~\cite{Figueiredo}) - $ST$ is big, whereas the support in $\mathbf{X}^\star$ is small - the estimated parameter $\lambda$ then explodes resulting in an empty support.
 
-To overcome this problem, we rewrite the objective function in such a way that we obtain the same solution $\mathbf{X}$ but with a $\frac{\lambda}{ST}$. This can be written as:
+To overcome this problem, we propose to rewrite the objective function in such a way that we obtain the same solution $\mathbf{X}$ but with a factor $\frac{\lambda}{ST}$. The new equivalent formulation can be written as:
 \begin{equation} \label{eq5}
     \mathbf{\hat{X}} = \argmin_{\mathbf{X}} \frac{ST}{2}\|\mathbf{M - GX}\|^2_{Fro} + \lambda\mathcal{P}(\mathbf{X})
 \end{equation}
 
-Note that this is just a reparametrization of Equation~\eqref{eq_reg}. In practice, this boils down to multiplying $\mathbf{M}$ and $\mathbf{G}$ by $\sqrt{ST}$. However this only solves one difficulty in the parameter's update. Another disadvantage is that none of the parameters in Equation~\eqref{eq4} take into account the scale of $\mathbf{G}$. The next section explains how to properly calibrate the hyperprior parameters $\alpha$ and $\beta$ given $\mathbf{M}$, $\mathbf{G}$ and $\mathcal{P}$.
+Note that this is just a reparametrization of Equation~\eqref{eq_reg}. In practice, this boils down to multiplying $\mathbf{M}$ and $\mathbf{G}$ by $\sqrt{ST}$. However this only solves one difficulty in the parameter's update. Another disadvantage is that none of the parameters in Equation~\eqref{eq4} take into account the scale of $\mathbf{G}$. The next section explains how to use results from convex optimization to properly calibrate the hyperprior parameters $\alpha$ and $\beta$ given $\mathbf{M}$, $\mathbf{G}$ and $\mathcal{P}$.
 
 \subsection{Setting hyperpriors with a single hyperparameter}
 As in~\cite{Figueiredo}, Gamma hyperpriors are used to derive two iterative algorithms that simultaneously estimate a single hyperparameter $\lambda$ and the entries of $\mathbf{X}$, yet the values of $\alpha$ and $\beta$ are still to be defined.
@@ -138,7 +139,9 @@ Concerning the parameter $\beta$, for our specific MEG/EEG problem of interest w
 \subsection{Estimation of a vector of hyperparameters}
 
 The penalizations of the form $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,\cdot}$ are separable in $S$ groups of coefficients.
-As only a few groups are expected to be active, a natural idea is to penalize less the important groups. To do this, we propose to estimate one parameter per group of coefficients or row of $\mathbf{X}$ using the convex $\ell_{2,1}$ penalization. Rewriting Equation~\eqref{eq_reg} in the MAP framework leads to: 
+As only a few groups are expected to be active, a natural idea is to penalize less the important groups. To do this, we propose to estimate one parameter per group of coefficients or row of $\mathbf{X}$ using the convex $\ell_{2,1}$ penalization. Let now derive a result similar to Equation~\eqref{eq4} but in the more general case of one $\lambda$ per group.
+
+Rewriting Equation~\eqref{eq_reg} in the MAP framework leads to: 
 \begin{equation}
 \mathbf{X}^\star = \argmax_{\mathbf{X}}
 p(\mathbf{X}, \mathbf{M}|\lambda) = \argmax_{\mathbf{X}} p(\mathbf{M}|\mathbf{X})p(\mathbf{X}|\lambda) 
@@ -278,7 +281,7 @@ Defining $\tilde{\bfG}^{(k)}=\bfG \bfW^{(k-1)}$, the reformulated problem reads:
 The convergence of each weighted $\ell_{2,1}$ (MxNE) is controlled by monitoring the duality gap (see Section~\ref{section:duality_gap}). For more details about convex duality of optimization with sparsity-inducing penalties, refer to~\cite{bach2012optimization}.\\
 As mentioned in Section~\ref{section:duality_gap}, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{Y})$, \textit{i.e.},\\
 $f_d(\mathbf{Y}^\star)\leq f_p(\mathbf{X}^\star)$ where $\mathbf{X}^\star$ and $\mathbf{Y}^\star$ are the optimal solutions of the primal and the dual objective functions respectively. If strong duality holds, the duality gap defined as $\eta=f_p(\mathbf{X})-f_d(\mathbf{Y})$ would be zero at the optimum.\\
-Due to Slater's conditions~\cite{Boyd_Vandenberghe04}, the strong duality gap holds for the MxNE subproblem to check the convergence of Equation~\eqref{eq:MM}. Based on Fenchel-Rockafellar duality theorem~\cite{rockafellar:1997}, the dual objective function associated with the primal objective function:
+Due to Slater's conditions~\cite{Boyd_Vandenberghe04}, the strong duality holds for the MxNE subproblem and the gap can be used to check the convergence of Equation~\eqref{eq:MM}. Based on Fenchel-Rockafellar duality theorem~\cite{rockafellar:1997}, one dual objective function associated with the primal objective function:
 \begin{equation}
 \begin{split}
 f_p(\mathbf{X}) & = \frac{1}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2+\lambda\mathcal{P}(\mathbf{X}) \\
@@ -291,7 +294,7 @@ f_d(\mathbf{Y})=-\frac{1}{2}\|\mathbf{Y}\|_{Fro}^2+Tr(\mathbf{Y}^\top\mathbf{M})
 \end{equation}
 where $\mathcal{P}^\star$ is the Fenchel conjugate of $\mathcal{P}$, which is the indicator function of the associated dual form. For a full derivation, see~\cite{Gramfort_Kowalski_Hamalainen12}. Moreover, the Karush-Khun-Tucker (KKT) conditions of the Fenchel-Rockafellar duality theorem give a natural mapping from
 the primal to the dual space, which is given by a scaling of the residual $\tilde{\mathbf{Y}}=\mathbf{M}-\mathbf{GX}$, as shown in~\cite{Gramfort_Kowalski_Hamalainen12}.\\
-In practice, we terminate the optimization scheme for solving MxNE when the estimate at the $k^{th}$ iteration is $epsilon$-optimal with $\epsilon=10^{-6}$~\cite{strohmeier-etal:16}.\\
+In practice, we terminate the optimization scheme for solving MxNE when the estimate at the $k^{th}$ iteration is $\epsilon$-optimal with $\epsilon=10^{-6}$~\cite{strohmeier-etal:16}.\\
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -351,9 +354,9 @@ For solving the weighted MxNE subproblems, \ac{BCD} scheme was used~\cite{tseng}
 
 	  	Define $\mathbf{G}^\Gamma$ and $\mathbf{X}^\Gamma$ by restricting $\mathbf{G}$ and $\mathbf{X}$ to $\Gamma$
 
-	  	$\mathbf{X}^{\star\Gamma}\leftarrow$ Use Algorithm~\ref{alg:mxne_bcd} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}^\Gamma$
+	  	$\mathbf{X}^{\star}_\Gamma \leftarrow$ Use Algorithm~\ref{alg:mxne_bcd} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}_\Gamma$
 
-	  	$\mathbf{X}=\mathbf{X}^{\star\Gamma}$ for $i\in\Gamma$, else 0
+	  	$\mathbf{X}[\Gamma, :] = \mathbf{X}^{\star}_\Gamma$
 
 	  	$\eta=f_p(\mathbf{X})-f_d(\mathbf{Y})$
 	  }
@@ -450,7 +453,7 @@ A common strategy  to compute it is to minimize the \emph{negative log posterior
 & \forall i\in [1,\cdots, S] \enspace. 
 \end{split}
 \end{equation}
-Other fully-Bayesian estimates are defined as integrals of functions of $\bfX$ and $\mathbf{\gamma}$ with respect to the posterior distribution, \textit{e.g.} first or second moment estimates. To compute these high dimensional integrals efficiently, only \ac{MCMC} methods that draw correlated samples from the posterior distribution can be used~\cite{RoCa05,KaSo05} . A commonly used MCMC scheme for HBM is given by \emph{blocked Gibbs sampling}, which alternates as:
+Other fully-Bayesian estimates are defined as integrals of functions of $\bfX$ and $\mathbf{\gamma}$ with respect to the posterior distribution, \textit{e.g.} first or second moment estimates. To compute these high dimensional integrals efficiently, only \ac{MCMC} methods that draw correlated samples from the posterior distribution can be used~\cite{RoCa05,KaSo05}. A commonly used MCMC scheme for HBM is given by \emph{blocked Gibbs sampling}, which alternates as:
 \begin{eqnarray}
 \bfX^{(k)} &\sim \: p_{post}(\bfX,\mathbf{\gamma}^{(k-1)}|\bfM) &\propto p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)}) \enspace, \label{eq:AS-X}\\
 \mathbf{\gamma}^{(k)} &\sim \: p_{post}(\bfX^{(k)},\mathbf{\gamma}|\bfM) &\propto p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})\enspace. \label{eq:AS-gamma}
