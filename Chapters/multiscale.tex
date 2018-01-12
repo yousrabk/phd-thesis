@@ -316,11 +316,11 @@ The benefits of the multi-scale irTF-MxNE have been shown on simulated and MEG s
 Further work related to this chapter can address different points:
 \begin{itemize}
 %    \item Multi-scale irTF-MxNE investigation in terms of dictionary. So far we have used tight Gabor frames, is it the best choice? Doing some \textit{"exhaustive"} comparison between the STFT used here, Modifed Discrete Cosine Transform (MDCT), and Stockwell transform \textit{a.k.a.} S-Transform will help us better understand the dictionary decomposition of the data.
-	\item Multi-scale irTF-MxNE improvement in terms of hyperparameter learning, \textit{i.e.} estimation of the best parameters $\lambda_{space}$ and $\lambda_{time}$. In the standard cases, these parameters are selected by cross-validation or sometimes by using the discrepancy principle. A key contribution in this direction would be to use Bayesian inference techniques to estimate those regularization parameters in a composite norms setting.
-
     \item The source localization in general is computed over an evoked response, \textit{i.e.} in the MEG/EEG field, the evoked is the mean of several trials of the same experiment. The main purpose is to reduce the noise, \textit{i.e.}, increase the SNR of the signal. At a trial level, \textit{i.e.}, for a lower SNR, how can we improve the source localization?
     % We can constraint the localization with the prior knowledge that all trials are supposed to have the same source estimate.
 
     \item Optimization direction: the idea of incorporating screening techniques presented in a huge amount of papers can help to speed up the convergence, and so the reconstruction time~\cite{massias2017safe,massiasgap,fercoq-etal:2015,Ndiaye_Fercoq_Gramfort_Salmon15,ndiaye2016gap,ndiaye2017efficient}.
+
+    \item Multi-scale irTF-MxNE improvement in terms of hyperparameter learning, \textit{i.e.} estimation of the best parameters $\lambda_{space}$ and $\lambda_{time}$. In the standard cases, these parameters are selected by cross-validation or sometimes by using the discrepancy principle. A key contribution in this direction would be to use Bayesian inference techniques to estimate those regularization parameters in a composite norms setting. This problem is related the following chapter.
 \end{itemize}
 
