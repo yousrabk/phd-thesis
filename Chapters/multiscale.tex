@@ -104,7 +104,7 @@ Computing the TF decomposition at each iteration can be costly. The consequence 
 To speed up the computation even more, we combine the BCD scheme with an active set strategy (Section~\ref{section:active_set})~\cite{friedman2010regularization}, which primarily updates sources that are likely to be active, while keeping the remaining sources inactive.
 
 \subsection*{Orientation constraints}
-Let $\mathbf{Z}_s\in\CC^{3\times C}$ be the block of the $\mathbf{Z}\in\CC^{3S\times C}$	($O=3$) corresponding to the $s^{th}$ source, $\mathbf{Z}[1,:]$ be the activity of the dipole oriented normal to the cortical surface, and $\mathbf{Z}[2,:]$ and $\mathbf{Z}[3,:]$ be the two other orientations tangent to the surface. We modify the $\ell_1$-norm and the $\ell_{2,1}$-norm for the free orientation constraints ($O=3$) as follow:
+Let $\mathbf{Z}_s\in\CC^{3\times C}$ be the block of the $\mathbf{Z}\in\CC^{3S\times C}$	($O=3$) corresponding to the $s^{th}$ source, $\mathbf{Z}[1,:]$ be the activity of the dipole oriented normal to the cortical surface, and $\mathbf{Z}[2,:]$ and $\mathbf{Z}[3,:]$ be the two other orientations tangent to the surface. We modify the $\ell_1$-norm and the $\ell_{2,1}$-norm for the free orientation constraints ($O=3$) as follows:
 \begin{align*}
 \|\mathbf{Z}\|_1 &= \sum_{s,c}\sqrt{|\mathbf{Z}_s[1,c]|^2 + \frac{1}{\kappa^2}|\mathbf{Z}_s[2,c]|^2 + \frac{1}{\kappa^2}\mathbf{Z}_s[3,c]|^2} \\
 \|\mathbf{Z}\|_{2,1} &= \sum_s\sqrt{\sum_c |\mathbf{Z}_s[1,c]|^2 + \frac{1}{\kappa^2}|\mathbf{Z}_s[2,c]|^2 + \frac{1}{\kappa^2}\mathbf{Z}_s[3,c]|^2}
@@ -112,7 +112,7 @@ Let $\mathbf{Z}_s\in\CC^{3\times C}$ be the block of the $\mathbf{Z}\in\CC^{3S\t
 where $s$ indexes the source location and $c$ the TF coefficient. When $\kappa=1$, no orientation contraint is applied and the modified penalties amount to grouping the orientation in a common $\ell_2$-norm. In practice $\kappa$ is fixed to $0.2$.
 
 \section{Inverse problem with multi-scale tight Gabor frames}
-As shown in Section~\ref{section:gabor}, a tight Gabor frame is computed by setting two parameters: the length of the window (window size), and an overlap parameter (time shift). The window size defines the time/frequency resolution: if its length is short, it would be more focus on time than frequency, and vice versa: if it is long, it will be more focused on frequency than in time. The time resolution also depends on the time shift parameter. The time shift parameter defines the time step from one window to another (\textit{cf.} Section~\ref{section:TF}). This affects the redundancy of the dictionary. A dense sampling of the TF space, however, increases the complexity on both time and memory.\\
+As shown in Section~\ref{section:gabor}, a tight Gabor frame is computed by setting two parameters: the length of the window (window size), and an overlap parameter (time shift). The window size defines the time/frequency resolution. If its length is short, it would be more focus on time than frequency, and vice versa. If it is long, it will be more focused on frequency than in time. The time resolution also depends on the time shift parameter. The time shift parameter defines the time step from one window to another (\textit{cf.} Section~\ref{section:TF}). This affects the redundancy of the dictionary. A dense sampling of the TF space, however, increases the computational complexity on both time and memory.\\
 
 Each source waveform is a sparse linear combination of atoms from this dictionary. Fixing those parameters is then critical for having an optimal dictionary. %This makes the choice of the parameters important when they are fixed and not learned.
 Learning the dictionary might be a solution to avoid fixing the parameters, or the need to have an overcomplete dictionary covering a broad range of scales. However, learning both $\mathbf{Z}$ and $\mathbf{\Phi}$ simultaneously is a non-convex optimization problem, for which one needs to alternate between a convex optimization for the two variables~\cite{montoya2014regularized}. \\
@@ -135,13 +135,13 @@ Let us define a multi-scale TF dictionary, where we concatenate $Q$ tight Gabor 
 		$\eta \geq \epsilon$
 	  }
 	  {
-	  	$\Gamma^\star = \{s \hspace{3pt} | \hspace{3pt} \|\textbf{prox}_{\lambda_{time}\|.\|_1}(\mathbf{G}_s^\top(\mathbf{M}-\mathbf{GZ\Phi}\mathcal{H})\Phi)\|_{Fro} > \lambda_{space} \}$
+	  	$\Gamma^\star = \{s \hspace{3pt} | \hspace{3pt} \|\textbf{prox}_{\lambda_{time}\|.\|_1}(\mathbf{G}_s^\top(\mathbf{M}-\mathbf{GZ\Phi}^\mathcal{H})\mathbf{\Phi})\|_{Fro} > \lambda_{space} \}$
 	  	
-	  	$\Gamma = \Gamma \cup \Gamma^\star$
+	  	$\Gamma = \Gamma \cup \Gamma^\star$ \quad (Update of the active set)
 	  	
-	  	$\mathbf{Z}^{\star\Gamma}\leftarrow$ Use Algorithm~\ref{alg:multiscale_tfmxne_bcd} with $\mathbf{\mu}$ and $\Gamma$
+	  	$\mathbf{Z}^{\star}_\Gamma \leftarrow$ Use Algorithm~\ref{alg:multiscale_tfmxne_bcd} with $\mathbf{\mu}$ and $\Gamma$
 	  	
-	  	$\mathbf{Z}=\mathbf{Z}^{\star\Gamma}$ for $s\in\Gamma$, else 0
+	  	$\mathbf{Z}[\Gamma, :] = \mathbf{Z}^{\star}_\Gamma$ % for $s\in\Gamma$, else 0
 
 	  	$\eta=f_p(\mathbf{Z})-f_d(\mathbf{Y})$
 	  }
@@ -156,7 +156,7 @@ Let us define a multi-scale TF dictionary, where we concatenate $Q$ tight Gabor 
 \SetKwInOut{Init}{init}
 \SetKwInOut{Parameter}{param}
 \caption{\textsc{multi-scale TF-MxNE with BCD}}
-\Input{$\bfM, \bfG, \mathbf{\Phi}, \mathbf{\mu}, \lambda_{space} > 0, \lambda_{time} > 0, \epsilon > 0$, and $\Gamma^\star$ }
+\Input{$\bfM, \bfG, \mathbf{\Phi}, \mathbf{\mu}, \lambda_{space} > 0, \lambda_{time} > 0, \epsilon > 0$, and $\Gamma$ }
 % \Parameter{ To add }
 \Init{$\eta=f_p(\mathbf{X})-f_d(\mathbf{Y})$}
 \While{
@@ -164,7 +164,7 @@ Let us define a multi-scale TF dictionary, where we concatenate $Q$ tight Gabor 
 	  }
 	  {
 	  	\For{
-	  			$s\in\Gamma^\star$
+	  			$s\in\Gamma$
 	  		}
 	  		{
 	  			$\mathbf{Z}_s = \textbf{prox}_{\mathbf{\mu}[s](\lambda_{space}\|.\|_{2,1}+\lambda_{time}\|.\|_1)}(\mathbf{Z}_s+\mathbf{\mu}[s]\mathbf{G}^\top_s(\mathbf{M}-\mathbf{GZ\Phi}^\mathcal{H})\mathbf{\Phi})$
@@ -304,12 +304,12 @@ The multi-scale version of the MEG/EEG inverse problem in the TF domain does not
         \label{fig:comparison_mind_mdct_stft}
 \end{figure*}
 
-We investigated a second choice: \ac{MDCT} (\textit{cf.} Section~\ref{section:mdct}). The problem found with the MDCT is the fact that it is critically sampled. The sliding time windows are overlapping so that the second half of one block coincides with the first half of the next block, \textit{i.e.} the time shift is equal to half the window's length. Figure~\ref{fig:comparison_mind_mdct_stft} shows several mixtures of dictionaries for MDCT, but also for STFT if we set the time shift at half the window size. One can directly notice that it is harder to obtain both transient and smooth signals without any leakage between the time sources. MDCT is more sensitive to all the hyperparameters: the dictionary window length and the $\lambda_{space}$/$|lambda_{time}$. Even if we leave aside the compromise that one needs to keep in mind between the size of the multi-scale dictionary and the computation time, by having multiple dictionaries concatenated together as in Figure~\ref{fig:comparison_mind_mdct_stft}-\ref{fig:mdct_all_dict}, MDCT is still not able to compete with STFT as in Figure~\ref{fig:MEG}.
+We investigated a second choice: \ac{MDCT} (\textit{cf.} Section~\ref{section:mdct}). The problem found with the MDCT is the fact that it is critically sampled. The sliding time windows are overlapping so that the second half of one block coincides with the first half of the next block, \textit{i.e.} the time shift is equal to half the window's length. Figure~\ref{fig:comparison_mind_mdct_stft} shows several mixtures of dictionaries for MDCT, but also for STFT if we set the time shift at half the window size. One can directly notice that it is harder to obtain both transient and smooth signals without any leakage between the time sources. MDCT is more sensitive to all the hyperparameters: the dictionary window length and the $\lambda_{space}$/$\lambda_{time}$. Even if we leave aside the compromise that one needs to keep in mind between the size of the multi-scale dictionary and the computation time, by having multiple dictionaries concatenated together as in Figure~\ref{fig:comparison_mind_mdct_stft}-\ref{fig:mdct_all_dict}, MDCT is still not able to compete with STFT as in Figure~\ref{fig:MEG}.
 
 \section{Conclusion \& Perspectives}
-In this chapter, the main motivation of the multi-scale dictionary has been presented. The first contribution has been presented which improves the irTF-MxNE solver using a multi-scale dictionary to capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
+In this chapter, we motivated the use of multi-scale dictionaries for the M/EEG inverse problem and presented our first contribution. The irTF-MxNE solver using a multi-scale dictionary allows to better capture the mixture of the MEG/EEG data. The non-convex optimization problem is solved by iteratively solving the convex weighted TF-MxNE problem using block coordinate descent combined with active set strategy to speed up the convergence.
 
-The benefits of the multi-scale irTF-MxNE have been shown on simulated and MEG somatosensory data. Both experiments confirm that multi-scale irTF-MxNE improves the source estimates, in terms of reduced mixing of the time courses, smoothness and detection of both short transients and slower waves. In contrast, both solvers are efficient regarding active set size and amplitude bias, which is due to the non-convexity of the methods. Hence, the multi-scale irTF-MxNE should be applied to data involving a mixture of signals, and when the aim is to acquire focal sources with non-stationary and smooth time courses.
+The benefits of the multi-scale irTF-MxNE have been shown on simulated and MEG somatosensory data. Both experiments confirm that multi-scale irTF-MxNE improves the source estimates, in terms of reduced mixing of the time courses, smoothness and detection of both short transients and slower waves. The improvement regarding active set size and amplitude bias, is due to the non-convexity of the methods. Hence, the multi-scale irTF-MxNE should be applied to data involving a mixture of signals, and when the aim is to acquire focal sources with non-stationary and smooth time courses.
 
  % (https://www.researchgate.net/publication/301731870_Brain_reading_with_ordered_targets_using_ranking_metric).
 
@@ -317,9 +317,10 @@ Further work related to this chapter can address different points:
 \begin{itemize}
 %    \item Multi-scale irTF-MxNE investigation in terms of dictionary. So far we have used tight Gabor frames, is it the best choice? Doing some \textit{"exhaustive"} comparison between the STFT used here, Modifed Discrete Cosine Transform (MDCT), and Stockwell transform \textit{a.k.a.} S-Transform will help us better understand the dictionary decomposition of the data.
 	\item Multi-scale irTF-MxNE improvement in terms of hyperparameter learning, \textit{i.e.} estimation of the best parameters $\lambda_{space}$ and $\lambda_{time}$. In the standard cases, these parameters are selected by cross-validation or sometimes by using the discrepancy principle. A key contribution in this direction would be to use Bayesian inference techniques to estimate those regularization parameters in a composite norms setting.
-    
-    \item The source localization in general is computed over an evoked response, \textit{i.e.} in the MEG/EEG field, the evoked is the mean of several trials of the same experiment. The main purpose is to reduce the noise, \textit{i.e.}, increase the SNR of the signal. At a trial level, \textit{i.e.}, for a lower SNR, how can we improve the source localization? We can constraint the localization with the prior knowledge that all trials are supposed to have the same source estimate.
-    
+
+    \item The source localization in general is computed over an evoked response, \textit{i.e.} in the MEG/EEG field, the evoked is the mean of several trials of the same experiment. The main purpose is to reduce the noise, \textit{i.e.}, increase the SNR of the signal. At a trial level, \textit{i.e.}, for a lower SNR, how can we improve the source localization?
+    % We can constraint the localization with the prior knowledge that all trials are supposed to have the same source estimate.
+
     \item Optimization direction: the idea of incorporating screening techniques presented in a huge amount of papers can help to speed up the convergence, and so the reconstruction time~\cite{massias2017safe,massiasgap,fercoq-etal:2015,Ndiaye_Fercoq_Gramfort_Salmon15,ndiaye2016gap,ndiaye2017efficient}.
 \end{itemize}
 
