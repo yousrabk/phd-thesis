@@ -55,7 +55,7 @@ The dataset is sorted into 3 different \ac{SNR}:
 The dataset is sorted into two different SNR:
 \begin{itemize}
 \item Source with \textbf{200 nAm}. This is a close dipole to the range of amplitudes we can expect in raw data.
-\item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies which require averaging to detect and estimate (\textit{i.e.} generally cannot be seen in single trial analysis).
+\item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies which require averaging to detect and estimate sources (\textit{i.e.} generally cannot be seen in single trial analysis).
 \end{itemize}
 
 
@@ -67,20 +67,20 @@ The dataset is sorted into two different SNR:
 \end{figure}
 
 
-\subsection{name? dataset} \label{data:used_data}
+\subsection{MNE-Neuromag dataset} \label{data:used_data}
 
 The dataset is sorted into four different SNR:
 \begin{itemize}
 \item Source with \textbf{2000 nAm}. This corresponds to an unrealistically strong 1000 nAm (2000 nAm peak-to-peak) dipole that gives the highest SNR of the experimental source.
 \item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
 \item Source with \textbf{100 nAm}. This is an even weaker dipole and a smaller SNR.
-\item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies which require averaging to detect and estimate (\textit{i.e.} generally cannot be seen in single trial analysis).
+\item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies which require averaging to detect and estimate sources (\textit{i.e.} generally cannot be seen in single trial analysis).
 \end{itemize}
 
 \section{Methodology}
 
 \subsection{Sphere models}
-The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems admit to well known closed form solutions~\cite{mosher1999eeg}.
+The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems have well known closed form solutions~\cite{mosher1999eeg}.
 
 \subsection{The selected solvers}
 \subsubsection{Dipole fitting}
@@ -88,6 +88,7 @@ Dipole fitting assumes that a small number of point-like \ac{ECD}s can describe 
 
 \subsubsection{$\gamma$-Map}
 $\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. The main idea is to use simple Gaussian mixture model with flexible covariance components, more details are in~\cite{Wipf-Nagarajan:2009}.
+\alex{There is no Gaussian mixture in Gamma-MAP}
 
 \subsubsection{RAP-MUSIC}
 \Ac{RAP-MUSIC} is an extension to \ac{MUSIC} by recursively estimating multiple sources~\cite{mosher1997source,mosher1999source}. In other words, it consists in applying MUSIC successively after removing the contribution of the previously identified sources. Such as matching pursuit algorithms are used for sparse signal decomposition over dictionary of atoms, the RAP-MUSIC method adopts a greedy strategy to select the relevant dipoles in a dictionary of sources.
