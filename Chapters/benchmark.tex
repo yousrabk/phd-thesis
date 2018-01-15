@@ -20,8 +20,7 @@ More sophisticated simulations might be investigated to overcome these issues, y
 
 In to order to calibrate each MEG device, artificial objects that mimic the brain activity called "\textit{phantoms}" are constructed by the manufacturers of MEG systems.
 % that we use to evaluate our solvers to the MEG/EEG inverse problem~\cite{hazim2015magnetoencephalography}.
-They are based on the theoretical description in~\cite{ilmoniemi1985forward} producing realistic data corresponding to complex spatio-temporal current sources including realistic head geometries. In a typical phantom, from 4 to 32 independent current dipoles are present and MEG data are collected separately for each dipole. The true dipole locations and orientations, and the morphology of the brain, skull layers can be extracted from X-ray CT data~\cite{leahy1998study}. One limitation is that such phantoms are not unsuitable for EEG, yet there exists some work on making EEG phantom devices.
-\alex{add ref to https://arxiv.org/pdf/1609.07691.pdf for example.}
+They are based on the theoretical description in~\cite{ilmoniemi1985forward} producing realistic data corresponding to complex spatio-temporal current sources including realistic head geometries. In a typical phantom, from 4 to 32 independent current dipoles are present and MEG data are collected separately for each dipole. The true dipole locations and orientations, and the morphology of the brain, skull layers can be extracted from X-ray CT data~\cite{leahy1998study}. One limitation is that such phantoms are not unsuitable for EEG, yet there exists some work on making EEG phantom devices~\cite{hairston2016ballistic}.
 
 This chapter presents a new study to validate localization techniques using different existing phantom datasets. Other work has been done by~\cite{hazim2015magnetoencephalography,leahy1998study,baillet2001evaluation} using also real-skull phantom to investigate the performances of representative methods considering various head models.
 
@@ -87,8 +86,7 @@ The most commonly used head model assumes that it is made up of a set of nested 
 Dipole fitting assumes that a small number of point-like \ac{ECD}s can describe the measured topography. It optimises the location, the orientation and the amplitude of the model dipoles in order to minimise the difference between the model and the measured topography. A good introduction to dipole fitting is provided by~\cite{scherg1990fundamentals}. A full description is done in Chapter~\ref{chapter:background}-Section~\ref{section_dipfit}.
 
 \subsubsection{$\gamma$-Map}
-$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. The main idea is to use simple Gaussian mixture model with flexible covariance components, more details are in~\cite{Wipf-Nagarajan:2009}.
-\alex{There is no Gaussian mixture in Gamma-MAP}
+$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. More details are in~\cite{Wipf-Nagarajan:2009}.
 
 \subsubsection{RAP-MUSIC}
 \Ac{RAP-MUSIC} is an extension to \ac{MUSIC} by recursively estimating multiple sources~\cite{mosher1997source,mosher1999source}. In other words, it consists in applying MUSIC successively after removing the contribution of the previously identified sources. Such as matching pursuit algorithms are used for sparse signal decomposition over dictionary of atoms, the RAP-MUSIC method adopts a greedy strategy to select the relevant dipoles in a dictionary of sources.
@@ -189,24 +187,21 @@ RAP-MUSIC is an approach based on MUSIC technique which also perform very well w
         \begin{subfigure}[b]{0.28\textwidth}
             \centering
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_loc_error}
-%            \caption{pos}
-            \label{fig:gmap_pos}
+            \caption{\label{fig:gmap_pos}}
         \end{subfigure}
 %        \hfill
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}  
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_ori_error}
-%            \caption{ori}
-            \label{fig:gmap_ori}
+            \caption{\label{fig:gmap_ori}}
         \end{subfigure}
 %        \vskip\baselineskip
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}   
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_gamma_map_amp_error}
-%            \caption{amp}
-            \label{fig:gmap_amp}
+            \caption{\label{fig:gmap_amp}}
         \end{subfigure}
 
 		\caption{The gamma map errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:gmap_errors}}
@@ -220,24 +215,19 @@ RAP-MUSIC is an approach based on MUSIC technique which also perform very well w
         \begin{subfigure}[b]{0.28\textwidth}
             \centering
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_loc_error}
-%            \caption{pos}
-            \label{fig:mxne_pos}
+            \caption{\label{fig:mxne_pos}}
         \end{subfigure}
-%        \hfill
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}  
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_ori_error}
-%            \caption{ori}
-            \label{fig:mxne_ori}
+            \caption{\label{fig:mxne_ori}}
         \end{subfigure}
-%        \vskip\baselineskip
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}   
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_MxNE_amp_error}
-%            \caption{amp}
-            \label{fig:mxne_amp}
+            \caption{\label{fig:mxne_amp}}
         \end{subfigure}
 
 		\caption{The mixed norm (MxNE) errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:gmap_errors}}
@@ -246,28 +236,22 @@ RAP-MUSIC is an approach based on MUSIC technique which also perform very well w
 %\subsection*{Time-Frequency mixed-norm (TF-MxNE)}
 \begin{sidewaysfigure}[ht]
         \centering
-%        \vspace{10pt}
         \begin{subfigure}[b]{0.28\textwidth}
             \centering
-            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_loc_error}
-%            \caption{pos}
-            \label{fig:tfmxne_pos}
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_depth_95_wsize_64_tstep_16_40_1_loc_error}
+            \caption{\label{fig:tfmxne_pos}}
         \end{subfigure}
-%        \hfill
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}  
             \centering 
-            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_ori_error}
-%            \caption{ori}
-            \label{fig:tfmxne_ori}
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_depth_95_wsize_64_tstep_16_40_1_ori_error}
+            \caption{\label{fig:tfmxne_ori}}
         \end{subfigure}
-%        \vskip\baselineskip
 		\hspace{35pt}
         \begin{subfigure}[b]{0.28\textwidth}   
             \centering 
-            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_amp_error}
-%            \caption{amp}
-            \label{fig:tfmxne_amp}
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_TF-MxNE_depth_95_wsize_64_tstep_16_40_1_amp_error}
+            \caption{\label{fig:tfmxne_amp}}
         \end{subfigure}
 
 		\caption{The time-frequency mixed-norm (TF-MxNE) errors on localization (mm), orientation (Rad), and amplitude (nAm) using 4 dipoles (5-8) having different depth in the phantom.\label{fig:tfmxne_errors}}
@@ -275,27 +259,23 @@ RAP-MUSIC is an approach based on MUSIC technique which also perform very well w
 
 $\gamma$-map which is a Bayesian formulation to the MEG/EEG inverse problem is performing less well than dipole fitting or RAP-MUSIC for very high and very low SNR. For SNRs in range of realistic data, its location error is majored by 5mm depending on the depth of the studied dipole. $\gamma$-map is doing worse for amplitude=1000nAm compared to 100nAm or 200nAm because it overestimates the noise when estimating the hyperparameter $\gamma$.
 
-For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:mxne_pos}-\ref{fig:tfmxne_pos} respectively demonstrate an improvement more the SNR is high.
+For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:mxne_pos}-\ref{fig:tfmxne_pos} respectively demonstrate an improvement when using TF-MxNE.
 
 \subsection{Critical comparison of these MEG/EEG source localization}
 Figure \ref{all_solvers_loc_error} shows all solvers in the same plot to compare both errors in location and orientation with maxfilter as preprocessing. We keep the same scale for y-axis to not go beyond 20 mm of location error and not beyond 1 Rad of orientation error. The left plot of location error shows firstly (RAP) MUSIC as being very sensitive the SNR (comparing 20nAm to 1000nAm). Then MNE and dSPM as the methods giving the worst results for this dataset. One important argument is the fact that the study is biased as we know that the simulated phantom data is focal/sparse, while MNE and dSPM are not sparse methods. We always take the peak of amplitude and displays the best dipole for each method. sLORETA in the other hand is not a sparse method either, however, it performs much better than MNE or dSPM. The "center" of the pattern estimated with sLORETA is then closer to the exact dipole location compared to the center of dSPM or MNE. TF-MxNE is not the best method for this study as it is a spatio-temporal approach when having a specific waveforms in the data which is not the case here.
 
 \begin{sidewaysfigure}[ht]
         \centering
-%        \vspace{10pt}
         \begin{subfigure}[b]{0.47\textwidth}
             \centering
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_loc_error}
-%            \caption{pos}
-            \label{fig:all_solvers_loc_error}
+            \caption{\label{fig:all_solvers_loc_error}}
         \end{subfigure}
-%        \hfill
 		\hspace{25pt}
         \begin{subfigure}[b]{0.47\textwidth}  
             \centering 
             \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_all_solvers_maxfilter_True_ori_error}
-%            \caption{ori}
-            \label{fig:all_solvers_ori_error}
+            \caption{\label{fig:all_solvers_ori_error}}
         \end{subfigure}
 
 		\caption{Comparison of the position and the orientation error between most of the solvers for 4 different dipoles.\label{all_solvers_loc_error}}
@@ -310,6 +290,26 @@ The orientation error is comparable to the location error, where dipole fitting,
 
 Figure~\ref{all_solvers_amp_error} shows the errors in amplitude, the most important point in this figure is to see the difference between the convex MxNE and the non-convex irMxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE). For some cases, irMxNE amplitude estimate is even better than dipole fitting one.
 
+\begin{sidewaysfigure}[ht]
+        \centering
+        \begin{subfigure}[b]{0.47\textwidth}
+            \centering
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_snr_in_solvers_maxfilter_True_loc_error}
+            \caption{\label{fig:all_solvers_loc_error_decim}}
+        \end{subfigure}
+		\hspace{25pt}
+        \begin{subfigure}[b]{0.47\textwidth}  
+            \centering 
+            \includegraphics[trim={1cm 2.5cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_snr_in_solvers_maxfilter_True_ori_error}
+            \caption{\label{fig:all_solvers_ori_error_decim}}
+        \end{subfigure}
+
+		\caption{Comparison of the position and the orientation error between come solvers when taking only part of the epochs to reduce the SNR..\label{all_solvers_loc_error_decim}}
+\end{sidewaysfigure}
+
+To investigate further the impact of each solver and the impact of a dataset with a high or a low SNR, we show in Figure~\ref{all_solvers_loc_error_decim} the results for some solvers when using all the epochs, or when decimating them into one over two epochs, or one over four epochs. Figure~\ref{fig:all_solvers_loc_error_decim} shows a deterioration of dipole fitting when using the 20nAm, especially for the case where we keep only one epoch over four. For 100nAm, 200nAm, and 1000nAm, the difference is small as the data corresponds already to a pretty strong unrealistic signal. TF-MxNE still performs better than MxNE due to the kind of simulation done in the phantom, which is basically a sinusoidal waveform, easier to be captured by the TF-MxNE.
+
+This analysis has been performed also on two other datasets, where same kind of results can be seen in Figures~\ref{}. 
 
 \section{Conclusion \& Perspectives}
 In this chapter, the main motivation was to present some results on various source localization techniques applied to phantom data. Being able to examine "real" datasets with ground-truth is a big privilege to test the big list of existing methods for solving the MEG/EEG inverse problem.
@@ -317,3 +317,5 @@ In this chapter, the main motivation was to present some results on various sour
 Here we presented some of them, focusing on the approaches defined in this thesis. The conclusion would be that the dipole fitting is the most competitive and unbeatable method when having a focal dataset with only one dipole. Unfortunately here, we could not present phantom dataset with two or more dipoles in the same recording, which would make the source localization more challenging.
 
 A further work would be to investigate this aspect of multiple dipoles. The idea would be to confirm a better performance of convex and non-convex solvers (Variational or Bayesian formulation) compared to dipole fitting or MUSIC.
+
+This chapter also did not show any hyperparameter tuning, or an automatic estimation as shown in Chapter~\ref{chapter:bayesian}, due to the "easiness" of the dataset when having only one dipole simulated. Thus, the analysis here was always taking the best dipole estimated among the several ones picked by the solver as involved in the MEG data. This cannot be done if we had two simulated dipoles, and one would have needed to investigate clearly and properly the hyperparameter setting. In this chapter, the hyperparameters to be selected were not having a big impact on the resulted source estimate, except for the TF-MxNE where several ones needed to be fixed. The size of the window size and the time shift of the dictionary were chosen as the best ones from a grid search.

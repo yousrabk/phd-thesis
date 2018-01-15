@@ -49,12 +49,11 @@ and specific HBMs. We show that a particular optimization-based inference strate
 In Bayesian statistics, a hyperprior is a prior distribution on a hyperparameter, that is, on a parameter of a prior distribution.
 Firstly, the use of a hyperprior allows one to express uncertainty in a hyperparameter: taking a fixed prior is an assumption, varying a hyperparameter of the prior allows one to do sensitivity analysis on this assumption, and taking a distribution on this hyperparameter allows one to express uncertainty in this assumption: "assume that the prior is of this form (this parametric family), but that we are uncertain as to precisely what the values of the parameters should be"~\cite{bernardo2001bayesian}.
 
-A popular choice of hyperprior is the gamma distribution $\Gamma$ with $\alpha$ and $\beta$ its corresponding parameters:
+A popular choice of hyperprior is the gamma distribution with $\alpha$ and $\beta$ its corresponding parameters:
 \begin{equation} \label{eq:gamma_dist}
 	p(\lambda) = \frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}\exp(-\beta\lambda)\mathbf{1}_{\RR^+}(\lambda), \; \lambda \in \RR
 \end{equation}
-In the following of this chapter, the hyperprior is always a gamma distribution.
-\alex{What is $\Gamma(\alpha)$ here?}
+where $\Gamma$ is the gamma function. In the following of this chapter, the hyperprior is always a gamma distribution.
 
 %----------MAP estimation ------------------------------------------------------------------
 %\section{MAP estimation}
