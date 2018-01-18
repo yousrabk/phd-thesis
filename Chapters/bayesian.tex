@@ -11,6 +11,13 @@
 \noindent\makebox[\linewidth]{\rule{0.75\paperwidth}{0.4pt}}
 
 \newpage
+\vspace{1.5cm}
+Parts of this chapter have been published in the following:
+\begin{itemize}
+\item \textbf{Y. Bekhti}, R. Badeau, and A. Gramfort, "Hyperparameter estimation in maximum a posteriori regression using group sparsity with an application to brain imaging," Signal Processing Conference (EUSIPCO), pp. 246-250, 2017.
+\item \textbf{Y. Bekhti}, F. Lucka, J. Salmon, and A. Gramfort, "A hierarchical Bayesian perspective on majorization-minimization for non-convex sparse regression: application to M/\ac{eeg} source imaging," IEEE Physics in Medicine \& Biology, (submitted).
+\end{itemize}
+\newpage
 
 %----------Intro - general concepts --------------------------------------------------------
 \section{Introduction - General concepts}
@@ -67,7 +74,7 @@ where $\Gamma$ is the gamma function. In the following of this chapter, the hype
 This section investigates the estimation of the hyperparamter $\lambda$ in the variational formulation. One can notice that hyperparameter setting is a classical statistics problem for which a number of solutions have been proposed. In signal processing, the \ac{AIC} and \ac{BIC} criteria are quite popular techniques historically~\cite{schwarz1978estimating}. The SURE-based techniques~\cite{stein1981estimation} have also been quite popular and recently explored for denoising and compressed sensing applications~\cite{luisier2007new, guo2015near}. In a standard supervised machine learning setup with independent and identically distributed (i.i.d.) observations, \ac{CV} is the reference approach. 
 Also, the Bayesian approach suited for probabilistic models offers a principled way to estimate hyperparameters using hyperpriors that introduce softer constraints than solutions with fixed parameter values. This benefit yet usually comes at a price in terms of computational cost. Finally, in a number of real scenarios, humans end up setting hyperparameters, as they can have some expert knowledge that can correct model mismatch.
 
-In statistical machine learning, an hyperparameter typically aims at limiting overfitting by controlling the model complexity. In the particular case of regularized regression, classically a scalar parameter balances between the data fit and the penalty term. When using sparse regression, this parameter affects the sparsity of the solution, \emph{i.e.}, how many covariates or regressors are used.
+In statistical machine learning, a hyperparameter typically aims at limiting overfitting by controlling the model complexity. In the particular case of regularized regression, classically a scalar parameter balances between the data fit and the penalty term. When using sparse regression, this parameter affects the sparsity of the solution, \emph{i.e.} how many covariates or regressors are used.
 
 With \ac{CV}, some independent observations are left out of the inference and the
 hyperparameter values that yield the best prediction performance on this data are selected. A search for the best parameter can be done with a time consuming exhaustive grid-search, smooth optimization (see \cite{pedregosa2016hyperparameter} and references therein), sequential or even random search~\cite{bergstra2011algorithms, bergstra2012random}. The \ac{CV} approach however needs the i.i.d. assumption to be fulfilled, which is not always the case in practice, e.g. when working with signals or arrays of sensors as in the case of our application to brain imaging.
@@ -85,7 +92,7 @@ Recently \textit{Pereyra et al.} \cite{Figueiredo} proposed a strategy for hyper
  \hspace{6pt} \forall \mathbf{X}\in\RR^{S\times T}$  \hspace{4pt} and \hspace{4pt}  $\forall \eta > 0$.
  \end{center}
 
-The $k$-homogeneous condition is satisfied for all $\ell_{p,q}$ mixed norms. We focus on the estimation of the hyperparameters for hierarchical Bayesian models yielding convex $\ell_{2,1}$ ($\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,1}$) or non-convex $\ell_{2,0.5}$ penalties, which are respectively $1$-homogeneous and $0.5$-homogeneous. The non-convex penalization is solved using iterative re-weighted convex optimization schemes, \textit{i.e.}, each iteration is a weighted $\ell_{2,1}$-norm as described in Section~\ref{section:MM}.
+The $k$-homogeneous condition is satisfied for all $\ell_{p,q}$ mixed norms. We focus on the estimation of the hyperparameters for hierarchical Bayesian models yielding convex $\ell_{2,1}$ ($\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,1}$) or non-convex $\ell_{2,0.5}$ penalties, which are respectively $1$-homogeneous and $0.5$-homogeneous. The non-convex penalization is solved using iterative re-weighted convex optimization schemes, \textit{i.e.} each iteration is a weighted $\ell_{2,1}$-norm as described in Section~\ref{section:MM}.
 
 In \cite{Figueiredo}, the fixed point strategy proposed is validated on an image denoising problem using an analysis prior, \textit{i.e.} where the solution is not sparse but has a sparse representation in some transformed domain. This section illustrates and explains why the method from~\cite{Figueiredo} cannot be used out-of-the-box when using a synthesis prior for an under-determined problem. A synthesis prior is when the solution itself is sparse.
 
@@ -97,29 +104,29 @@ The result shown in~\cite{Figueiredo} and adapted to our problem and the notatio
 \begin{equation} \label{eq4}
 	\hat{\lambda} = \frac{ST/k + \alpha - 1}{\mathcal{P}(\mathbf{\hat{X}}_{\hat{\lambda}}) + \beta} \enspace ,
 \end{equation}
-where $\mathbf{\hat{X}}_{\hat{\lambda}}$ is the solution of Equation~\eqref{eq_reg} for $\lambda = \hat{\lambda}$. In \cite{Figueiredo}, it is further suggested to set $\alpha$ and $\beta$ to 1.
+where $\mathbf{\hat{X}}_{\hat{\lambda}}$ is the solution of Equation~\eqref{eq_reg} (page~\pageref{eq_reg}) for $\lambda = \hat{\lambda}$. In \cite{Figueiredo}, it is further suggested to set $\alpha$ and $\beta$ to 1.
 
 Looking at Equation~\eqref{eq4}, one can observe that if $ST$ is big, which is the case for high dimensional problems, the numerator can significantly dominate the denominator, especially if the estimate $\hat{X}$ is very sparse.
 In practice using Equation~\eqref{eq4} in this scenario results rapidly in huge values of $\lambda$ and empty supports. This issue is much less critical when using an analysis prior for denoising as in~\cite{Figueiredo}, as the size of the unknown coefficients is in this case $NT$, where $NT \ll ST$.\\
 
-As reported earlier, the update of the regularization parameter $\lambda$ as in (Equation~\eqref{eq4}) is not suitable for synthesis prior $\mathcal{P}(\mathbf{X})$. The issue is due to the over-scaled numerator compared to the denominator. When the problem is big (as in~\cite{Figueiredo}) - $ST$ is big, whereas the support in $\mathbf{X}^\star$ is small - the estimated parameter $\lambda$ then explodes resulting in an empty support.
+As reported earlier, the update of the regularization parameter $\lambda$ as in (Equation~\eqref{eq4}) is not suitable for the synthesis prior $\mathcal{P}(\mathbf{X})$. The issue is due to the over-scaled numerator compared to the denominator. When the problem is important (as in~\cite{Figueiredo}) - $ST$ is big, whereas the support in $\mathbf{X}^\star$ is small - the estimated parameter $\lambda$ then explodes, resulting in an empty support.
 
-To overcome this problem, we propose to rewrite the objective function in such a way that we obtain the same solution $\mathbf{X}$ but with a factor $\frac{\lambda}{ST}$. The new equivalent formulation can be written as:
+To overcome this problem, we propose to rewrite the objective function in such a way that we obtain the same solution $\mathbf{X}$ but with a multiplicative factor $\frac{\lambda}{ST}$. The new equivalent formulation can be written as:
 \begin{equation} \label{eq5}
     \mathbf{\hat{X}} = \argmin_{\mathbf{X}} \frac{ST}{2}\|\mathbf{M - GX}\|^2_{Fro} + \lambda\mathcal{P}(\mathbf{X})
 \end{equation}
 
-Note that this is just a reparametrization of Equation~\eqref{eq_reg}. In practice, this boils down to multiplying $\mathbf{M}$ and $\mathbf{G}$ by $\sqrt{ST}$. However this only solves one difficulty in the parameter's update. Another disadvantage is that none of the parameters in Equation~\eqref{eq4} take into account the scale of $\mathbf{G}$. The next section explains how to use results from convex optimization to properly calibrate the hyperprior parameters $\alpha$ and $\beta$ given $\mathbf{M}$, $\mathbf{G}$ and $\mathcal{P}$.
+Note that this is just a reparametrization of Equation~\eqref{eq_reg}. In practice, this boils down to multiplying $\mathbf{M}$ and $\mathbf{G}$ by $\sqrt{ST}$. However this only solves one difficulty in the parameter's update. Another disadvantage is that none of the parameters in Equation~\eqref{eq4} takes into account the scale of $\mathbf{G}$. The next section explains how to use results from convex optimization to properly calibrate the hyperprior parameters $\alpha$ and $\beta$ given $\mathbf{M}$, $\mathbf{G}$ and $\mathcal{P}$.
 
 \subsection{Setting hyperpriors with a single hyperparameter}
 As in~\cite{Figueiredo}, Gamma hyperpriors are used to derive two iterative algorithms that simultaneously estimate a single hyperparameter $\lambda$ and the entries of $\mathbf{X}$, yet the values of $\alpha$ and $\beta$ are still to be defined.
 In~\cite{Figueiredo}, it is suggested to set $\alpha$ and $\beta$ to 1, which turns out to be inappropriate for underdetermined inverse (deconvolution) problems as our MEG/EEG brain imaging problem of interest.\\
 
-A first observation is that $\alpha$ and $\beta$ should default to reasonable values and be insensitive to trivial changes in matrix $\mathbf{G}$ such as scaling, \textit{i.e.}, multiplying $\mathbf{G}$ by a scalar. This is the problem we investigate now.
+A first observation is that $\alpha$ and $\beta$ should default to reasonable values and be insensitive to trivial changes in matrix $\mathbf{G}$ such as scaling, \textit{i.e.} multiplying $\mathbf{G}$ by a scalar. This is the problem we investigate now.
 
 In Equation~\eqref{eq4}, the numerator would not be affected by a rescaling of $\mathbf{G}$. However, the denominator that contains $\mathcal{P}(\mathbf{X}_{\lambda^\star})$ would. To make the estimation robust to changes of $\mathbf{G}$ such as scaling, one therefore needs to modify the numerator, hence make $\alpha$ a function of $\mathbf{G}$. Setting $\alpha$ to 1 independently of the problem, as in~\cite{Figueiredo}, is certainly inadequate.
 
-To set the value of $\alpha$, we propose to take advantage of the fact that if $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,1}$, one can analytically compute $\lambda_{max}$, which is defined as the smallest regularization parameter for which the solution is zero~\cite{bach2012optimization}. It is given by:
+In order to set the value of $\alpha$, we propose to take advantage of the fact that if $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,1}$, one can analytically compute $\lambda_{max}$, which is defined as the smallest regularization parameter for which the solution is zero~\cite{bach2012optimization}. It is given by:
 \begin{equation}
 \lambda_{max} = \|\mathbf{G}^\top\mathbf{M}\|_{2,\infty}=\max_i \|(\mathbf{G}^\top\mathbf{M})[i, :]\|_2.
 \end{equation}
@@ -138,7 +145,7 @@ Concerning the parameter $\beta$, for our specific MEG/EEG problem of interest w
 \subsection{Estimation of a vector of hyperparameters}
 
 The penalizations of the form $\mathcal{P}(\mathbf{X})=\|\mathbf{X}\|_{2,\cdot}$ are separable in $S$ groups of coefficients.
-As only a few groups are expected to be active, a natural idea is to penalize less the important groups. To do this, we propose to estimate one parameter per group of coefficients or row of $\mathbf{X}$ using the convex $\ell_{2,1}$ penalization. Let now derive a result similar to Equation~\eqref{eq4} but in the more general case of one $\lambda$ per group.
+As only a few groups are expected to be active, a natural idea is to penalize less the important groups. To do this, we propose to estimate one parameter per group of coefficients or row of $\mathbf{X}$ using the convex $\ell_{2,1}$ penalization. Let us now derive a result similar to Equation~\eqref{eq4} but in the more general case of one $\lambda$ per group.
 
 Rewriting Equation~\eqref{eq_reg} in the MAP framework leads to: 
 \begin{equation}
@@ -166,25 +173,25 @@ where $\partial_{\mathbf{X},\mathbf{\lambda}}$ is the set of subgradients (the s
 
 The optimization over $\mathbf{X}$ at iteration $k$ satisfies Equation~\eqref{eq5}: %if we choose $\lambda=\lambda^\star$.
 \begin{equation*}	
-\mathbf{X}^{(k)}=\argmin_{\mathbf{X}\in\RR^{S\times T}} \frac{ST}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \sum_{i} \mathbf{\lambda}[i]^{(k-1)}\|\mathbf{X}[i,:]\|
+\mathbf{X}^{(k)}=\argmin_{\mathbf{X}\in\RR^{S\times T}} \frac{ST}{2}\|\mathbf{M}-\mathbf{GX}\|_{Fro}^2 + \sum_{i} \mathbf{\lambda}[i]^{(k-1)}\|\mathbf{X}[i,:]\|.
 \end{equation*}
-The next step is to optimize over $\lambda_i, \forall i$. Eq.~\eqref{eq8} leads to:
+The next step is to optimize over $\lambda_i, \forall i$. Equation~\eqref{eq8} leads to:
 \begin{equation} \label{optimlambda}
-0\in -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)},\mathbf{M}|\mathbf{\lambda}) -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{\lambda})
+0\in -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)},\mathbf{M}|\mathbf{\lambda}) -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{\lambda}).
 \end{equation} 
 
 Using $p(\mathbf{X}^{(k)},\mathbf{M}|\mathbf{\lambda})=p(\mathbf{M}|\mathbf{X}^{(k)})p(\mathbf{X}^{(k)}|\mathbf{\lambda})$, one has that:
 \begin{equation}
--\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)}, \mathbf{M}|\mathbf{\lambda}) = -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)}|\mathbf{\lambda})
+-\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)}, \mathbf{M}|\mathbf{\lambda}) = -\partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)}|\mathbf{\lambda}).
 \end{equation}
 
- We then use the normalization factor $C(\mathbf{\lambda})$ which gives:\\
+We then use the normalization factor $C(\mathbf{\lambda})$ which gives:\\
 \begin{equation}
  - \partial_{\mathbf{\lambda}[i]} \log p(\mathbf{X}^{(k)}, \mathbf{M}|\mathbf{\lambda})=\|\mathbf{X}[i,:]\| + \partial_{\mathbf{\lambda}[i]} \log C(\mathbf{\lambda})
 \end{equation}
  and 
 \begin{equation} 
- \partial_{\mathbf{\lambda}[i]} \log C(\mathbf{\lambda})=\frac{-ST}{k\mathbf{\lambda}[i]}
+ \partial_{\mathbf{\lambda}[i]} \log C(\mathbf{\lambda})=\frac{-ST}{k\mathbf{\lambda}[i]}.
 \end{equation}
   Regarding the second term in Equation~\eqref{optimlambda}, Equation~\eqref{eq:gamma_dist} yields $-\partial_{\lambda_i} \log p(\lambda) = -\frac{\alpha-1}{\lambda_i} + \beta$.
 Completing the derivations, the equation for each $\lambda_i$, $i\in[1\dots S]$, reads:
@@ -199,12 +206,11 @@ We generated a simulation dataset with $N=302$ sensors, $T=190$ time samples and
 
 \begin{figure}
 	\includegraphics[width=0.95\textwidth]{hyperparam_estim/fig1_eusipco_data_size_and_fix_points_a_b}
-    \caption{(a) Source identification results for different numbers of sources measured with F1 score using $\alpha=1$ and $\beta=1$. The higher the number of regressors, the worse the performance is. (b) Estimated $\lambda$ as a function of $\lambda_{init}$ for different values of $a$ and $b$. The red curve for $\beta=0.33$ gives the best plateau, which demonstrates that $(a,b)$ shall be carefully adjusted.
-    }
+    \caption{(a) Source identification results for different numbers of sources measured with F1 score using $\alpha=1$ and $\beta=1$. The higher the number of regressors, the worse the performance is. (b) Estimated $\lambda$ as a function of $\lambda_{init}$ for different values of $a$ and $b$. The red curve for $\beta=0.33$ gives the best plateau, which demonstrates that $(a,b)$ shall be carefully adjusted.}
     \label{fig:fig1_eusipco}
 \end{figure}
 
-In order to illustrate the issue when using a synthesis prior for large problems, we run the estimation of the hyperparameter $\lambda$ as suggested in~\cite{Figueiredo} using the $0.5$-homogeneous non-convex prior. Figure~\ref{fig:fig1_eusipco}-(a) shows the F1 score of the source reconstruction (1 for good reconstruction and 0 for bad). The source estimation is failing for almost all the range of data size. Figure~\ref{fig:fig1_eusipco}-(b) shows the results after reformulating the problem with different settings of $\alpha$ and $\beta$. One can notice that a setting as in~\cite{Figueiredo} with $\alpha=1$ and $\beta=1$ always gives an estimated $\lambda$ around $1\%$ of $\lambda_{max}$, which is not promoting the sparsity we are looking for in this kind of setting. For this aim, we varied the values of $\beta$ and computed $\alpha$ as defined before. Figure~\ref{fig:fig1_eusipco}-(b) shows that for most values of $\beta$ we have rather a too low estimation of $\lambda\approx 1\%$ or a too high $\lambda\geq 100\%$ resulting in zero source found active. Interestingly, setting $\beta=1/3$ gives a plateau at $\hat{\lambda}$ close to $0.3\lambda_{max}$. This is an evidence of a clear fixed point for the iterative process $\lambda^{(t+1)}=f(\lambda^{(t)})$, where $f$ is the update rule of $\lambda$ in Equation~\eqref{eq4}. We use $\beta=1/3$ from now on and its corresponding $\alpha$.
+In order to illustrate the issue when using a synthesis prior for large problems, we run the estimation of the hyperparameter $\lambda$ as suggested in~\cite{Figueiredo} using the $0.5$-homogeneous non-convex prior. Figure~\ref{fig:fig1_eusipco}-(a) shows the F1 score \footnote{The $F_1$ score is the harmonic mean of precision and recall: $F_1=2.\frac{precision . recall}{precision + recall}$} of the source reconstruction (1 for good reconstruction and 0 for bad). The source estimation is failing for almost all the range of data size. Figure~\ref{fig:fig1_eusipco}-(b) shows the results after reformulating the problem with different settings of $\alpha$ and $\beta$. One can notice that a setting as in~\cite{Figueiredo} with $\alpha=1$ and $\beta=1$ always gives an estimated $\lambda$ around $1\%$ of $\lambda_{max}$, which is not promoting the sparsity we are looking for in this kind of setting. For this aim, we varied the values of $\beta$ and computed $\alpha$ as defined before. Figure~\ref{fig:fig1_eusipco}-(b) shows that for most values of $\beta$ we have rather a too low estimation of $\lambda\approx 1\%$ or a too high $\lambda\geq 100\%$ resulting in zero source found active. Interestingly, setting $\beta=1/3$ gives a plateau at $\hat{\lambda}$ close to $0.3\lambda_{max}$. This is an evidence of a clear fixed point for the iterative process $\lambda^{(t+1)}=f(\lambda^{(t)})$, where $f$ is the update rule of $\lambda$ in Equation~\eqref{eq4}. We use $\beta=1/3$ from now on and its corresponding $\alpha$.
 
 Figure~\ref{fig:mxne_vs_irmxne} represents the simulated sources with stars and the estimated ones with plain lines. Figure~\ref{fig:mxne_vs_irmxne}-(a)-(b) display results with the $\ell_{2,1}$ and $\ell_{2,0.5}$ norms respectively, using one hyperparameter initialized to $\lambda=0.5\lambda_{max}$. One can see that in Figure~\ref{fig:mxne_vs_irmxne}-(a), the $\ell_{2,1}$ norm recovers the four sources with an amplitude bias (the estimated amplitude is lower than the exact one), and that several sources shown in light green are almost flat around zero but still found as active sources. There is no way to reduce the support without losing one of the four simulated sources, \textit{i.e.} the $\ell_{2,1}$ norm with one hyperparameter fails to recover the exact simulated sources.\\
 The $\ell_{2,0.5}$ norm in (b) estimates the exact four source amplitudes without amplitude bias thanks to the non-convexity~\cite{strohmeier-etal:16}. On the other hand, Figure~\ref{fig:mxne_vs_irmxne}-(c) shows the results for the convex penalty using one hyperparameter per source. It can be seen that it is qualitatively equivalent to the non-convex penalty. \\
@@ -216,7 +222,7 @@ The $\ell_{2,0.5}$ norm in (b) estimates the exact four source amplitudes withou
     \label{fig:mxne_vs_irmxne}
 \end{figure}
 
-The advantage of having one hyperparameter per source is to pick up only the sources involved in the measurement $\mathbf{M}$ and drop the extra almost-zero sources visible in Figure~\ref{fig:mxne_vs_irmxne}-(a) (light green). This extension produces sparser results and less amplitude bias without casting the problem as non-convex. This figure also suggests a link between the non-convex prior and one hyperparameter per source. As the non-convex prior is an iterative procedure estimating an internal weight to produce better solution, the fact to have one hyperparameter per source can also be seen as a weight to define better source estimates. A more accurate study of this can be found in the next section~\ref{link_hbm_mm}.
+The advantage of having one hyperparameter per source is to pick up only the sources involved in the measurement $\mathbf{M}$ and drop the extra almost-zero sources visible in Figure~\ref{fig:mxne_vs_irmxne}-(a) (light green). This extension produces sparser results and less amplitude bias without casting the problem as non-convex. This figure also suggests a link between the non-convex prior and one hyperparameter per source. As the non-convex prior is an iterative procedure estimating an internal weight to produce a better solution, the fact to have one hyperparameter per source can also be seen as a weight to define better source estimates. A more accurate study of this can be found in the next section~\ref{link_hbm_mm}.
 
 
 \subsubsection{Experimental results with MEG auditory data}
@@ -251,7 +257,7 @@ In the context of inverse problems or high-dimensional statistics using sparsity
 \begin{equation} \label{eq:L2pReg}
 \hat{\bfX} \in \argmin_{\bfX\in\R^{SO \times T}} \frac{1}{2} \fronormsq{\bfM - \bfG \bfX}  + \lambda \sum_{i=1}^S \fronorm{\bfX{[i]}}^p \enspace,
 \end{equation}
-similarly to Equation~\eqref{eq_reg}, where $\lambda > 0$ is the regularization parameter balancing the data fit and the penalty term, and $\mathbf{X}[i]$ defines the block of source $i$ ($\RR^T$ if $O=1$ or $\RR^{3\times T}$ if $O=3$). One possible MM approach to solve Equation~\eqref{eq:L2pReg} with $p=0.5$ would consist of minimizing a sequence of non-smooth convex surrogate functions where the non-convex regularization (irMXNE solver) is replaced by a weighted $\ell_{2,1}$ norm similar to MxNE solver~\cite{strohmeier-etal:16}. In each iteration, the weights are derived from the current estimate of $\bfX$.
+similarly to Equation~\eqref{eq_reg} (page~\pageref{eq_reg}), where $\lambda > 0$ is the regularization parameter balancing the data fit and the penalty term, and $\mathbf{X}[i]$ defines the block of source $i$ ($\RR^T$ if $O=1$ or $\RR^{3\times T}$ if $O=3$). One possible MM approach to solve Equation~\eqref{eq:L2pReg} with $p=0.5$ would consist of minimizing a sequence of non-smooth convex surrogate functions where the non-convex regularization (irMXNE solver) is replaced by a weighted $\ell_{2,1}$ norm similar to MxNE solver~\cite{strohmeier-etal:16}. In each iteration, the weights are derived from the current estimate of $\bfX$.
 
 Due to the concavity of the non-decreasing function $\bfX\mapsto\sqrt{\fronorm{\bfX}}$, it is upper bounded by its tangent and a first order Taylor expansion at the current estimate $\bfX{[i]}$ provides an upper bound that can be used to construct the non-smooth convex surrogate problem. By solving this sequence of surrogate problems, the value of the non-convex objective function is guaranteed to decrease. However, due to the non-convexity, only convergence towards a local minimum can be guaranteed.
 
@@ -278,7 +284,7 @@ Defining $\tilde{\bfG}^{(k)}=\bfG \bfW^{(k-1)}$, the reformulated problem reads:
 \end{eqnarray}
 
 The convergence of each weighted $\ell_{2,1}$ (MxNE) is controlled by monitoring the duality gap (see Section~\ref{section:duality_gap}). For more details about convex duality of optimization with sparsity-inducing penalties, refer to~\cite{bach2012optimization}.\\
-As mentioned in Section~\ref{section:duality_gap}, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{Y})$, \textit{i.e.},\\
+As mentioned in Section~\ref{section:duality_gap}, the minimum of the primal objective function $f_p(\mathbf{X})$ is bounded below by the maximum of the dual objective function $f_d(\mathbf{Y})$, \textit{i.e.}\\
 $f_d(\mathbf{Y}^\star)\leq f_p(\mathbf{X}^\star)$ where $\mathbf{X}^\star$ and $\mathbf{Y}^\star$ are the optimal solutions of the primal and the dual objective functions respectively. If strong duality holds, the duality gap defined as $\eta=f_p(\mathbf{X})-f_d(\mathbf{Y})$ would be zero at the optimum.\\
 Due to Slater's conditions~\cite{Boyd_Vandenberghe04}, the strong duality holds for the MxNE subproblem and the gap can be used to check the convergence of Equation~\eqref{eq:MM}. Based on Fenchel-Rockafellar duality theorem~\cite{rockafellar:1997}, one dual objective function associated with the primal objective function:
 \begin{equation}
@@ -325,7 +331,7 @@ In practice, we terminate the optimization scheme for solving MxNE when the esti
 \end{algorithm}
 }
 
-For solving the weighted MxNE subproblems, \ac{BCD} scheme was used~\cite{tseng}, which for the problem at hand converges faster than \ac{FISTA} (See Section~\ref{section:comparison_solvers}). The subproblem per block has a closed form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\ell_{2,1}$-mixed-norm~\cite{gramfort2012mixed,strohmeier-etal:16}.
+For solving the weighted MxNE subproblems, the \ac{BCD} scheme was used~\cite{tseng}, which for the problem at hand converges faster than \ac{FISTA} (See Section~\ref{section:comparison_solvers}). The subproblem per block has a closed-form solution, which involves applying the group soft-thresholding operator, the proximity operator associated to the $\ell_{2,1}$-mixed-norm~\cite{gramfort2012mixed,strohmeier-etal:16}.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -347,13 +353,13 @@ For solving the weighted MxNE subproblems, \ac{BCD} scheme was used~\cite{tseng}
 		$\eta \geq \epsilon$
 	  }
 	  {
-	  	$\Gamma^\star\subseteq \{i \hspace{3pt} | \hspace{3pt} \|\mathbf{G}_i^\top(\mathbf{M}-\mathbf{GX})\|_{Fro} > \lambda\}$
+	  	$\Gamma^\star = \{i \hspace{3pt} | \hspace{3pt} \|\mathbf{G}_i^\top(\mathbf{M}-\mathbf{GX})\|_{Fro} > \lambda\}$
 
 	  	$\Gamma = \Gamma\cup \Gamma^\star$
 
 	  	Define $\mathbf{G}^\Gamma$ and $\mathbf{X}^\Gamma$ by restricting $\mathbf{G}$ and $\mathbf{X}$ to $\Gamma$
 
-	  	$\mathbf{X}^{\star}_\Gamma \leftarrow$ Use Algorithm~\ref{alg:mxne_bcd} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}_\Gamma$
+	  	$\mathbf{X}^{\star}_\Gamma \leftarrow$ Output of Algorithm~\ref{alg:mxne_bcd} with $\mathbf{\mu}, \mathbf{G}^\Gamma$, and $\mathbf{X}_0=\mathbf{X}_\Gamma$
 
 	  	$\mathbf{X}[\Gamma, :] = \mathbf{X}^{\star}_\Gamma$
 
@@ -390,7 +396,7 @@ For solving the weighted MxNE subproblems, \ac{BCD} scheme was used~\cite{tseng}
 \end{algorithm}
 }
 
-After convergence, we reapply the scaling to $\tilde{\bfX}$ to obtain $\hat{\bfX}$:
+After convergence, we re-apply the scaling to $\tilde{\bfX}$ to obtain $\hat{\bfX}$:
 \begin{equation}
     \label{eq:MM_weights}
     \bfX^{\star(k)} = \bfW^{(k-1)} \tilde{\bfX}^{(k)} \enspace .
@@ -402,7 +408,7 @@ The reformulation through Equation~\eqref{eq:lasso_new_gram} and Equation~\eqref
 \label{section:HBM}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section, we formulate the inference problem defined by Equation~\eqref{eq_linmeeg} and the regularization strategy with $\ell_{2,p}$-quasinorm from a Bayesian perspective~\cite{KaSo05,Lu14}: the Bayesian approach incorporates prior beliefs about the model parameters in terms of probability distributions. Under the Additive, White Gaussian Noise (AWGN) assumption, the likelihood of the model is given by:
+In this section, we formulate the inference problem defined by Equation~\eqref{eq_linmeeg} (page~\pageref{eq_linmeeg}) and the regularization strategy with $\ell_{2,p}$-quasinorm from a Bayesian perspective~\cite{KaSo05,Lu14}: the Bayesian approach incorporates prior beliefs about the model parameters in terms of probability distributions. Under the Additive, White Gaussian Noise (AWGN) assumption, the likelihood of the model is given by:
 \begin{eqnarray} \label{eq:like}
 \like &\propto \exp \left( - \frac{1}{2} \fronormsq{\bfM - \bfG \bfX} \right) \enspace.
 \end{eqnarray}
@@ -457,8 +463,8 @@ Other fully-Bayesian estimates are defined as integrals of functions of $\bfX$ a
 \bfX^{(k)} &\sim \: p_{post}(\bfX,\mathbf{\gamma}^{(k-1)}|\bfM) &\propto p_{post}(\bfX|\bfM,\mathbf{\gamma}^{(k-1)}) \enspace, \label{eq:AS-X}\\
 \mathbf{\gamma}^{(k)} &\sim \: p_{post}(\bfX^{(k)},\mathbf{\gamma}|\bfM) &\propto p_{post}(\mathbf{\gamma}|\bfM,\bfX^{(k)})\enspace. \label{eq:AS-gamma}
 \end{eqnarray}
-Depending on the purpose of the study, here the main interest is not sampling the posterior distribution for computing the integral-based estimators but we rather want to explore the different modes of this multi-modal distribution, each of which corresponds to parameters that are both sparse and likely to explain the data.\\
-One can notice similar structures in Equation~\eqref{eq:AO-X}-\eqref{eq:AO-gamma} and Equation~\eqref{eq:AS-X}-\eqref{eq:AS-gamma}: in each step, we make use of the conditional structure of the posterior: for $\mathbf{\gamma}$ fixed, we have to solve one $SOT$-dimensional $\ell_{2,p}$ optimization/sampling problem, while for $\bfX$ fixed, we have to solve $S$ 1-dimensional optimization/sampling problems. These two steps will be described in more detail in the sections~\ref{section:hbm_optim} and~ \ref{section:hbm_sampling}.
+Depending on the purpose of the study, here the main interest is not sampling the posterior distribution for computing the integral-based estimators, but we rather want to explore the different modes of this multi-modal distribution, each of which corresponds to parameters that are both sparse and likely to explain the data.\\
+One can notice similar structures in Equations~\eqref{eq:AO-X}-\eqref{eq:AO-gamma} and Equations~\eqref{eq:AS-X}-\eqref{eq:AS-gamma}: in each step, we make use of the conditional structure of the posterior: for $\mathbf{\gamma}$ fixed, we have to solve one $SOT$-dimensional $\ell_{2,p}$ optimization/sampling problems, while for $\bfX$ fixed, we have to solve $S$ 1-dimensional optimization/sampling problems. These two steps will be described in more detail in the sections~\ref{section:hbm_optim} and~ \ref{section:hbm_sampling}.
 
 %----------------HBM Optim------------------------------------------------------------------
 \section{HBM optimization in the Bayesian formulation}
@@ -491,7 +497,7 @@ which can be combined into the fixed point iteration:
 \end{equation}
 If we compare Equation~\eqref{eq:AO-nu0-2} with Equation~\eqref{eq:MM}, we see that we re-derived the MM algorithm for $p=1$ as an alternating optimization scheme to compute the \emph{full-MAP} estimate for a specific HBM, namely using a conditional $\ell_{2,1}$ group prior and a Gamma hyper-prior with $\alpha = OT + 1$ and $\beta = 4/\lambda^2$. Using $\bfw^{(0)}[i] := 1$ in the MM scheme corresponds to starting with $\mathbf{\gamma}[i]^{(0)} := 1/\lambda =  2/\sqrt{\beta}$.\\
 
-From previous work~\cite{strohmeier-etal:16} we know that due to the non-convexity, a good initialization of the weights $\bfw^{(0)}[i]$ in the MM algorithm is crucial for its performance, but aside uniform initialization, only heuristic initialization strategies were used, \textit{e.g.} using the same re-weighting as in the sLORETA method~\cite{Pa02}. In this thesis, we leverage the re-interpretation of the MM algorithm through the HBM framework to obtain multiple initializations in a systematic fashion, namely as samples drawn from the full posterior. This way, we can not only reach better local minima but more importantly, we can identify and characterize multiple possible sparse solutions. Such plausible solutions to the sparse regression problem in Equation~\eqref{eq_linmeeg} are the modes of the posterior distribution (Equation~\eqref{eq:full-post}) with different relative probability masses.
+From previous work~\cite{strohmeier-etal:16} we know that due to the non-convexity, a good initialization of the weights $\bfw^{(0)}[i]$ in the MM algorithm is crucial for its performance, but aside uniform initialization, only heuristic initialization strategies were used, \textit{e.g.} using the same re-weighting as in the sLORETA method~\cite{Pa02}. In this thesis, we leverage the re-interpretation of the MM algorithm through the HBM framework to obtain multiple initializations in a systematic fashion, namely as samples drawn from the full posterior. In this way, we can not only reach better local minima, but more importantly, we can identify and characterize multiple possible sparse solutions. Such plausible solutions to the sparse regression problem in Equation~\eqref{eq_linmeeg} are the modes of the posterior distribution (Equation~\eqref{eq:full-post}) with different relative probability masses.
 
 %----------------Sampling-------------------------------------------------------------------
 \section{Posterior Sampling}
@@ -508,7 +514,7 @@ For the case of $\alpha = O T/p + 1$, which is our main interest due to its conn
 \begin{equation}
 \fl \qquad p_{post}(\mathbf{\gamma}[i] |\bfM, \bfX^{(k)}) \propto \exp \left(- \frac{\fronorm{\bfX^{(k)}[i]}^p}{\mathbf{\gamma}[i]} \right) \exp \left(- \frac{\mathbf{\gamma}[i]}{\beta} \right) \enspace, \label{eq:conPostGammaiRed}
 \end{equation}
-which can be sampled with a simple accept-reject algorithm as described in Section~\ref{sec:DetailsGammaSampler}. The complete procedure is described in Algorithm~\ref{alg:sampling}. Therein, $K_0$ refers to the burn-in size, \ie the initial samples that are discarded, $K$ to the sample size of the blocked Gibbs sampler and $K_{SC}, K_{SS}$ to the sample sizes of the SC Gibbs and the slice sampler that carries out the sampling in the sub-steps.
+which can be sampled with a simple accept-reject algorithm as described in Section~\ref{sec:DetailsGammaSampler}. The complete procedure is described in Algorithm~\ref{alg:sampling}. Therein, $K_0$ refers to the burn-in size, \textit{i.e.} the initial samples that are discarded, $K$ to the sample size of the blocked Gibbs sampler and $K_{SC}, K_{SS}$ to the sample sizes of the SC Gibbs and the slice sampler that carries out the sampling in the sub-steps.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -548,13 +554,13 @@ which can be sampled with a simple accept-reject algorithm as described in Secti
 
 \subsection{Slice-Within-Gibbs Sampler for Parameter Update}\label{sec:DetailsGammaSampler}
 
-Within the Algorithm \ref{alg:sampling}, to update a group $\bfX[l]$, we need to sample from the all the one-dimensional, SC densities
+Within the Algorithm \ref{alg:sampling}, to update a group $\bfX[l]$, we need to sample from all the one-dimensional SC densities:
 \begin{equation}
 p_{post}(\bfX[i,j]|\bfX^{(k-1)}[-(i,j)],\bfM,\mathbf{\gamma}^{(k)}), \qquad (i,j) \in [l] \enspace ,
 \end{equation}
-where $\bfX[-(i,j)]$ refers all the coefficients of matrix $\bfX$ except the term $(i,j)$.
+where $\bfX[-(i,j)]$ refers to all the coefficients of matrix $\bfX$ except the term $(i,j)$.
 
-To implement this efficiently, we can precompute several terms and make use of the specific spatio-temporal group structure of the posterior. We first derive the part of the likelihood as in Equation \eqref{eq:like} that depends on a given index pair $(i,j) \in [l]$:
+In order to implement this efficiently, we can precompute several terms and make use of the specific spatio-temporal group structure of the posterior. We first derive the part of the likelihood as in Equation \eqref{eq:like} that depends on a given index pair $(i,j) \in [l]$:
 \begin{gather*}
 \fl \hspace{2cm} \frac{1}{2} \fronormsq{\bfM - \bfG \bfX} = \sum_{j'}^{T} \frac{1}{2} \norm{\bfM[:,j'] - \bfG \bfX[:,j']}_2^2 \\
 \proptoab{j} \\
@@ -566,13 +572,14 @@ To implement this efficiently, we can precompute several terms and make use of t
 \fl\hspace{3cm} := a z^2 + b z \enspace , \quad \text{with} \quad z := \bfX[i,j] \enspace , \quad a := \frac{1}{2} \norm{\bfG[:,i]}_2^2 \enspace , \\
 \fl \hspace{1.5cm} b :=  \left( \bfG^\top \bfM\right)[i,j] - \left({\bfG[:,i]}^\top \bfG\right) \bfX[:,j] - \norm{\bfG[:,i]}_2^2
 \end{gather*}
+where $\proptoab{j}$ means propotional for each $j$, and $:=$ assign the equation to a specific reformulation.
 
-Note that $\norm{\bfG[:,i]}_2^2 $ and $\bfG^\top \bfM$ can be precomputed. The challenging part in the computation of $b$ is to compute ${\bfG[:,i]}^\top \bfG$, as one typically does not want to pre-compute the $SO \times SO$ matrix $\bfG^\top \bfG$ and hold it in memory. However, to update all the $TO$ components of the $l^{th}$ group (\textit{e.g.} in the visual evoked fields example, $T = 211$, $O = 3$) one only needs the $O \times SO$ matrix ${\bfG[:,[l]]}^\top \bfG$. Thus, we compute ${\bfG[:,[l]]}^\top \bfG$ at the start of updating group $\bfX[l]$ and hold it memory throughout the bloc update. Besides this, the most costly operation to compute $b$ is a dot product of vectors of size $SO$. Next, we derive the part of the prior \eqref{eq:condprior} that depends on $\bfX[i,j], (i,j) \in [l]$:
+Note that $\norm{\bfG[:,i]}_2^2 $ and $\bfG^\top \bfM$ can be precomputed. The challenging part in the computation of $b$ is to compute ${\bfG[:,i]}^\top \bfG$, as one typically does not want to pre-compute the $SO \times SO$ matrix $\bfG^\top \bfG$ and hold it in memory. However, to update all the $TO$ components of the $l^{th}$ group (\textit{e.g.} in the visual evoked fields example, $T = 211$, $O = 3$) one only needs the $O \times SO$ matrix ${\bfG[:,[l]]}^\top \bfG$. Thus, we compute ${\bfG[:,[l]]}^\top \bfG$ at the start of updating group $\bfX[l]$ and hold it in memory throughout the bloc update. Besides this, the most costly operation to compute $b$ is a dot product of vectors of size $SO$. Next, we derive the part of the prior \eqref{eq:condprior} that depends on $\bfX[i,j], (i,j) \in [l]$:
 \begin{gather*}
 \fl \hspace{-5cm} \sum_{l=1}^S \left( \frac{\fronorm{\bfX[l]}^p}{\mathbf{\gamma}{l}} + \frac{O T}{p} \log(\mathbf{\gamma}[l])\right) \quad \\
 \fl \hspace{2cm} \proptoab{\bfX[i,j], (i,j) \in [l]} \quad \mathbf{\gamma}[l]^{-1} \fronorm{\bfX[l]}^p =  \mathbf{\gamma}[l]^{-1} \left( \sum_{(i',j') \in [l]} \bfX[i',j']^2  \right)^{p/2}  \nonumber \\
 \fl \hspace{9.3cm} = \mathbf{\gamma}[l]^{-1} \left(\bfX[i,j]^2 + \sum_{(i',j') \in [l] \atop (i',j') \neq (i,j)} \bfX[i',j']^2  \right)^{p/2} \\
-\fl \hspace{5cm} =: c \left(z^2 + d \right)^{p/2} \enspace ,
+\fl \hspace{5cm} := c \left(z^2 + d \right)^{p/2} \enspace ,
 \end{gather*}
 with $c$ and $d$ defined and computed in an obvious way. Taken together, to update $\bfX[i,j]$, we have to sample from the one-dimensional density:
 \begin{equation}
@@ -613,7 +620,7 @@ The conditional density \eqref{eq:conPostGammaiRed} is of the type
 \begin{equation}
 \fl \qquad p(x) \propto \exp \left(- \frac{c}{x} \right) \exp \left(- \frac{x}{\beta} \right) \enspace, \qquad c, \beta \geqslant 0.
 \end{equation}
-Note that the first factor is monotonically increasing with limit $0$ for $x \searrow 0$ and limit $1$ for $x \rightarrow \infty$ while the second factor is proportional to a simple exponential distribution (\lcf Figure \ref{fig:AccRejSketch}). We can therefore easily construct a dominating density $g(x) \geqslant p(x)$ to carry out accept-reject sampling \cite[Section 2.3.2]{RoCa05} to generate a sample $z \sim p$: we generate $y \sim g$, $u \sim \mathcal{U}_{[0,1]}$ and accept $z = y$ if $u \leqslant p(y)/g(y)$ and repeat otherwise. Choosing $g(x) = \exp \left(- x/\beta\right)$ would yield a valid sampling density but this choice becomes inefficient with increasing $c$. Therefore, we split the sampling density into two parts:
+Note that the first factor is monotonically increasing with limit $0$ for $x \searrow 0$ and limit $1$ for $x \rightarrow \infty$, while the second factor is proportional to a simple exponential distribution (\lcf Figure \ref{fig:AccRejSketch}). We can therefore easily construct a dominating density $g(x) \geqslant p(x)$ to carry out accept-reject sampling \cite[Section 2.3.2]{RoCa05} to generate a sample $z \sim p$: we generate $y \sim g$, $u \sim \mathcal{U}_{[0,1]}$ and accept $z = y$ if $u \leqslant p(y)/g(y)$ and repeat otherwise. Choosing $g(x) = \exp \left(- x/\beta\right)$ would yield a valid sampling density but this choice becomes inefficient with increasing $c$. Therefore, we split the sampling density into two parts:
 \begin{equation}
 g(x) = 
 \begin{cases}
@@ -622,7 +629,7 @@ g(x) =
 \end{cases}
 \label{eq:ARsamplingDensity}
 \end{equation}
-where $\hat p = \max_x p(x)$ is the maximal probability attained at $\hat x = \argmax_x p(x) = \sqrt{\beta c}$ and $\tilde{x} = \beta c/\hat x + \hat x$ is the solution to $\exp \left(- x/\beta\right) = \hat p$ (\textit{cf.} Figure~\ref{fig:AccRejSketch}). Sampling from~\eqref{eq:ARsamplingDensity} is then straight forward using $v, w \sim \mathcal{U}_{[0,1]}$: if one computes
+where $\hat p = \max_x p(x)$ is the maximal probability attained at $\hat x = \argmax_x p(x) = \sqrt{\beta c}$ and $\tilde{x} = \beta c/\hat x + \hat x$ is the solution to $\exp \left(- x/\beta\right) = \hat p$ (\textit{cf.} Figure~\ref{fig:AccRejSketch}). Sampling from~\eqref{eq:ARsamplingDensity} is then straightforward using $v, w \sim \mathcal{U}_{[0,1]}$: if one computes
 \begin{equation}
 \fl G_{x\geqslant \tilde{x}} = \int_{\tilde{x}}^\infty g(x) \, dx = \beta \exp(- \tilde{x}/\beta), \qquad
 G_{x < \tilde{x}} = \int_0^{\tilde{x}} g(x) \, dx = \hat{p} \tilde{x} \enspace,
@@ -631,7 +638,7 @@ then $v <  G_{x\geqslant \tilde{x}} / (G_{x\geqslant \tilde{x}} + G_{x < \tilde{
  \begin{equation}
  \log \left(a +b \right) = \log a + \log \left(1 + \exp \left(b - a \right)\right) \enspace .
  \end{equation}
- The whole sampling scheme is shown in Algorithm~\ref{alg:acceptreject}. We found the scheme to be efficient enough for all of our computations, \textit{i.e.} the chosen $g(x)$ is close enough to $p(x)$ to result in an accepted sample after a few trials. If this would become a problem, it would be easy to adaptively improve the dominating density.
+ The whole sampling scheme is shown in Algorithm~\ref{alg:acceptreject}. We found the scheme to be efficient enough for all of our computations, \textit{i.e.} the chosen $g(x)$ is close enough to $p(x)$ to result in an accepted sample after a few trials. If this had to become a problem, it would be easy to adaptively improve the dominating density.
 
 {\fontsize{4}{4}\selectfont
 %above is to make smaller fonts in algorithm
@@ -679,7 +686,7 @@ Set $\log G_{tot} = \log G_{x\geqslant \tilde{x}} + \log\left(1 + \exp\left(G_{x
 %----------------Experiments-----------------------------------------------------------
 \section{Experiments}
 
-\subsection{Study of the different modes defining uncertainty maps of MEG/EEG inverse problem}
+\subsection{Study of the different modes defining uncertainty maps of the MEG/EEG inverse problem}
 
 We now examine the benefits of our re-interpretation of the MM algorithm described in Section~\ref{section:MM} as a specific way to compute a full-MAP estimate for a specific HBM as described in Sections~\ref{section:HBM} and ~\ref{section:MM}.
 In particular, we investigate how using MCMC sampling of the posterior distribution as described in Section~\ref{section:hbm_sampling} can help getting better initializations for the optimization algorithm.
@@ -692,7 +699,7 @@ We generated a realistic simulation based on a free-orientation ($d=3$) source m
 	\centering
 	\includegraphics[clip,width=.9\columnwidth]{hbm/simulated_data}%
 
-	\caption{Simulated MEG dataset. a) and c) show superficial and deep source (hidden in the medial view) locations, respectively. b) gives their corresponding waveforms color-coded by location.}
+	\caption{Simulated MEG dataset. a) and c) show superficial and deep sources (hidden in the medial view) locations, respectively. b) gives their corresponding waveforms color-coded by location.}
 	\label{fig:simulated_data}
 \end{figure}
 
@@ -715,7 +722,7 @@ Finding the correct support in a sparse under-determined regression problem like
 	\includegraphics[clip,width=0.98\columnwidth]
 {hbm/simulated_circular_plots_new}
 
-	\caption{Source network analysis for simulated data: for a clearer presentation, the set of 900 initializations was thinned to the 100 that gave the lowest objective function (Equation~\eqref{eq:L2pReg}). The first row of sub-figures displays the support of these best local minima in the following way: each position in the circle represents a source location that was part of the support of at least one minimum for one sensor configuration. The black bar attached to each position corresponds to the relative frequency with which this source location appeared as part of the support. Two positions are connected by a line if they were simultaneously part of the support and the color of this line corresponds to the relative frequency with which this happened. Note that the background of the circle is white, but densely covered by purple lines indicating rare connections. The positions are placed left or right, depending on which hemisphere they belong to. For symmetry, for each active source location, its counterpart on the other hemisphere was included in the graphic as well. In addition, the positions are grouped and colored based on a parcellation of the brain into anatomical regions (taken from an atlas). The second row of sub figures shows these regions in the brain and the simulated sources.}
+	\caption{Source network analysis for simulated data: for a clearer presentation, the set of 900 initializations was thinned to the 100 that gave the lowest objective function (Equation~\eqref{eq:L2pReg}). The first row of sub-figures displays the support of these best local minima in the following way: each position in the circle represents a source location that was part of the support of at least one minimum for one sensor configuration. The black bar attached to each position corresponds to the relative frequency with which this source location appeared as part of the support. Two positions are connected by a line if they were simultaneously part of the support, and the color of this line corresponds to the relative frequency with which this happened. Note that the background of the circle is white, but densely covered by purple lines indicating rare connections. The positions are placed left or right, depending on which hemisphere they belong to. For symmetry, for each active source location, its counterpart on the other hemisphere was included in the graphic as well. In addition, the positions are grouped and colored based on a parcellation of the brain into anatomical regions (taken from an atlas). The second row of subfigures shows these regions in the brain and the simulated sources.}
 	\label{fig:results_simu_circular}
 \end{figure}
 
@@ -744,7 +751,7 @@ We now repeat our analysis with two experimental open datasets. The first one is
 Figure~\ref{fig:hist_real_datasets} shows the equivalent of Figure~\ref{fig:simu_MM_best_MCMC} for both datasets. Again, we see that a lower objective function value can be obtained using MCMC-based initializations. The auditory sample dataset is commonly assumed to be generated by two bilateral focal sources around the auditory cortices in the superior temporal gyrus of the temporal lobe. Due to the superficial nature of these sources and their large distance, the estimation of their position is regarded as a relatively simple task. Indeed, the histogram shows that using MCMC-based initializations does not help a lot to reduce the objective function compared to a uniformly initialized MM solution. In the case of the visual dataset, where several closed-by sources are active, the difference is however quite drastic. The majority of the MCMC-based initializations lead to lower values of the objective function. Looking at the source distribution plots on the brain for both datasets, one can also observe more complex source configurations for the visual data.
 % XXX : say here that there is nothing on right hemi for best MCMC?
 
-Next, we repeat the graphical source network analysis from Figure~\ref{fig:results_simu_circular} for the two datasets. Figure~\ref{fig:circular_plots_LAud} shows the results for the auditory dataset and three sensor configurations: all 364 EEG + MEG sensors, all 306 MEG sensors or one over two sensors resulting in 182 EEG + MEG sensors. One can see how adding EEG to MEG sensors reduces the ambiguity of the regression problem. The plots show fewer but more prominent modes, \textit{i.e.} the posterior mass is concentrated on fewer stable source configurations. We also see that the locations of the most prominent modes shift
+Next, we repeat the graphical source network analysis from Figure~\ref{fig:results_simu_circular} for the two datasets. Figure~\ref{fig:circular_plots_LAud} shows the results for the auditory dataset and three sensor configurations: all 364 EEG + MEG sensors, all 306 MEG sensors or one over two sensors resulting in 182 EEG + MEG sensors. One can see how adding EEG to MEG sensors reduces the ambiguity of the regression problem. The plots show fewer but more prominent modes, \textit{i.e.} the posterior mass is concentrated on fewer stable source configurations. We also see that the locations of the most prominent modes shift.
 This is consistent with results of other studies on EEG-MEG combination \cite{MoStBrHa08,Lu14,AyVoKuHeKuGaHaWeKeRaWoHe14} as EEG is sensitive to some sources that MEG is almost blind to, \textit{e.g.} sources with a strong radial component. If we subsample the EEG+MEG sensors by only using every other location, the ambiguity and spatial spread of the recovered support increases. One can see that there is more activity in the dark green label, which corresponds to a brain area commonly not associated with auditory responses.% On the other hand, there is less activity in the light green label, which marks central areas of the auditory system.
 %\ag{what green region do you have in mind?}\felix{Good question, that corresponded to the coloring/parcelation in the old figures. In the new ones, I can't really recall what I wanted to say. Maybe we just drop the sentence and not over-interpret our results?}
 The connections between source locations show that none of the found modes really stands out, \textit{i.e.} is found much more often compared to the others. Most of the connections do not occur more than 200 times within the 900 samples, so they are part of the purple background of low frequency connections in the plots.\\
