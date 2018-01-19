@@ -614,7 +614,7 @@ Then, we use a slightly modified, more robust version of the fast table-based al
 }
 
 
-\subsection{Accept-Reject Sampler for Hyperparameter Update} \label{sec:DetailsGammaSampler}
+\subsection{Accept-Reject Sampler for Hyperparameter Update} %\label{sec:DetailsGammaSampler}
 
 The conditional density \eqref{eq:conPostGammaiRed} is of the type
 \begin{equation}
@@ -704,7 +704,7 @@ We generated a realistic simulation based on a free-orientation ($d=3$) source m
 \end{figure}
 
 The aim of the simulation is to answer two separate questions. First, we want to know whether we are able to find better source estimates using MCMC-derived initializations than with the uniformly initialized MM Algorithm~\ref{alg:adpative_lasso}.
-For this, we first run the MM Algorithm~\ref{alg:adpative_lasso} using a uniform initialization, \ie $\bfw^{(0)}_{i} = 1, \forall i=1\in [1,\cdots,S]$, with $\lambda = 0.05\lambda_{max}$ where $\lambda_{max}= \max_{1 \leq i \leq S} \fronormsq{(G^\top M)[i]}$ is the smallest regularization value for which no source is found as active using an $\ell_{2,1}$ regularization~\cite{Ndiaye_Fercoq_Gramfort_Salmon15,strohmeier-etal:16}. As described above, this corresponds to computing a full-MAP estimate for the HBM with $p=1$, $\alpha = OT +1 $, $\beta = 4/\lambda^2$ using the alternation scheme \label{eq:AO-nu0-X} initialized with $\mathbf{\gamma}^{(0)}[i] = 1/\lambda, \forall i=1\in [1, \cdots, S]$.
+For this, we first run the MM Algorithm~\ref{alg:adpative_lasso} using a uniform initialization, \ie $\bfw^{(0)}_{i} = 1, \forall i=1\in [1,\cdots,S]$, with $\lambda = 0.05\lambda_{max}$ where $\lambda_{max}= \max_{1 \leq i \leq S} \fronormsq{(G^\top M)[i]}$ is the smallest regularization value for which no source is found as active using an $\ell_{2,1}$ regularization~\cite{Ndiaye_Fercoq_Gramfort_Salmon15,strohmeier-etal:16}. As described above, this corresponds to computing a full-MAP estimate for the HBM with $p=1$, $\alpha = OT +1 $, $\beta = 4/\lambda^2$ using the alternation scheme~\eqref{eq:AO-nu0-X} initialized with $\mathbf{\gamma}^{(0)}[i] = 1/\lambda, \forall i=1\in [1, \cdots, S]$.
 
 Then, we sampled the corresponding posterior distribution given in Equation~\eqref{eq:full-post} using Algorithm~\ref{alg:sampling} with $K_0 = 300$, $K = 900$, $K_{SC} = K_{SS} = 1$. From each $\mathbf{\gamma}^{(k)}$ of the $K = 900$ obtained $\mathbf{\gamma}$ samples, we construct an initialization $\bfW^{(0)}$ for the MM Algorithm~\ref{alg:adpative_lasso} by setting $\bfw^{(0)}[i] = \lambda \mathbf{\gamma}^{(k)}[i], \forall i=[1,\dots,S]$. Figure~\ref{fig:simu_MM_best_MCMC}-c shows the histogram of the objective function values (computed with Equation~\eqref{eq:lasso_new_gram}) obtained in this way. The vertical black bar shows the value of the objective function of the uniformly initialized MM solver and we can see that some initializations indeed lead to source estimates with a lower objective value. Figure~\ref{fig:simu_MM_best_MCMC}-a and Figure~\ref{fig:simu_MM_best_MCMC}-b show the locations of the estimated sources resulting from uniform and best MCMC-based initialization. For the artificial source in Fig.~\ref{fig:simu_MM_best_MCMC}-a, both results find the exact location, so they are superimposed. For the deeper source in Figure~\ref{fig:simu_MM_best_MCMC}-b, neither result finds the exact position, but the MCMC-based initialization is closer. This means that the result did not only improve from an optimization point of view, but also judged by the quality criteria of the given application.
 
