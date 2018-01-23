@@ -88,6 +88,7 @@ headsepline, % Uncomment to get a line under the header
 \setlength{\parindent}{5ex} % Indent at the start of each paragraph.
 \usepackage{acro}
 \usepackage{rotating}
+\usepackage{pdfpages}
 
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
@@ -122,7 +123,7 @@ headsepline, % Uncomment to get a line under the header
 
 \pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
 
-\input{title.tex}
+\includepdf[pages=-]{page-de-garde/TPT_Premiere}
 \leavevmode\thispagestyle{empty}\newpage
 % \input{Sections/quotation.tex}
 \input{Sections/dedication.tex}
