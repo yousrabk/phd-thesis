@@ -133,7 +133,7 @@ RAP-MUSIC is an approach based on the MUSIC technique which also performs very w
 
 The $\gamma$-map which is a Bayesian formulation of the MEG/EEG inverse problem,  performs worse than dipole fitting or RAP-MUSIC for very high and very low SNR. For SNRs in range of realistic data, its location error is upper bounded by 5mm depending on the depth of the studied dipole. The $\gamma$-map is doing worse for amplitude of 1000nAm compared to 100nAm or 200nAm, because it overestimates the noise when estimating the hyperparameter $\gamma$.
 
-For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:all_solvers_loc_error} respectively demonstrate an equivalence or a slightly improvement when using TF-MxNE compared to MxNE, except for the deepest dipole 8 in red. This is explained by the fact that TF-MxNE is sensitive to the hyperparameters ($\lambda_{space}$, $\lambda_{time}$, window size, and time shift) depending on the SNR and the depth of the signal. Here we tuned the hyperparameters on a grid search similar for all dipoles, although one might think that the hyperparameters depend on the easiness of the data (so on the SNR, and the depth of each dipole).
+For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:all_solvers_loc_error} respectively demonstrate an equivalence or a slightly improvement when using TF-MxNE compared to MxNE, except for the deepest dipole 8 in red. This is explained by the fact that TF-MxNE is sensitive to the hyperparameters ($\lambda_{space}$, $\lambda_{time}$, window size, and time shift) depending on the SNR and the depth of the dipole. Here we tuned the hyperparameters on a grid search similar for all dipoles, although one might think that the hyperparameters depend on the easiness of the data (so on the SNR, and the depth of each dipole).
 
 The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (Figure~\ref{fig:all_solvers_amp_error}).
 
@@ -150,7 +150,7 @@ On the other hand, MNE and dSPM are surprisingly the methods giving the worst re
 	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{fig:all_solvers_amp_error}}
 \end{figure}
 
-The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, (ir)MxNE and (ir)TF-MxNE keep being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except that the depth is different. When adding up this type of dipoles, they still have the same pattern in the sensor space, which makes the source localization impossible.
+The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, (ir)MxNE and (ir)TF-MxNE keep being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except that the depth is different. When adding up this type of dipoles, they still have the same pattern in the sensor space, which makes the source localization impossible. Figure~\ref{fig:all_solvers_ori_error} does not show orientation for LCMV, MNE, dSPM, and sLORETA as the orientation is not computed for source estimate.
 
 Figure~\ref{fig:all_solvers_amp_error} shows the errors in amplitude. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one.
 
@@ -193,6 +193,24 @@ To investigate further the impact of each solver and the impact of a dataset wit
 \end{figure}
 
 This analysis has been performed also on two other datasets which lead to the same conclusions (see Figures).
+
+\begin{figure}[p]
+	\centering
+    \begin{subfigure}{0.9\linewidth}
+		\centering
+		\includegraphics[trim={1cm 1cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_decim_1_bst_loc_error}
+	    \caption{\label{fig:phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
+    \end{subfigure}
+	\hspace{5cm}
+	\hfill
+    \begin{subfigure}{0.9\linewidth}  
+		\centering 
+		\includegraphics[trim={1cm 1cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_decim_1_bst_ori_error}
+		\caption{\label{fig:phantom_errors_compare_all_solvers_decim_1_bst_ori_error}}
+	\end{subfigure}
+
+		\caption{Comparison of the position and the orientation errors between the solvers for BST dataset. It shows 4 dipoles among the 32 for a good visibility. Nonetheless, it shows both the dipoles on the surface and th deepest ones.\label{phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
+\end{figure}
 
 \section{Conclusion \& Perspectives}
 In this chapter, the main motivation was to present some results on various source localization techniques applied to phantom data. Being able to investigate "real" datasets with ground-truth is a big privilege to test the large list of existing methods for solving the MEG/EEG inverse problem.

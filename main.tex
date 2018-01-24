@@ -155,10 +155,14 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/decoding}
 
 %\frontmatter
-\input{Chapters/conclusion}
+\include{Chapters/conclusion}
 
+%\addcontentsline{toc}{chapter}{\listfigurename}
+%\listoffigures % Prints the list of figures
+
+\phantomsection
 \addcontentsline{toc}{chapter}{\listfigurename}
-\listoffigures % Prints the list of figures
+\listoffigures
 
 %\listoftables % Prints the list of tables
 %\addcontentsline{toc}{chapter}{\printacronyms}
