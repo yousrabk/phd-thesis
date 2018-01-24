@@ -129,13 +129,13 @@ Figure~\ref{fig:all_solvers_loc_error} shows position errors obtained with most 
 
 The dipole fitting approach is very suitable for localizing the neuronal activity when a small number of \ac{ECD}s can describe the data. In this dataset \ref{data:used_data}, each dipole is recorded alone. The errors in orientations and amplitude are displayed in Figures~\ref{fig:all_solvers_ori_error}-\ref{fig:all_solvers_amp_error}.
 
-RAP-MUSIC is an approach based on the MUSIC technique which also performs very well when few ECDs are involved, especially when it is a dataset recording only one dipole at a time. It can be seen as very competitive, \textit{w.r.t.} dipole fitting in Figures~\ref{fig:all_solvers_loc_error}-\ref{fig:all_solvers_ori_error}-\ref{fig:all_solvers_amp_error}, showing the errors in position, orientation, and amplitude respectively. However, for a deep source (dipole 8) combined with a very low SNR (20nAm), the red curve is outside of the box, meaning a location error bigger than 20mm. This is an issue with the signal subspace estimation, where the rank of the data covariance is not well estimated.
+RAP-MUSIC is an approach based on the MUSIC technique which also performs very well when few ECDs are involved, especially when it is a dataset recording only one dipole at a time. It can be seen as very competitive, \textit{w.r.t.} dipole fitting in Figures~\ref{fig:all_solvers_loc_error}-\ref{fig:all_solvers_ori_error}, showing the errors in position, and orientation respectively. However, for a deep source (dipole 8) combined with a very low SNR (20nAm), the red curve is outside of the box, meaning a location error bigger than 20mm. This is an issue with the signal subspace estimation, where the rank of the data covariance is not well estimated.
 
 The $\gamma$-map which is a Bayesian formulation of the MEG/EEG inverse problem,  performs worse than dipole fitting or RAP-MUSIC for very high and very low SNR. For SNRs in range of realistic data, its location error is upper bounded by 5mm depending on the depth of the studied dipole. The $\gamma$-map is doing worse for amplitude of 1000nAm compared to 100nAm or 200nAm, because it overestimates the noise when estimating the hyperparameter $\gamma$.
 
 For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:all_solvers_loc_error} respectively demonstrate an equivalence or a slightly improvement when using TF-MxNE compared to MxNE, except for the deepest dipole 8 in red. This is explained by the fact that TF-MxNE is sensitive to the hyperparameters ($\lambda_{space}$, $\lambda_{time}$, window size, and time shift) depending on the SNR and the depth of the dipole. Here we tuned the hyperparameters on a grid search similar for all dipoles, although one might think that the hyperparameters depend on the easiness of the data (so on the SNR, and the depth of each dipole).
 
-The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (Figure~\ref{fig:all_solvers_amp_error}).
+The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (\textit{e.g.} Figure~\ref{fig:fig:all_solvers_amp_error_bst} for brainstorm phantom-elekta dataset).
 
 \begin{figure}[h!]
 	\centering 
@@ -145,14 +145,13 @@ The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error
 
 On the other hand, MNE and dSPM are surprisingly the methods giving the worst results for this dataset. One important argument is the fact that the study is biased as we know that the simulated phantom data is focal/sparse, while MNE and dSPM are not sparse methods. We always take the peak of amplitude and displays the best dipole for each method. sLORETA on the other hand is not a sparse method either, however, it performs much better than MNE and dSPM. The "center" of the pattern estimated with sLORETA is then closer to the exact dipole location compared to the center of dSPM or MNE.
 
-\begin{figure}[h!]
-	\includegraphics[width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_amp_error}
-	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{fig:all_solvers_amp_error}}
-\end{figure}
+%\begin{figure}[h!]
+%	\includegraphics[width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_amp_error}
+%	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{fig:all_solvers_amp_error}}
+%\end{figure}
 
 The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, (ir)MxNE and (ir)TF-MxNE keep being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except that the depth is different. When adding up this type of dipoles, they still have the same pattern in the sensor space, which makes the source localization impossible. Figure~\ref{fig:all_solvers_ori_error} does not show orientation for LCMV, MNE, dSPM, and sLORETA as the orientation is not computed for source estimate.
 
-Figure~\ref{fig:all_solvers_amp_error} shows the errors in amplitude. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one.
 
 \begin{figure}[p]
 	\centering
@@ -192,7 +191,7 @@ To investigate further the impact of each solver and the impact of a dataset wit
 		\caption{Comparison of the position and the orientation error between the solvers when taking only one over four epochs to reduce the SNR.\label{all_solvers_loc_error_decim_4}}
 \end{figure}
 
-This analysis has been performed also on two other datasets which lead to the same conclusions (see Figures).
+This analysis has been performed also on two other datasets which lead to the same conclusions (see Figures). The brainstorm phantom-elekta dataset had 32 different dipoles, from which we take only four to display in Figure~\ref{phantom_errors_compare_all_solvers_decim_1_bst_loc_error} for both amplitude and orientation errors.
 
 \begin{figure}[p]
 	\centering
@@ -209,7 +208,28 @@ This analysis has been performed also on two other datasets which lead to the sa
 		\caption{\label{fig:phantom_errors_compare_all_solvers_decim_1_bst_ori_error}}
 	\end{subfigure}
 
-		\caption{Comparison of the position and the orientation errors between the solvers for BST dataset. It shows 4 dipoles among the 32 for a good visibility. Nonetheless, it shows both the dipoles on the surface and th deepest ones.\label{phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
+		\caption{Comparison of the position and the orientation errors between the solvers for brainstom phantom-elekta dataset. It shows 4 dipoles among the 32 for a good visibility. Nonetheless, it shows both the dipoles on the surface and the deepest ones.\label{phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
+\end{figure}
+
+
+Figure~\ref{fig:all_solvers_amp_error_bst} shows the errors in amplitude for brainstorm phantom-elekta dataset. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one and $\gamma$-map. Figure~\ref{fig:all_solvers_amp_error_decim_2_bst} shows the same effect of amplitude bias improvement even when we subsample the epochs, and take only one epoch over two.
+
+\begin{figure}[p]
+	\centering
+    \begin{subfigure}{0.9\linewidth}
+		\centering
+		\includegraphics[trim={1cm 1cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_decim_1_bst_amp_error}
+	    \caption{\label{fig:all_solvers_amp_error_bst}}
+    \end{subfigure}
+	\hspace{5cm}
+	\hfill
+    \begin{subfigure}{0.9\linewidth}  
+		\centering 
+		\includegraphics[trim={1cm 1cm 1cm 1cm},width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_decim_2_bst_amp_error}
+		\caption{\label{fig:all_solvers_amp_error_decim_2_bst}}
+	\end{subfigure}
+
+		\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles amond the 32 existing in the brainstom phantom-elekta dataset. \label{all_solvers_amp_error_bst}}
 \end{figure}
 
 \section{Conclusion \& Perspectives}
