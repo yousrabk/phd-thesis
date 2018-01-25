@@ -111,10 +111,10 @@ The orientation error $err_{ori}$ is represented in Radians (Rad), defining the 
 err_{ori} = \arccos(|\langle ori_{estimated}, ori_{simulated} \rangle|)
 \end{equation}
 
-Finally, the amplitude error $err_{amp}$ is represented in nanoAmperes (nAm), except for some solvers which give source estimates with statistical values and not electrical current values (example: dSPM). This error defines the difference between the peak of amplitude ($\max(amp_{estimated})$ with $amp_{estimated}\in\RR^T$) of the estimated dipole and the peak of simulated dipole $amp_{simulated}\in\RR$ (example 1000nAm, 200nAm, ... 20nAm) as in Equation~\eqref{eq:amp_err}.
+Finally, the amplitude error $err_{amp}$ is represented in penrcentage error (\%), except for some solvers which give source estimates with statistical values and not electrical current values (example: dSPM). This error defines the relative difference between the peak of amplitude ($\max(amp_{estimated})$ with $amp_{estimated}\in\RR^T$) of the estimated dipole and the peak of simulated dipole $amp_{simulated}\in\RR$ (example 1000nAm, 200nAm, ... 20nAm) as in Equation~\eqref{eq:amp_err}.
 
 \begin{equation}\label{eq:amp_err}
-err_{amp} = |\max(amp_{estimated}) - amp_{simulated}|
+err_{amp} = \frac{|\max(amp_{estimated}) - amp_{simulated}|}{amp_{simulated}} * 100
 \end{equation}
 
 \subsection{Critical comparison of these MEG/EEG source localization}
@@ -144,11 +144,6 @@ The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error
 \end{figure}
 
 On the other hand, MNE and dSPM are surprisingly the methods giving the worst results for this dataset. One important argument is the fact that the study is biased as we know that the simulated phantom data is focal/sparse, while MNE and dSPM are not sparse methods. We always take the peak of amplitude and displays the best dipole for each method. sLORETA on the other hand is not a sparse method either, however, it performs much better than MNE and dSPM. The "center" of the pattern estimated with sLORETA is then closer to the exact dipole location compared to the center of dSPM or MNE.
-
-%\begin{figure}[h!]
-%	\includegraphics[width=\textwidth]{benchmark/phantom_errors_compare_all_solvers_amp_error}
-%	\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles.\label{fig:all_solvers_amp_error}}
-%\end{figure}
 
 The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, (ir)MxNE and (ir)TF-MxNE keep being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except that the depth is different. When adding up this type of dipoles, they still have the same pattern in the sensor space, which makes the source localization impossible. Figure~\ref{fig:all_solvers_ori_error} does not show orientation for LCMV, MNE, dSPM, and sLORETA as the orientation is not computed for source estimate.
 
@@ -213,6 +208,10 @@ This analysis has been performed also on two other datasets which lead to the sa
 
 
 Figure~\ref{fig:all_solvers_amp_error_bst} shows the errors in amplitude for brainstorm phantom-elekta dataset. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one and $\gamma$-map. Figure~\ref{fig:all_solvers_amp_error_decim_2_bst} shows the same effect of amplitude bias improvement even when we subsample the epochs, and take only one epoch over two.
+
+The same analysis has been performed on the brainstorm CTF phantom dataset, which contains only one dipole with two different amplitude levels. The take home message remains the same, \textit{i.e.}, dipole fitting is the most suitable solver when no more than one dipole is recorded at a time, however it performs very bad for low SNR. $\gamma$-map has been a very competitive solver compared to (ir)MxNE and (ir)TF-MxNE, but the iterative reweighted solvers remain the best for reducing the amplitude bias, and recovering almost the exact estimated amplitude (around 1\% amplitude error).
+
+This study demonstrates the effectiveness of each method depending on the type of the dipole, \textit{i.e.}, its depth, the level of its amplitude, and the SNR based on the number of epochs. It specifically shows that there is no one best method for all use cases, but rather that the methods are complementary and that some of them works better with some specific conditions. Knowing the type of dataset one has in hand, is then primordial for a good source estimate recovery.
 
 \begin{figure}[p]
 	\centering
