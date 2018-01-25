@@ -49,22 +49,6 @@ The dataset has 32 dipoles, and is sorted into 3 different amplitude levels:
 \item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies, which require averaging in order to be detected and estimated (\textit{i.e.} generally cannot be seen in single trial analysis).
 \end{itemize}
 
-\subsection{Brainstorm CTF-phantom dataset}
-
-The dataset had only one dipole at location (18, 0, 49), and is sorted into two different amplitudes:
-\begin{itemize}
-\item Source with \textbf{200 nAm}.
-\item Source with \textbf{20 nAm}.
-\end{itemize}
-
-\begin{figure}[tb]
-   \centering
-\includegraphics[trim={1cm 8cm 2cm 9cm},width = 0.97\textwidth]{benchmark/phantom_in_MEG}
-\caption{The phantom is carefully set into the sensor helmet of the probe unit and pushed against the helmet. HPI coil is fitted into outlet under the right gantry side cover (Figure taken from~\cite{hazim2015magnetoencephalography}).}
-   \label{fig:phantom_in_MEG}
-\end{figure}
-
-
 \subsection{MNE-Neuromag dataset} \label{data:used_data}
 
 The dataset has four dipoles named from 5 to 8, each with a different depth in the phantom head. The dataset is sorted into four different amplitudes:
@@ -79,6 +63,15 @@ The dataset has four dipoles named from 5 to 8, each with a different depth in t
 
 \subsection{Sphere models}
 The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems have well-known closed form solutions~\cite{mosher1999eeg}.
+
+\subsection{Preprocessing}
+The two elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
+\begin{itemize}
+\item For brainstorm elekta dataset, one channel has been marked as bad: "MEG2421".
+\item For MNE neuromag dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
+\end{itemize}
+Second, Maxwell filtering was used to clean the data to to compensate for external magnetic interferences. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. Once the filtering is done, we can construct the epochs and the evoked response from the filtered data from -100 ms to 100 ms. The covariance was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000Hz.
+The MNE neuromag dataset resulted in 33 epochs before averaging, while the brainstorm elekta dataset resulted in 20 epochs.
 
 \subsection{The selected solvers}
 \subsubsection{Dipole fitting}
@@ -127,7 +120,7 @@ Figure~\ref{fig:all_solvers_loc_error} shows position errors obtained with most 
     \caption{Comparison of the position error between most of the solvers for four different dipoles. \label{fig:all_solvers_loc_error}}
 \end{figure}
 
-The dipole fitting approach is very suitable for localizing the neuronal activity when a small number of \ac{ECD}s can describe the data. In this dataset \ref{data:used_data}, each dipole is recorded alone. The errors in orientations and amplitude are displayed in Figures~\ref{fig:all_solvers_ori_error}-\ref{fig:all_solvers_amp_error}.
+The dipole fitting approach is very suitable for localizing the neuronal activity when a small number of \ac{ECD}s can describe the data. In this dataset \ref{data:used_data}, each dipole is recorded alone. The errors in orientations are displayed in Figures~\ref{fig:all_solvers_ori_error}.
 
 RAP-MUSIC is an approach based on the MUSIC technique which also performs very well when few ECDs are involved, especially when it is a dataset recording only one dipole at a time. It can be seen as very competitive, \textit{w.r.t.} dipole fitting in Figures~\ref{fig:all_solvers_loc_error}-\ref{fig:all_solvers_ori_error}, showing the errors in position, and orientation respectively. However, for a deep source (dipole 8) combined with a very low SNR (20nAm), the red curve is outside of the box, meaning a location error bigger than 20mm. This is an issue with the signal subspace estimation, where the rank of the data covariance is not well estimated.
 
@@ -135,7 +128,7 @@ The $\gamma$-map which is a Bayesian formulation of the MEG/EEG inverse problem,
 
 For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:all_solvers_loc_error} respectively demonstrate an equivalence or a slightly improvement when using TF-MxNE compared to MxNE, except for the deepest dipole 8 in red. This is explained by the fact that TF-MxNE is sensitive to the hyperparameters ($\lambda_{space}$, $\lambda_{time}$, window size, and time shift) depending on the SNR and the depth of the dipole. Here we tuned the hyperparameters on a grid search similar for all dipoles, although one might think that the hyperparameters depend on the easiness of the data (so on the SNR, and the depth of each dipole).
 
-The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (\textit{e.g.} Figure~\ref{fig:fig:all_solvers_amp_error_bst} for brainstorm phantom-elekta dataset).
+The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (\textit{e.g.} Figure~\ref{fig:all_solvers_amp_error_bst} for brainstorm phantom-elekta dataset).
 
 \begin{figure}[h!]
 	\centering 
@@ -146,7 +139,6 @@ The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error
 On the other hand, MNE and dSPM are surprisingly the methods giving the worst results for this dataset. One important argument is the fact that the study is biased as we know that the simulated phantom data is focal/sparse, while MNE and dSPM are not sparse methods. We always take the peak of amplitude and displays the best dipole for each method. sLORETA on the other hand is not a sparse method either, however, it performs much better than MNE and dSPM. The "center" of the pattern estimated with sLORETA is then closer to the exact dipole location compared to the center of dSPM or MNE.
 
 The orientation error is comparable to the location error, where dipole fitting, MUSIC, $\gamma$-map, (ir)MxNE and (ir)TF-MxNE keep being the best performing methods. Dipole fitting is unbeatable when simulating with only one dipole. We could not sum up dipoles to make the simulation even harder, because their locations is nearly the same except that the depth is different. When adding up this type of dipoles, they still have the same pattern in the sensor space, which makes the source localization impossible. Figure~\ref{fig:all_solvers_ori_error} does not show orientation for LCMV, MNE, dSPM, and sLORETA as the orientation is not computed for source estimate.
-
 
 \begin{figure}[p]
 	\centering
