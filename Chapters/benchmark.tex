@@ -66,13 +66,14 @@ The dataset has four dipoles named from 5 to 8, each with a different depth in t
 The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems have well-known closed form solutions~\cite{mosher1999eeg}.
 
 \subsection{Preprocessing}
-The two Elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
+The two phantom datasets were preprocessed the same way. First, we computed the forward operator with a single-shell sphere model with origin (0., 0., 0.) and a head radius of 8\,cm. For all solvers, except dipole fitting, we used a discrete source space with grid spacing of 3.5\,mm which resulted in 13782 candidate source locations. As we do not constrain the orientation which such a source space it corresponds to a gain matrix with 41346 columns ($O=3$ orientations). Then we marked some channels as bad for each dataset:
 \begin{itemize}
 \item For brainstorm elekta dataset, one channel has been marked as bad: "MEG2421".
 \item For MNE neuromag dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
 \end{itemize}
-Second, Maxwell filtering was used to clean the data to to compensate for external magnetic interferences. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. Once the filtering is done, we can construct the epochs and the evoked response from the filtered data from -100 ms to 100 ms. The covariance was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000Hz.
+As classically done with Elekta systems, all datasets where processed with the Maxfilter software to correct for external magnetic interferences~\cite{43taulu2006spatiotemporal}. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. After filtering, the data were segmented in epochs which were subsequently averaged to obtain the evoked response. Evoked contained data from -100\,ms to 100\,ms around the stimulation onset. The noise covariance used for spatial whitening was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000\,Hz.
 The MNE neuromag dataset resulted in 33 epochs before averaging, while the brainstorm elekta dataset resulted in 20 epochs.
+No bad epochs where excluded from the averaged data.
 
 \subsection{The selected solvers}
 \subsubsection{Dipole fitting}
