@@ -27,10 +27,10 @@ This chapter presents a new study to validate localization techniques using diff
 The approaches considered in this chapter are mainly those described before in this thesis (see Chapter~\ref{chapter:background}), namely: Dipole fitting (Section~\ref{section_dipfit}-page~\pageref{section_dipfit}), Gamma-Map, RAP-MUSIC, MxNE, irMxNE, TF-MxNE, irTF-MxNE. The methods not defined so far, will be briefly described in the next section.
 
 \section{Phantom datasets}
-\subsection{Brainstorm phantom-elekta dataset}
+\subsection{Brainstorm-Elekta dataset}
 The description below was taken from the Brainstorm tutorial about the MEG phantom~\cite{tadel2011brainstorm}.\\
 
-A current phantom is provided with Elekta Neuromag for checking the system performance and can then be used for evaluation of the source localization (Figures~\ref{fig:phantom_head} and~\ref{fig:phantom_in_MEG}). It contains 32 artificial dipoles and four fixed head-position indicator coils. The phantom is based on the mathematical fact that an equilateral triangular line current produces a magnetic field distribution equivalent to that of a tangential current dipole in a spherical conductor, provided that the vertex of the triangle and the origin of the conducting sphere coincide. For a detailed description of how the phantom works, see~\cite{ilmoniemi1985forward}.\\
+A current phantom is provided with Elekta for checking the system performance and can then be used for evaluation of the source localization (Figures~\ref{fig:phantom_head} and~\ref{fig:phantom_in_MEG}). It contains 32 artificial dipoles and four fixed head-position indicator coils. The phantom is based on the mathematical fact that an equilateral triangular line current produces a magnetic field distribution equivalent to that of a tangential current dipole in a spherical conductor, provided that the vertex of the triangle and the origin of the conducting sphere coincide. For a detailed description of how the phantom works, see~\cite{ilmoniemi1985forward}.\\
 \\
 
 \begin{figure}[tb]
@@ -56,7 +56,7 @@ The dataset has 32 dipoles, and is sorted into 3 different amplitude levels:
    \label{fig:phantom_in_MEG}
 \end{figure}
 
-\subsection{MNE-Neuromag dataset} \label{data:used_data}
+\subsection{MNE-Elekta dataset} \label{data:used_data}
 
 The dataset has four dipoles named from 5 to 8, each with a different depth in the phantom head. The dataset contains dipoles with four different amplitudes: 2000\,nAm, 200\,nAm, 100\,nAm and 20\,nAm.
 
@@ -68,11 +68,11 @@ The most commonly used head model assumes that it is made up of a set of nested 
 \subsection{Preprocessing}
 The two Elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
 \begin{itemize}
-\item For brainstorm elekta dataset, one channel has been marked as bad: "MEG2421".
-\item For MNE neuromag dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
+\item For Brainstorm-Elekta dataset, one channel has been marked as bad: "MEG2421".
+\item For MNE-Elekta dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
 \end{itemize}
 Second, Maxwell filtering was used to clean the data to to compensate for external magnetic interferences. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. Once the filtering is done, we can construct the epochs and the evoked response from the filtered data from -100 ms to 100 ms. The covariance was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000Hz.
-The MNE neuromag dataset resulted in 33 epochs before averaging, while the brainstorm elekta dataset resulted in 20 epochs.
+The MNE-Elekta dataset resulted in 33 epochs before averaging, while the Brainstorm-Elekta dataset resulted in 20 epochs.
 
 \subsection{The selected solvers}
 \subsubsection{Dipole fitting}
@@ -129,7 +129,7 @@ The $\gamma$-map which is a Bayesian formulation of the MEG/EEG inverse problem,
 
 For MxNE and TF-MxNE, the errors shown in Figure~\ref{fig:all_solvers_loc_error} respectively demonstrate an equivalence or a slightly improvement when using TF-MxNE compared to MxNE, except for the deepest dipole 8 in red. This is explained by the fact that TF-MxNE is sensitive to the hyperparameters ($\lambda_{space}$, $\lambda_{time}$, window size, and time shift) depending on the SNR and the depth of the dipole. Here we tuned the hyperparameters on a grid search similar for all dipoles, although one might think that the hyperparameters depend on the easiness of the data (so on the SNR, and the depth of each dipole).
 
-The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (\textit{e.g.} Figure~\ref{fig:all_solvers_amp_error_bst} for brainstorm phantom-elekta dataset).
+The same Figures~\ref{fig:all_solvers_loc_error}-~\ref{fig:all_solvers_ori_error} also show an improvement when using the non-convex version in both irMxNE and irTF-MxNE compared to MxNE and TF-MxNE in localization and orientation, but the biggest difference is mostly seen in amplitude gain (\textit{e.g.} Figure~\ref{fig:all_solvers_amp_error_bst} for Brainstorm-Elekta dataset).
 
 \begin{figure}[h!]
 	\centering 
@@ -179,7 +179,7 @@ To investigate further the impact of each solver and the impact of a dataset wit
 		\caption{Comparison of the position and the orientation error between the solvers when taking only one over four epochs to reduce the SNR.\label{all_solvers_loc_error_decim_4}}
 \end{figure}
 
-This analysis has been performed also on two other datasets which lead to the same conclusions (see Figures). The brainstorm phantom-elekta dataset had 32 different dipoles, from which we take only four to display in Figure~\ref{phantom_errors_compare_all_solvers_decim_1_bst_loc_error} for both amplitude and orientation errors.
+This analysis has been performed also on two other datasets which lead to the same conclusions (see Figures). The Brainstorm-Elekta dataset had 32 different dipoles, from which we take only four to display in Figure~\ref{phantom_errors_compare_all_solvers_decim_1_bst_loc_error} for both amplitude and orientation errors.
 
 \begin{figure}[p]
 	\centering
@@ -196,11 +196,11 @@ This analysis has been performed also on two other datasets which lead to the sa
 		\caption{\label{fig:phantom_errors_compare_all_solvers_decim_1_bst_ori_error}}
 	\end{subfigure}
 
-		\caption{Comparison of the position and the orientation errors between the solvers for brainstom phantom-elekta dataset. It shows 4 dipoles among the 32 for a good visibility. Nonetheless, it shows both the dipoles on the surface and the deepest ones.\label{phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
+		\caption{Comparison of the position and the orientation errors between the solvers for Brainstom-Elekta dataset. It shows 4 dipoles among the 32 for a good visibility. Nonetheless, it shows both the dipoles on the surface and the deepest ones.\label{phantom_errors_compare_all_solvers_decim_1_bst_loc_error}}
 \end{figure}
 
 
-Figure~\ref{fig:all_solvers_amp_error_bst} shows the errors in amplitude for brainstorm phantom-elekta dataset. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one and $\gamma$-map. Figure~\ref{fig:all_solvers_amp_error_decim_2_bst} shows the same effect of amplitude bias improvement even when we subsample the epochs, and take only one epoch over two.
+Figure~\ref{fig:all_solvers_amp_error_bst} shows the errors in amplitude for Brainstorm-Elekta dataset. The most important point in this figure is to see the difference between the convex MxNE|TF-MxNE and the non-convex irMxNE|irTF-MxNE in terms of amplitude bias. All dipoles basically improve their amplitude estimate when using the non-convex method (irMxNE|irTF-MxNE). For some cases, the irMxNE amplitude estimate is even better than the dipole fitting one and $\gamma$-map. Figure~\ref{fig:all_solvers_amp_error_decim_2_bst} shows the same effect of amplitude bias improvement even when we subsample the epochs, and take only one epoch over two.
 
 The same analysis has been performed on the brainstorm CTF phantom dataset, which contains only one dipole with two different amplitude levels. The take home message remains the same, \textit{i.e.}, dipole fitting is the most suitable solver when no more than one dipole is recorded at a time, however it performs very bad for low SNR. $\gamma$-map has been a very competitive solver compared to (ir)MxNE and (ir)TF-MxNE, but the iterative reweighted solvers remain the best for reducing the amplitude bias, and recovering almost the exact estimated amplitude (around 1\% amplitude error).
 
@@ -221,7 +221,7 @@ This study demonstrates the effectiveness of each method depending on the type o
 		\caption{\label{fig:all_solvers_amp_error_decim_2_bst}}
 	\end{subfigure}
 
-		\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles amond the 32 existing in the brainstom phantom-elekta dataset. \label{all_solvers_amp_error_bst}}
+		\caption{Comparison of amplitude error between most of the solvers for 4 different dipoles amond the 32 existing in the Brainstom-Elekta dataset. \label{all_solvers_amp_error_bst}}
 \end{figure}
 
 \section{Conclusion \& Perspectives}
