@@ -66,22 +66,20 @@ The dataset has four dipoles named from 5 to 8, each with a different depth in t
 The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems have well-known closed form solutions~\cite{mosher1999eeg}.
 
 \subsection{Preprocessing}
-The two phantom datasets were preprocessed the same way. First, we computed the forward operator with a single-shell sphere model with origin (0., 0., 0.) and a head radius of 8\,cm. For all solvers, except dipole fitting, we used a discrete source space with grid spacing of 3.5\,mm which resulted in 13782 candidate source locations. As we do not constrain the orientation which such a source space it corresponds to a gain matrix with 41346 columns ($O=3$ orientations). Then we marked some channels as bad for each dataset:
+The two Elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
 \begin{itemize}
 \item For Brainstorm-Elekta dataset, one channel has been marked as bad: "MEG2421".
 \item For MNE-Elekta dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
 \end{itemize}
-
-As classically done with Elekta systems, all datasets where processed with the Maxfilter software to correct for external magnetic interferences~\cite{43taulu2006spatiotemporal}. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. After filtering, the data were segmented in epochs which were subsequently averaged to obtain the evoked response. Evoked contained data from -100\,ms to 100\,ms around the stimulation onset. The noise covariance used for spatial whitening was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000\,Hz.
+Second, Maxwell filtering was used to clean the data to to compensate for external magnetic interferences. The data was then low-pass filtered below 40Hz as we are interested only in frequencies around the simulated burst, which is at 25Hz. Once the filtering is done, we can construct the epochs and the evoked response from the filtered data from -100 ms to 100 ms. The covariance was computed on the baseline from -100 ms to 0. The sampling frequency for both datasets is of 1000Hz.
 The MNE-Elekta dataset resulted in 33 epochs before averaging, while the Brainstorm-Elekta dataset resulted in 20 epochs.
-No bad epochs where excluded from the averaged data.
 
 \subsection{The selected solvers}
 \subsubsection{Dipole fitting}
 Dipole fitting assumes that a small number of point-like \ac{ECD}s can describe the measured topography. It optimises the location, the orientation and the amplitude of the model dipoles in order to minimise the difference between the model and the measured topography. A good introduction to dipole fitting is provided by~\cite{scherg1990fundamentals}. A full description is done in Chapter~\ref{chapter:background}-Section~\ref{section_dipfit} (page~\pageref{section_dipfit}).
 
 \subsubsection{$\gamma$-Map}
-$\gamma$-map is a Bayesian approach based on type 2 maximum likelihood. As it was explained in Chapter~\ref{chapter:bayesian}, a popular Bayesian formulation of the MEG/EEG source localization consists in using a hierarchical model with priors and hyperpriors. Optimization of the $\gamma$-map method is done in MNE as explained in Section 3 in~\cite{wipf2009unified} using the so-called \emph{MacKay update}. The hyperparameter in this method are called $\gamma$ and we maximize a likelihood with respect to $\gamma$ which explains the name.
+$\gamma$-map offers a unifying view using a Bayesian perspective on some of the solvers presented here. As it was shown in Chapter~\ref{chapter:bayesian}, the Bayesian formulation of the MEG/EEG source localization consists in choosing priors/hyperpriors, estimation and inference procedure where often it boils down to alternating between the estimation of the source estimate and the estimation of the hyperparameter. The hyperparameter in this method is $\gamma$ which represents covariance components. More details are in~\cite{Wipf-Nagarajan:2009}.
 
 \subsubsection{RAP-MUSIC}
 \Ac{RAP-MUSIC} is an extension to \ac{MUSIC} by recursively estimating multiple sources~\cite{mosher1997source,mosher1999source}. In other words, it consists in applying MUSIC successively after removing the contribution of the previously identified sources. In the same way matching pursuit algorithms are used for sparse signal decomposition over dictionary of atoms, the RAP-MUSIC method adopts a greedy strategy to select the relevant dipoles in a dictionary of sources.
@@ -92,8 +90,11 @@ $\gamma$-map is a Bayesian approach based on type 2 maximum likelihood. As it wa
 \subsubsection{TF-MxNE | irTF-MxNE}
 \Ac{TF-MxNE} and \ac{irTF-MxNE} are the convex and the non-convex versions of the Time-Frequency mixed-norms using $\ell_{2,1}+\ell_1$-norm and $\ell_{2,0.5}+\ell_{0.5}$-quasinorm as regularizations. For more details, see Chapter~\ref{chapter:background}-Section~\ref{sec:mixed_norms} and~\cite{TF-MxNE,bekhti2016m}.
 
+All solvers except the irTF-MxNE are implemented in the MNE-python package~\cite{MNE}. The dipole fitting, MUSIC, dSPM, MNE, sLORETA, $\gamma$-map have used the by default version. The regularization parameter of LCMV was set to $reg=1$.
+The different hyperparameters of (ir)TF-MxNE were tuned on a grid search. The results below are shown after setting the window size to $wsize=64$, time shift to $ts=4$, $\alpha_{space}=40.$, and $\alpha_{time}=1.$. While for the (ir)MxNE regularization hyperparameter was set to $\alpha_{space}=40.$.
+
 \section{Experimental results}
-Three types of errors have been investigated for the different solvers, namely: the position or location error, the orientation error, and the amplitude error. All the solvers investigated here are implemented in the MNE-Python package~\cite{mne-python,mne}.
+Three types of errors have been investigated for the different solvers, namely: the position or location error, the orientation error, and the amplitude error. All the solvers investigated here are implemented in the MNE-python package~\cite{mne-python,mne}.
 
 The position error $err_{pos}$ is represented in millimeters (mm), defining the distance between the exact location ($pos_{simulated}\in\RR^3$) of the simulated dipole in the phantom head and the estimated location ($pos_{estimated}\in\RR^3$) as in Equation~\eqref{eq:pos_err}. When the estimated source space contains multiple dipoles, the one having the biggest peak of amplitude is kept and compared to the exact dipole.
 
@@ -101,17 +102,16 @@ The position error $err_{pos}$ is represented in millimeters (mm), defining the 
 err_{pos} = 10^3 \|pos_{estimated} - pos_{simulated}\|_2
 \end{equation}
 
-The orientation error $err_{ori}$ is represented in Radians (Rad), defining the angle between the exact orientation ($ori_{simulated}\in\RR^3$) of the simulated dipole and the estimated one ($ori_{estimated}\in\RR^3$) as in Equation~\eqref{eq:ori_err}.
-% Same for the position error, the best dipole is kept when multiple ones are estimated.
+The orientation error $err_{ori}$ is represented in Radians (Rad), defining the angle between the exact orientation ($ori_{simulated}\in\RR^3$) of the simulated dipole and the estimated one ($ori_{estimated}\in\RR^3$) as in Equation~\eqref{eq:ori_err}. Same for the position error, the best dipole is kept when multiple ones are estimated.
 
 \begin{equation}\label{eq:ori_err}
 err_{ori} = \arccos(|\langle ori_{estimated}, ori_{simulated} \rangle|)
 \end{equation}
 
-Finally, the amplitude error $err_{amp}$ is evaluated for solvers returning sources magnitudes corresponding to electric dipole amplitudes in nAm. This excludes the solvers dSPM, LCMV or sLORETA. The error $err_{amp}$ is represented in percentage error (\%). This error defines the relative difference between the peak of amplitude ($\max(amp_{estimated})$ with $amp_{estimated}\in\RR^T$) of the estimated dipole and the peak of simulated dipole $amp_{simulated}\in\RR$ (example 1000nAm, 200nAm, ... 20nAm) as in Equation~\eqref{eq:amp_err}.
+Finally, the amplitude error $err_{amp}$ is represented in penrcentage error (\%), except for some solvers which give source estimates with statistical values and not electrical current values (example: dSPM). This error defines the relative difference between the peak of amplitude ($\max(amp_{estimated})$ with $amp_{estimated}\in\RR^T$) of the estimated dipole and the peak of simulated dipole $amp_{simulated}\in\RR$ (example 1000nAm, 200nAm, ... 20nAm) as in Equation~\eqref{eq:amp_err}.
 
 \begin{equation}\label{eq:amp_err}
-err_{amp} = 100 \frac{|\max(amp_{estimated}) - amp_{simulated}|}{amp_{simulated}}
+err_{amp} = \frac{|\max(amp_{estimated}) - amp_{simulated}|}{amp_{simulated}} * 100
 \end{equation}
 
 \subsection{Critical comparison of these MEG/EEG source localization}
