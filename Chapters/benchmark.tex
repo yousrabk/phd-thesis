@@ -30,7 +30,7 @@ The approaches considered in this chapter are mainly those described before in t
 \subsection{Brainstorm phantom-elekta dataset}
 The description below was taken from the Brainstorm tutorial about the MEG phantom~\cite{tadel2011brainstorm}.\\
 
-A current phantom is provided with Elekta Neuromag for checking the system performance and can then be used for evaluation of the source localization (Figure~\ref{fig:phantom_head}-Figure~\ref{fig:phantom_in_MEG}). It contains 32 artificial dipoles and four fixed head-position indicator coils. The phantom is based on the mathematical fact that an equilateral triangular line current produces a magnetic field distribution equivalent to that of a tangential current dipole in a spherical conductor, provided that the vertex of the triangle and the origin of the conducting sphere coincide. For a detailed description of how the phantom works, see~\cite{ilmoniemi1985forward}.\\
+A current phantom is provided with Elekta Neuromag for checking the system performance and can then be used for evaluation of the source localization (Figures~\ref{fig:phantom_head} and~\ref{fig:phantom_in_MEG}). It contains 32 artificial dipoles and four fixed head-position indicator coils. The phantom is based on the mathematical fact that an equilateral triangular line current produces a magnetic field distribution equivalent to that of a tangential current dipole in a spherical conductor, provided that the vertex of the triangle and the origin of the conducting sphere coincide. For a detailed description of how the phantom works, see~\cite{ilmoniemi1985forward}.\\
 \\
 
 \begin{figure}[tb]
@@ -58,13 +58,7 @@ The dataset has 32 dipoles, and is sorted into 3 different amplitude levels:
 
 \subsection{MNE-Neuromag dataset} \label{data:used_data}
 
-The dataset has four dipoles named from 5 to 8, each with a different depth in the phantom head. The dataset is sorted into four different amplitudes:
-\begin{itemize}
-\item Source with \textbf{2000 nAm}.
-\item Source with \textbf{200 nAm}.
-\item Source with \textbf{100 nAm}.
-\item Source with \textbf{20 nAm}.
-\end{itemize}
+The dataset has four dipoles named from 5 to 8, each with a different depth in the phantom head. The dataset contains dipoles with four different amplitudes: 2000\,nAm, 200\,nAm, 100\,nAm and 20\,nAm.
 
 \section{Methodology}
 
@@ -72,7 +66,7 @@ The dataset has four dipoles named from 5 to 8, each with a different depth in t
 The most commonly used head model assumes that it is made up of a set of nested concentric spheres, each with homogeneous and isotropic conductivity. Under this assumption, both the EEG and MEG problems have well-known closed form solutions~\cite{mosher1999eeg}.
 
 \subsection{Preprocessing}
-The two elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
+The two Elekta phantom datasets have had a specific and identical preprocessing. First, we computed the forward operator with a single-shell sphere with origin (0., 0., 0.) and a head radius of 0.08, resulting in a discrete source space with 13782 location and free orientation ($O=3$ orientations). Then we marked some channels as bad for each dataset:
 \begin{itemize}
 \item For brainstorm elekta dataset, one channel has been marked as bad: "MEG2421".
 \item For MNE neuromag dataset, three channels have been marked as bad: \\"MEG2233", "MEG2422", "MEG0111".
