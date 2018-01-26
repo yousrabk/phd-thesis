@@ -14,7 +14,7 @@
 \section{Introduction}
 The previous chapters define various ways to solve the inverse problem of MEG/EEG brain imaging techniques. The evaluation of these solvers remain difficult due to the completely unknown ground-truth of the exact localization of the involved sources in each specific task. This limitation is primarily coming from the fact that the recording is done over the scalp and that multiple source configurations can lead to exactly the same measurements over the sensors. So the question is whether all these existing source localization techniques are able to accurately locate the positions and the orientations of current sources in the brain in a real acquisition scenario.
 
-The typical way to answer this question is to perform simulations. It consists on fixing the number and the location, orientation and amplitude of several dipoles in the brain, generate some simulated data corrupted by some additive noise. These simulations are unfortunately rarely realistic: they do not take into account the non-ideal nature of the sensors and the errors in the forward model, and they do not take into account the complex noise structure of real measurements. Inaccuracies in the computation of the forward operator are mainly due to approximations in the conductivity values in the head and/or the numerical errors associated with either spherical head approximations or \ac{bem} based on more realistic head geometries.
+The typical way to answer this question is to perform simulations~\cite{liu2002monte,mosher1993error,liu1998spatiotemporal}. It consists on fixing the number and the location, orientation and amplitude of several dipoles in the brain, generate some simulated data corrupted by some additive noise~\cite{liu2002monte,mosher1993error,liu1998spatiotemporal,de2002estimating,wolters2006influence}. These simulations are unfortunately rarely realistic: they do not take into account the non-ideal nature of the sensors and the errors in the forward model, and they do not take into account the complex noise structure of real measurements. Inaccuracies in the computation of the forward operator are mainly due to approximations in the conductivity values in the head and/or the numerical errors associated with either spherical head approximations or \ac{bem} based on more realistic head geometries.
 
 More sophisticated simulations might be investigated to overcome these issues, yet we propose here to use data collected from an artificial physical object in a real MEG machine. This has the advantage that the results can more closely reflect \textit{in vivo} performance since they include factors that cannot readily be included in simulations, such as environmental noise. 
 
@@ -48,6 +48,13 @@ The dataset has 32 dipoles, and is sorted into 3 different amplitude levels:
 \item Source with \textbf{200 nAm}. This is a weaker dipole, closer to the range of amplitudes we can expect in raw data.
 \item Source with \textbf{20 nAm}. This represents some of the weakest sources we expect in evoked studies, which require averaging in order to be detected and estimated (\textit{i.e.} generally cannot be seen in single trial analysis).
 \end{itemize}
+
+\begin{figure}[tb]
+   \centering
+\includegraphics[trim={1cm 8cm 2cm 9cm},width = 0.97\textwidth]{benchmark/phantom_in_MEG}
+\caption{The phantom is carefully set into the sensor helmet of the probe unit and pushed against the helmet. HPI coil is fitted into outlet under the right gantry side cover (Figure taken from~\cite{hazim2015magnetoencephalography}).}
+   \label{fig:phantom_in_MEG}
+\end{figure}
 
 \subsection{MNE-Neuromag dataset} \label{data:used_data}
 
