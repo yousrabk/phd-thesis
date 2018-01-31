@@ -90,7 +90,7 @@ $\gamma$-map offers a unifying view using a Bayesian perspective on some of the 
 \subsubsection{TF-MxNE | irTF-MxNE}
 \Ac{TF-MxNE} and \ac{irTF-MxNE} are the convex and the non-convex versions of the Time-Frequency mixed-norms using $\ell_{2,1}+\ell_1$-norm and $\ell_{2,0.5}+\ell_{0.5}$-quasinorm as regularizations. For more details, see Chapter~\ref{chapter:background}-Section~\ref{sec:mixed_norms} and~\cite{TF-MxNE,bekhti2016m}.
 
-All solvers except the irTF-MxNE are implemented in the MNE-python package~\cite{MNE}. The dipole fitting, MUSIC, dSPM, MNE, sLORETA, $\gamma$-map have used the by default version. The regularization parameter of LCMV was set to $reg=1$.
+All solvers except the irTF-MxNE are implemented in the MNE-python package~\cite{mne,mne-python}. The dipole fitting, MUSIC, dSPM, MNE, sLORETA, $\gamma$-map have used the by default version. The regularization parameter of LCMV was set to $reg=1$.
 The different hyperparameters of (ir)TF-MxNE were tuned on a grid search. The results below are shown after setting the window size to $wsize=64$, time shift to $ts=4$, $\alpha_{space}=40.$, and $\alpha_{time}=1.$. While for the (ir)MxNE regularization hyperparameter was set to $\alpha_{space}=40.$.
 
 \section{Experimental results}
