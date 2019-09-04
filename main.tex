@@ -114,7 +114,7 @@ headsepline, % Uncomment to get a line under the header
 \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
 \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
 
-\input{Sections/acronyms}
+\input{Sections/Acronyms.tex}
 
 \let\cleardoublepage\clearpage
 \begin{document}
@@ -147,12 +147,12 @@ headsepline, % Uncomment to get a line under the header
 % Uncomment the lines as you write the chapters
 \numberwithin{figure}{section}
 
-\include{Chapters/introduction}
-\include{Chapters/background}
-\include{Chapters/multiscale}
-\include{Chapters/bayesian}
-\include{Chapters/benchmark}
-\include{Chapters/decoding}
+\input{Chapters/introduction}
+\input{Chapters/background}
+\input{Chapters/multiscale}
+\input{Chapters/bayesian}
+\input{Chapters/benchmark}
+\input{Chapters/decoding}
 
 %\frontmatter
 \include{Chapters/conclusion}
